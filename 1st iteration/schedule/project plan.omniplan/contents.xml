@@ -8,6 +8,17 @@
 		<string>Lucida Grande</string>
 		<key>font-size</key>
 		<real>10</real>
+		<key>gantt-alternate-color</key>
+		<dict>
+			<key>a</key>
+			<string>0.22</string>
+			<key>b</key>
+			<string>0.76087</string>
+			<key>g</key>
+			<string>0.605011</string>
+			<key>r</key>
+			<string>0.309006</string>
+		</dict>
 	</dict>
 	<key>columnTitleStyle</key>
 	<dict>
@@ -183,7 +194,7 @@
 			<key>side</key>
 			<real>0.7985348105430603</real>
 			<key>window</key>
-			<string>{{71, 4}, {1920, 1174}}</string>
+			<string>{{-19, 4}, {1920, 1174}}</string>
 		</dict>
 	</array>
 	<key>displaySeconds</key>
@@ -1843,7 +1854,7 @@
 		<integer>-1</integer>
 	</array>
 	<key>uuid</key>
-	<string>35B61572-1E67-421F-B480-9DDB0BA67309</string>
+	<string>902257C5-2526-4E67-BAA9-C610E744285B</string>
 	<key>version</key>
 	<integer>2</integer>
 </dict>

@@ -41,13 +41,13 @@
 			<key>GanttGroupShading</key>
 			<false/>
 			<key>GanttVisibleRect</key>
-			<string>{{94, 0}, {1174, 839}}</string>
+			<string>{{45, 0}, {781, 921}}</string>
 			<key>OutlineVisibleRect</key>
-			<string>{{0, 0}, {403, 839}}</string>
+			<string>{{0, 0}, {477, 921}}</string>
 			<key>ScaleWidths</key>
 			<dict>
 				<key>Automatic</key>
-				<real>201.60128784179688</real>
+				<real>125.11822509765625</real>
 				<key>Day</key>
 				<real>405</real>
 				<key>Hour</key>
@@ -93,11 +93,12 @@
 				<string>Violations</string>
 				<string>Notes</string>
 				<string>Title</string>
+				<string>%Done</string>
 			</array>
 			<key>calendarController</key>
 			<dict>
 				<key>OutlineVisibleRect</key>
-				<string>{{0, 0}, {270, 819}}</string>
+				<string>{{0, 0}, {325, 652}}</string>
 				<key>activeColumnIdentifiers</key>
 				<array>
 					<string>IM</string>
@@ -114,40 +115,42 @@
 					<key>Notes</key>
 					<real>20</real>
 					<key>Resource</key>
-					<real>135</real>
+					<real>190</real>
 					<key>Type</key>
 					<real>48</real>
 				</dict>
 			</dict>
 			<key>calendarSplit</key>
-			<real>0.78619652986526489</real>
+			<real>0.7862468957901001</real>
 			<key>columnWidths</key>
 			<dict>
+				<key>%Done</key>
+				<real>79</real>
 				<key>Effort</key>
 				<real>70</real>
 				<key>Notes</key>
 				<real>20</real>
 				<key>Title</key>
-				<real>359</real>
+				<real>353</real>
 				<key>Violations</key>
 				<real>20</real>
 			</dict>
 			<key>dayWidth</key>
-			<real>201.60128784179688</real>
+			<real>125.11822509765625</real>
 			<key>overviewView</key>
 			<string>YES</string>
 			<key>resourceSplit</key>
-			<real>0.68417102098464966</real>
+			<real>0.68404525518417358</real>
 			<key>resourcesController</key>
 			<dict>
 				<key>DayWidth</key>
-				<real>132.86405944824219</real>
+				<real>167.15206909179688</real>
 				<key>OutlineVisibleRect</key>
-				<string>{{0, 0}, {406, 1006}}</string>
+				<string>{{0, 0}, {488, 839}}</string>
 				<key>ScaleWidths</key>
 				<dict>
 					<key>Automatic</key>
-					<real>132.86405944824219</real>
+					<real>167.15206909179688</real>
 					<key>Day</key>
 					<real>405</real>
 					<key>Hour</key>
@@ -166,7 +169,7 @@
 				<key>SelectedScale</key>
 				<string>Automatic</string>
 				<key>TimelineVisibleRect</key>
-				<string>{{-76, 0}, {869, 1006}}</string>
+				<string>{{-54, 0}, {1046, 839}}</string>
 				<key>activeColumnIdentifiers</key>
 				<array>
 					<string>IM</string>
@@ -185,15 +188,15 @@
 					<key>Notes</key>
 					<real>20</real>
 					<key>Resource</key>
-					<real>149</real>
+					<real>231</real>
 					<key>Type</key>
 					<real>48</real>
 				</dict>
 			</dict>
 			<key>side</key>
-			<real>0.74685931205749512</real>
+			<real>0.62529456615447998</real>
 			<key>window</key>
-			<string>{{0, 171}, {1601, 1007}}</string>
+			<string>{{0, 89}, {1282, 1089}}</string>
 		</dict>
 	</array>
 	<key>displaySeconds</key>
@@ -2291,7 +2294,7 @@
 		<integer>-1</integer>
 	</array>
 	<key>uuid</key>
-	<string>430BCF06-F31F-48B7-93EE-D328D73B7F40</string>
+	<string>6C3FDE6F-EF84-445A-9C98-3DD7D9DE3B26</string>
 	<key>version</key>
 	<integer>2</integer>
 </dict>

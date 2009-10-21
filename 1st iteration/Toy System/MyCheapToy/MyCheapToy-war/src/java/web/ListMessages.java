@@ -45,10 +45,7 @@ public class ListMessages extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Message List</h1>");
-            
-            out.println("<a href='ClearMessages'>Add new message</a>");
-            out.println("<BR>");
-
+                        
             List messages = toyEntityFacade.findAll();
 
             for (Iterator it = messages.iterator(); it.hasNext();) {
@@ -59,6 +56,9 @@ public class ListMessages extends HttpServlet {
             }
 
             out.println("<a href='PostMessage'>Add new message</a>");
+            out.println("<br>");
+            out.println("<a href='ClearMessages'>Delete all Messages</a>");
+
 
             out.println("</body>");
             out.println("</html>");

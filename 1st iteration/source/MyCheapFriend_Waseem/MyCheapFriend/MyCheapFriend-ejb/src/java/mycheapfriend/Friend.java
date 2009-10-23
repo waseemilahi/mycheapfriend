@@ -20,11 +20,13 @@ import javax.persistence.ManyToOne;
 @IdClass(FriendPK.class)
 @Entity
 public class Friend implements Serializable {
+
     @Id
     private Long id;
     private static final long serialVersionUID = 1L;
    
     
+
     @ManyToOne
     @Id private UserObj parent;
 
@@ -34,6 +36,7 @@ public class Friend implements Serializable {
     
     private String nickname;
 
+    
     public UserObj getFriend() {
         return friend;
     }

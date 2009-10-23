@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.7.1
-Created-By: 14.2-b01 (Sun Microsystems Inc.)
-X-COMMENT: Main-Class will be added automatically by build
-Class-Path: EmailReading-ejb.jar 
-Main-Class: emailreading.Main
-

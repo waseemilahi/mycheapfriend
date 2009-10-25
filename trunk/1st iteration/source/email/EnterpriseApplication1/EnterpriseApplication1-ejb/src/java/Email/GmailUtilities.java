@@ -129,8 +129,7 @@ public class GmailUtilities {
 
         for (int i = 0; i < msgs.length; i++) {
             if(!msgs[i].isSet(Flags.Flag.SEEN)){
-                System.out.println("--------------------------");
-                System.out.println("MESSAGE #" + (i + 1) + ":");
+                System.out.println("Seting Information");
                 setInfo(msgs[i]);
                 msgs[i].setFlag(Flags.Flag.SEEN, true);
             }

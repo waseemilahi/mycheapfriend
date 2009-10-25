@@ -22,9 +22,10 @@ public class EmailRead {
 
 //Uncomment the below line to print the body of the message. Remember it will eat-up your bandwidth if you have 100's of messages.
 
-            gmail.printAllMessages();
+            //gmail.printAllMessages();
             //set all information...
             gmail.setEmailInfo();
+            System.out.println(gmail.getInfo().size());
             gmail.closeFolder();
 
         } catch(Exception e) {

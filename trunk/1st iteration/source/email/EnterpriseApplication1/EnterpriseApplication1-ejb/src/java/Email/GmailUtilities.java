@@ -18,6 +18,11 @@ import javax.mail.URLName;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.ParseException;
 
+/**
+ *
+ * @author David
+ */
+
 public class GmailUtilities {
 
     private Session session = null;

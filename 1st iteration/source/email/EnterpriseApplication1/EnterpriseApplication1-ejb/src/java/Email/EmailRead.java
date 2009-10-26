@@ -1,5 +1,8 @@
 package Email;
-
+/**
+ *
+ * @author David
+ */
 
 
 public class EmailRead {

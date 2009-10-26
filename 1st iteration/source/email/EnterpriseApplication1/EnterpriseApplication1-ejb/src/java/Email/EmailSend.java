@@ -3,6 +3,10 @@ package Email;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
+/**
+ *
+ * @author David
+ */
 
 public class EmailSend
 {

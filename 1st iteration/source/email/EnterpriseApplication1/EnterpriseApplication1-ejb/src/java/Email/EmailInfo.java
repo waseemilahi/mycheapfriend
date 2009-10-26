@@ -1,4 +1,8 @@
 package Email;
+/**
+ *
+ * @author David
+ */
 
 class emailinfo{
     private String from,to,subject,date,content;

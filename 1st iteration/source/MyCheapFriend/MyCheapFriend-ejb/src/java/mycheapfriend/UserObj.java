@@ -44,9 +44,16 @@ public class UserObj implements Serializable {
     private String email_domain;
 
     public UserObj() {
-       this.debts = null;
-        this.loans = null;
-        this.friends = null;
+       
+        this.password = null;
+        this.salt = null;
+        this.active = Boolean.FALSE;
+        this.unsubscribe = Boolean.FALSE;
+        this.email_domain = null;
+    }
+
+     public UserObj(long phone) {
+        
         this.password = null;
         this.salt = null;
         this.active = Boolean.FALSE;
@@ -55,9 +62,7 @@ public class UserObj implements Serializable {
     }
 
     public UserObj(long phone,String password) {
-        this.debts = null;
-        this.loans = null;
-        this.friends = null;
+       
         this.password = password;
         this.salt = "";
         this.active = Boolean.TRUE;
@@ -66,23 +71,14 @@ public class UserObj implements Serializable {
     }
 
     public UserObj(long phone,String password, String email) {
-        this.debts = null;
-        this.loans = null;
-        this.friends = null;
+        
         this.password = password;
         this.salt = "";
         this.active = Boolean.TRUE;
         this.unsubscribe = Boolean.FALSE;
         this.email_domain = email;
     }
-
-    public void setFriendNickName(long friendPhone, String friendNickName){
-        UserObj newUser = userObjFacade.find(tm.getFriendPhone());
-                    if(newUser == null){
-                        newUser = new UserObj(tm.getFriendPhone(),PasswordGenerator.generatePassword());
-                    }
-    }
-
+   
     public List<Bill> getDebts() {
         return debts;
     }

@@ -5,7 +5,7 @@
 
 package mycheapfriend;
 
-import java.util.List;
+import java.util.*;
 /**
  *
  * @author Shaoqing Niu
@@ -111,10 +111,8 @@ public class Controller{
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
-                else{
-                    user.setFriendNickName(tm.getFriendPhone(), tm.getFriendNick()); //add new function
-                    userObjFacade.edit(user);
-                    //if the phone is already in table, update its nick, else create a friend
+                else{                 
+                    setFriendNickName(tm.getFriendPhone(), tm.getFriendNick(),user); //add new function                   
                     text = "Your have set your friend "+tm.getFriendPhone()+"'s nickname to "+tm.getFriendNick();
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
@@ -181,5 +179,43 @@ public class Controller{
             case Global.REPORT: return;
             default: break;
         }
+    }
+    public void setFriendNickName(long phone, String nickname, UserObj user){
+
+            UserObj newUser = userObjFacade.find(phone);
+            Boolean found = Boolean.FALSE;
+
+            if(newUser == null){
+
+                newUser = new UserObj(phone);
+                Friend newFriend = new Friend();
+                newFriend.setParent(user);
+                newFriend.setFriend(newUser);
+                newFriend.setNickname(nickname);
+                user.getFriends().add(newFriend);
+
+                userObjFacade.create(newUser);
+                userObjFacade.edit(user);
+            }
+            else{
+                Friend newFriend = new Friend();
+                newFriend.setParent(user);
+                newFriend.setFriend(newUser);
+
+                for(Friend f : user.getFriends()){
+                    if(f.getFriend().getPhone() == phone){
+                        f.setNickname(nickname);
+                        found = Boolean.TRUE;
+                        break;
+                    }
+                }
+                if(found == Boolean.FALSE){
+                    newFriend.setNickname(nickname);
+                    user.getFriends().add(newFriend);
+                }
+
+                userObjFacade.edit(user);
+
+            }
     }
 }

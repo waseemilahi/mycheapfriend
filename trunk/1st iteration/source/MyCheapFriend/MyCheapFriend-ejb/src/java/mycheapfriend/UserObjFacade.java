@@ -52,6 +52,10 @@ public class UserObjFacade implements UserObjFacadeRemote {
         return em.find(UserObj.class, userObj.getPhone());
     }
 
+    public UserObj find(long phone) {
+        return em.find(UserObj.class, phone);
+    }
+
     public List<UserObj> findAll() {
         return em.createQuery("select object(o) from UserObj as o").getResultList();
     }

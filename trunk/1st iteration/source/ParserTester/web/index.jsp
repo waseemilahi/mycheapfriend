@@ -40,6 +40,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <p><%= message.status() %></p>
         <form action=".">
             <fieldset>
                 <legend>Check a message!</legend>
@@ -49,6 +50,7 @@
                 <p><label for="body">Body:</label><textarea class="<%= message.validBody() ? "pass" : "fail" %>" name="body" id="body" cols="80" rows="15"><%=message.getBody()%></textarea></p>
                 <input type="submit" class="submit" />
             </fieldset>
+
         </form>
     </body>
 </html>

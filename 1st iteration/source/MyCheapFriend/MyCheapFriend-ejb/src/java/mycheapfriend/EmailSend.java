@@ -36,6 +36,7 @@ public class EmailSend
         this.m_to = m_to;
     }
 
+
     public void send()
     {
         Properties props = new Properties();
@@ -68,6 +69,16 @@ public class EmailSend
         {
             mex.printStackTrace();
         }
+    }
+/* Test main program for email sending */
+    public static void main(String[] args)
+    {
+        EmailSend test = new EmailSend();
+        test.setM_subject("testing again");
+        test.setM_to("robot@mycheapfriend.com");
+        test.setM_text("Done testing");
+        test.send();
+
     }
 
     private class SMTPAuthenticator extends javax.mail.Authenticator

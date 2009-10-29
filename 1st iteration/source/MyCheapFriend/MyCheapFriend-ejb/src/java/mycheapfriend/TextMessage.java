@@ -26,6 +26,21 @@ public interface TextMessage {
 //    private List<String> billFriend; //to request/settle a bill
 //    private List<Float> billMoney;
 
+    
+    //message types
+    public final static int ERROR = 0;
+    public final static int NEW_MESSAGE = 1;
+    public final static int NEW_FRIEND = 2;
+    public final static int NEW_ACCOUNT = 3;
+    public final static int RESET_PASS = 4;
+    public final static int UNSUBSCRIBE = 5;
+    public final static int RESUBSCRIBE = 6;
+    //error types
+    public final static int LEXICAL_ERROR = 1;
+    public final static int SYNTAX_ERROR = 2;
+    public final static int UNKNOWN_TYPE = 3;
+    public final static int INVALID_SENDER = 4;
+
     public int getType();
     public int getErrorType();
     public long getPhone();

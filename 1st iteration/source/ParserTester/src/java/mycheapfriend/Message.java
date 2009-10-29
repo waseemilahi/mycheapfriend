@@ -80,6 +80,7 @@ public class Message {
         String[] atoms = body.split("\\s+");
         String error_str = "ERROR: ";
         boolean multiple_friends = false;
+        boolean nickname = false;
         boolean error = false;
 
 
@@ -124,7 +125,7 @@ public class Message {
             }
         }
 
-        if(identifiers.size() == 0 || amounts.size() == 0)
+        if(identifiers.size() == 0)
         {
             error = true;
             error_str += "need at least one identifier and amount.\n";

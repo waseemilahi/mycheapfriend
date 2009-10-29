@@ -29,8 +29,10 @@ public interface TextMessage {
     
     //message types
     public final static int ERROR = 0;
-    public final static int NEW_MESSAGE = 1;
+    public final static int NEW_BILL = 1;
     public final static int NEW_FRIEND = 2;
+    
+    //each of these types have their own URL
     public final static int NEW_ACCOUNT = 3;
     public final static int RESET_PASS = 4;
     public final static int UNSUBSCRIBE = 5;

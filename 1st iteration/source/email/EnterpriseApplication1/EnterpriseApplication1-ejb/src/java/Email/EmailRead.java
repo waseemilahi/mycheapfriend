@@ -20,7 +20,7 @@ public class EmailRead {
             //gmail.printAllMessages();
             //set all information...
             gmail.setEmailInfo();
-            System.out.println(gmail.getInfo().size());
+            System.out.println("# of new emails is " + gmail.getInfo().size());
             gmail.closeFolder();
 
         } catch(Exception e) {

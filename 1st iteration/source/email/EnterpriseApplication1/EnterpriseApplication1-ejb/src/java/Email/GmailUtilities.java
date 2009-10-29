@@ -20,7 +20,8 @@ import javax.mail.internet.ParseException;
 
 /**
  *
- * @author David
+ * Reference: http://forums.sun.com/thread.jspa?threadID=5267916
+ * modified by David
  */
 
 public class GmailUtilities {

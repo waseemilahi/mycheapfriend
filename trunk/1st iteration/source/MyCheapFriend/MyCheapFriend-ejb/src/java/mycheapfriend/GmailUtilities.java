@@ -1,4 +1,4 @@
-package Email;
+package mycheapfriend;
 
 import com.sun.mail.pop3.POP3SSLStore;
 import java.io.IOException;

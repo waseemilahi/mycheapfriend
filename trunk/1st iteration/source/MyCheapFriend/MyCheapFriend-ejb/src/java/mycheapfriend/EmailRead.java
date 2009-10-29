@@ -1,4 +1,4 @@
-package Email;
+package mycheapfriend;
 /**
  *
  * @author David

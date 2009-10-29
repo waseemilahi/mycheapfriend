@@ -78,7 +78,17 @@ public class UserObj implements Serializable {
         this.unsubscribe = Boolean.FALSE;
         this.email_domain = email;
     }
-   
+
+    public void addFriend(UserObj newUser){
+
+        Friend newFriend = new Friend();
+        newFriend.setFriend(newUser);
+        newFriend.setParent(this);
+        newFriend.setNickname("");
+        this.getFriends().add(newFriend);
+
+    }
+
     public List<Bill> getDebts() {
         return debts;
     }

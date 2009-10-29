@@ -109,7 +109,7 @@ public class Controller{
                     emailSend.send();
                 }
                 else{
-                    user.setFriendNick(tm.getFriendPhone(), tm.getFriendNick()); //add new function
+                    user.setFriendNickName(tm.getFriendPhone(), tm.getFriendNick()); //add new function
                     //if the phone is already in table, update its nick, else create a friend
                     text = "Your have set your friend "+tm.getFriendPhone()+"'s nickname to "+tm.getFriendNick();
                     emailSend.setAll("", text, tm.getFrom());

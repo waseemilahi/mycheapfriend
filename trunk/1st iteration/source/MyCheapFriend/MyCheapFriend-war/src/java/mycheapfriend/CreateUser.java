@@ -66,7 +66,7 @@ public class CreateUser extends HttpServlet {
 
         System.out.printf("\n the phone for  the last user in the facade: %d\n" , (users.get(users.size()-1)).getPhone());
 
-        o = userFacade.find(old);
+        o = userFacade.find(old.getPhone());
 
     if(o == null){
         System.out.println("\n userFacade.find(obj) returned null. \n");

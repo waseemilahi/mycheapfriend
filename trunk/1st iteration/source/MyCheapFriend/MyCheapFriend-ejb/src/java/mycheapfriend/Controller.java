@@ -46,7 +46,7 @@ public class Controller{
             case Global.CREATACCONT:
                 user = userObjFacade.find(tm.getPhone());        //define =    //find by phone
                 if(user == null) {
-                    user = new UserObj(tm.getPhone()); //add a constructor by phone #
+                    user = new UserObj(tm.getPhone(),PasswordGenerator.generatePassword()); //add a constructor by phone #
                     userObjFacade.create(user);
                 }
                 text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
@@ -61,7 +61,7 @@ public class Controller{
                     emailSend.send();
                 }
                 else {
-                    user.setPassword("newPass");                         //regenerate pass
+                    user.setPassword(PasswordGenerator.generatePassword());                         //regenerate pass
                     //there should be a function to generate password randomly
                     text = "Your new password is"+user.getPassword();
                     emailSend.setAll("", text, tm.getFrom());

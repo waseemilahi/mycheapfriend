@@ -15,14 +15,13 @@ public class EmailRead {
             gmail.setUserPass("robot@mycheapfriend.com", "K86924");
             gmail.connect();
             gmail.openFolder("INBOX");
-            int totalMessages = gmail.getMessageCount();
-            int newMessages = gmail.getNewMessageCount();
-            //gmail.printAllMessages();
             //set all information...
             gmail.setEmailInfo();
             System.out.println("# of new emails is " + gmail.getInfo().size());
+            /* for(emailinfo a: gmail.getInfo())
+                System.out.println(a.getContent()); */
             gmail.closeFolder();
-
+            gmail.disconnect();
         } catch(Exception e) {
             e.printStackTrace();
             System.exit(-1);

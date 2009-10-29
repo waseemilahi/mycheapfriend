@@ -17,7 +17,7 @@ public class Controller{
 
     public void handle(TextMessage tm) {
         if(tm.getErrorType() != Global.ERROR_NOERROR) {
-            emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFromAddress());
+            emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFrom());
             emailSend.send();
             return;
         }
@@ -50,21 +50,21 @@ public class Controller{
                     userObjFacade.create(user);
                 }
                 text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
-                emailSend.setAll("", text, tm.getFromAddress());
+                emailSend.setAll("", text, tm.getFrom());
                 emailSend.send();
                 return;
             case Global.CHANGEPASSWORD:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else {
                     user.setPassword("newPass");                         //regenerate pass
                     //there should be a function to generate password randomly
                     text = "Your new password is"+user.getPassword();
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 return;
@@ -72,13 +72,13 @@ public class Controller{
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else {
                     user.setUnsubscribe(Boolean.TRUE);
                     text = "You have unsubscribed now.";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 return;
@@ -86,13 +86,13 @@ public class Controller{
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else {
                     user.setUnsubscribe(Boolean.FALSE);
                     text = "You have resubscribed now";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 return;
@@ -100,19 +100,19 @@ public class Controller{
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
-                else if(!tm.getToAddress().startsWith(user.getPassword())){
+                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
                     text = "Your password is"+user.getPassword()+". Please send email to ***";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else{
                     user.setFriendNick(tm.getFriendPhone(), tm.getFriendNick()); //add new function
                     //if the phone is already in table, update its nick, else create a friend
                     text = "Your have set your friend "+tm.getFriendPhone()+"'s nickname to "+tm.getFriendNick();
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 return;
@@ -120,23 +120,30 @@ public class Controller{
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
-                else if(!tm.getToAddress().startsWith(user.getPassword())){
+                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
                     text = "Your password is"+user.getPassword()+". Please send email to ***";
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else if(user.idToPhone(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
                     // if String is a nick, it might not exist. all phone# are considered right
                     text = "Your don't have a friend with identifier"+tm.getBillFriend(0);
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
                 else {
                     if(userObjFacade.find(user.idToPhone(tm.getBillFriend(0))) == null){ //phone# is new
-                        UserObj newUser = new UserObj(user.idToPhone(tm.getBillFriend(0)));
+                        long id;
+                        Object actual_id = tm.getBillFriend(0);
+                        if(actual_id instanceof String )
+                            id = user.idToPhone((String) actual_id);
+                        else
+                            id = ( (Long) actual_id ).longValue();
+
+                        UserObj newUser = new UserObj(id);
                         userObjFacade.create(newUser);
                         user.addFriend(newUser);                       //addFriend
                         newUser.addFriend(user);
@@ -150,7 +157,7 @@ public class Controller{
                     //add getFriend(friend's identifier) to return the instance of userObj for a user's friend
                     //first get a instance of Friend of a user's friend, then get the instance of userObj by calling getFriend()
                     text = "You have sent a bill of " + tm.getBillMoney(0) +" to your friend "+tm.getBillFriend(0);
-                    emailSend.setAll("", text, tm.getFromAddress());
+                    emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                     text = "Your friend " + tm.getPhone() + "request a bill of " + tm.getBillMoney(0) + "to you.";
                     emailSend.setAll("", text, userObjFacade.find(user.idToPhone(tm.getBillFriend(0))).getEmail_domain);

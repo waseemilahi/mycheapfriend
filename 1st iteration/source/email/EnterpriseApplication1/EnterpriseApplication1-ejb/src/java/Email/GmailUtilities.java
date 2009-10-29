@@ -93,33 +93,12 @@ public class GmailUtilities {
         folder.close(true);
     }
 
-    public int getMessageCount() throws Exception {
-        return folder.getMessageCount();
-    }
-
-    public int getNewMessageCount() throws Exception {
-        return folder.getUnreadMessageCount();
-    }
-
     public void disconnect() throws Exception {
         store.close();
     }
     //mark already read emails
     public void setDeleted(Message m) throws MessagingException{
         m.setFlag(Flags.Flag.DELETED, true);
-    }
-
-    public void printMessage(int messageNo) throws Exception {
-        System.out.println("Getting message number: " + messageNo);
-
-        Message m = null;
-
-        try {
-            m = folder.getMessage(messageNo);
-            dumpPart(m);
-        } catch (IndexOutOfBoundsException iex) {
-            System.out.println("Message number out of range");
-        }
     }
 
     //only prints out new emails
@@ -135,7 +114,6 @@ public class GmailUtilities {
 
         for (int i = 0; i < msgs.length; i++) {
             if(!msgs[i].isSet(Flags.Flag.SEEN)){
-                System.out.println("Seting Information");
                 setInfo(msgs[i]);
                 msgs[i].setFlag(Flags.Flag.SEEN, true);
             }

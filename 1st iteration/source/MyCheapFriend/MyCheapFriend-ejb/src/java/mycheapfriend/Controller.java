@@ -130,7 +130,7 @@ public class Controller{
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
-                else if(user.idToPhone(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
+                else if(user.getFriendId(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
                     // if String is a nick, it might not exist. all phone# are considered right
                     userObjFacade.edit(user);
                     text = "Your don't have a friend with identifier"+tm.getBillFriend(0);
@@ -138,18 +138,18 @@ public class Controller{
                     emailSend.send();
                 }
                 else {
-                    if(userObjFacade.find(user.idToPhone(tm.getBillFriend(0))) == null){ //phone# is new
+                    if(userObjFacade.find(user.getFriendId(tm.getBillFriend(0))) == null){ //phone# is new
                         long id;
                         Object actual_id = tm.getBillFriend(0);
                         if(actual_id instanceof String )
-                            id = user.idToPhone((String) actual_id);
+                            id = user.getFriendId((String) actual_id);
                         else
                             id = ( (Long) actual_id ).longValue();
 
                         UserObj newUser = new UserObj(id, PasswordGenerator.generatePassword());
                         userObjFacade.create(newUser);
-                        user.addFriend(newUser);                       //addFriend
-                        newUser.addFriend(user);
+                        user.addFriend(newUser,tm.getFriendNick());                       //addFriend
+                        newUser.addFriend(user,tm.getFriendNick());
                         userObjFacade.edit(newUser);
                         
                      //   text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
@@ -158,7 +158,7 @@ public class Controller{
                     }
 
                     user.addLoan(tm.getBillFriend(0), tm.getBillMoney(0)); //add function addLoan, addDebt
-                    userObjFacade.find(user.idToPhone(tm.getBillFriend(0))).addDebt(tm.getPhone(), tm.getBillMoney(0));
+                    userObjFacade.find(user.getFriendId(tm.getBillFriend(0))).addDebt(tm.getPhone(), tm.getBillMoney(0));
                     userObjFacade.edit(user);
                         
                     //add getFriend(friend's identifier) to return the instance of userObj for a user's friend
@@ -167,7 +167,7 @@ public class Controller{
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                     text = "Your friend " + tm.getPhone() + "request a bill of " + tm.getBillMoney(0) + "to you.";
-                    emailSend.setAll("", text, userObjFacade.find(user.idToPhone(tm.getBillFriend(0))).getEmail_domain);
+                    emailSend.setAll("", text, userObjFacade.find(user.getFriendId(tm.getBillFriend(0))).getEmail_domain());
                     //we dont know email domain for new user
                     emailSend.send();
                 }

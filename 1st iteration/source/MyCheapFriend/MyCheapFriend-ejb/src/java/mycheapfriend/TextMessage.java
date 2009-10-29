@@ -56,7 +56,10 @@ public interface TextMessage {
     public String getFriendNick();
     
     public int getNumBills();
+
+    /* Returns either a Long or a String. */
     public Object getBillFriend(int index);
+
     public long getBillMoney(int index);
 
 }

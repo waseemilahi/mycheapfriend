@@ -79,12 +79,24 @@ public class UserObj implements Serializable {
         this.email_domain = email;
     }
 
-    public void addFriend(UserObj newUser){
+    public long getFriendId(Object obj){
+        
+         if(obj instanceof String )
+             for(Friend f : this.friends)
+                 if((f.getNickname()).equals((String)obj))
+                     return f.getFriend().getPhone();
+            
+        return 0;
+         
+         
+    }
+
+    public void addFriend(UserObj newUser,String nickname){
 
         Friend newFriend = new Friend();
         newFriend.setFriend(newUser);
         newFriend.setParent(this);
-        newFriend.setNickname("");
+        newFriend.setNickname(nickname);
         this.getFriends().add(newFriend);
 
     }

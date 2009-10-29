@@ -16,6 +16,10 @@ class EmailInfo implements TextMessage{
     private final static String RESUBSCRIBE_ADDR = "resubscribe";
     private final static String VALID_PASS_REGEX = "[0-9a-z]{6,6}";
 
+    private final static String phoneNumPattern = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
+    private final static String nicknamePattern = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
+    private final static String amountPattern = "\\$?\\d{1,4}(\\.\\d{2})?";
+
     private String from,to,subject,date,content;
 
     private int type, errorType;
@@ -50,6 +54,115 @@ class EmailInfo implements TextMessage{
 
     public void setContent(String content) {
         this.content = content;
+        String body = content.trim();
+        String[] atoms = body.split("\\s+");
+
+        boolean multiple_friends = false;
+        boolean nickname = false;
+        
+        this.billFriends = new ArrayList<Object>();
+        this.billAmounts = new ArrayList<Integer>();
+
+        for(String atom : atoms)
+        {
+            atom = atom.trim();
+
+            if(atom.matches(nicknamePattern))
+                billFriends.add(atom.toLowerCase());
+            else if (atom.matches(phoneNumPattern))
+                billFriends.add(new Long(atom.replaceAll("\\D", "")));
+            else if (atom.matches(amountPattern))
+            {
+                atom = atom.replaceAll("[^\\d.]", "");
+                int ival = 0;
+                if(atom.indexOf('.') >= 0)
+                {
+                    atom = atom.replaceAll("\\.", "");
+                    ival = Integer.parseInt(atom);
+                }
+                else
+                {
+                    ival = Integer.parseInt(atom) * 100;
+                }
+                billAmounts.add(new Integer(ival));
+            }
+            else if(billAmounts.size() <= 1 && atom.equalsIgnoreCase("me"))
+            {
+                billFriends.add(atom);
+                multiple_friends = true;
+            }
+            else
+            {
+                this.type = TextMessage.ERROR;
+                this.errorType = TextMessage.LEXICAL_ERROR;
+                break;
+            }
+        }
+
+        if(billFriends.size() == 0)
+        {
+                this.type = TextMessage.ERROR;
+                this.errorType = TextMessage.SYNTAX_ERROR;
+        }
+        else if(billAmounts.size() == 0)
+        {
+            boolean fail = true;
+            if(billFriends.size() == 2)
+            {
+                Long num  = null;
+                String nick = null;
+                for(Object o : billFriends)
+                    if(o instanceof String)
+                        nick = (String) o;
+                    else if(o instanceof Long)
+                        num = (Long) o;
+                if(num != null && nick != null)
+                {
+                    this.friendNick = nick;
+                    this.friendPhone = num.longValue();
+                    this.type = TextMessage.NEW_FRIEND;
+                }
+            }
+            if(fail)
+            {
+                this.type = TextMessage.ERROR;
+                this.errorType = TextMessage.SYNTAX_ERROR;
+            }
+        }
+        else if(billAmounts.size() == billFriends.size() )
+        {
+            if(multiple_friends)
+            {
+                //"me" not allowed in billFriendssize
+                this.type = TextMessage.ERROR;
+                this.errorType = TextMessage.SYNTAX_ERROR;
+            }
+        }
+        else if (billAmounts.size() == 1 && billFriends.size() >= 2)
+        {
+            Integer bill = billAmounts.remove(0);
+            int bill_amount = bill.intValue() / billFriends.size();
+            int extra = bill.intValue() - (bill_amount * billFriends.size());
+
+            for(int i = 0; i < billFriends.size(); i++)
+            {
+                int this_bill_amount = bill_amount;
+                if(extra > 0)
+                {
+                    this_bill_amount++;
+                    extra--;
+                }
+                billAmounts.add(new Integer(this_bill_amount));
+            }
+        }
+        else
+        {
+                this.type = TextMessage.ERROR;
+                this.errorType = TextMessage.SYNTAX_ERROR;
+        }
+
+        if(this.type != TextMessage.ERROR && this.type != TextMessage.NEW_FRIEND);
+            this.type = TextMessage.NEW_BILL;
         
     }
 

@@ -77,7 +77,10 @@ public class UserObj implements Serializable {
     }
 
     public void setFriendNickName(long friendPhone, String friendNickName){
-        
+        UserObj newUser = userObjFacade.find(tm.getFriendPhone());
+                    if(newUser == null){
+                        newUser = new UserObj(tm.getFriendPhone(),PasswordGenerator.generatePassword());
+                    }
     }
 
     public List<Bill> getDebts() {

@@ -43,6 +43,39 @@ public class UserObj implements Serializable {
 
     private String email_domain;
 
+    public UserObj() {
+       this.debts = null;
+        this.loans = null;
+        this.friends = null;
+        this.password = null;
+        this.salt = null;
+        this.active = Boolean.FALSE;
+        this.unsubscribe = Boolean.FALSE;
+        this.email_domain = null;
+    }
+
+    public UserObj(long phone,String password) {
+        this.debts = null;
+        this.loans = null;
+        this.friends = null;
+        this.password = password;
+        this.salt = "";
+        this.active = Boolean.TRUE;
+        this.unsubscribe = Boolean.FALSE;
+        this.email_domain = "";
+    }
+
+    public UserObj(long phone,String password, String email) {
+        this.debts = null;
+        this.loans = null;
+        this.friends = null;
+        this.password = password;
+        this.salt = "";
+        this.active = Boolean.TRUE;
+        this.unsubscribe = Boolean.FALSE;
+        this.email_domain = email;
+    }
+
     public List<Bill> getDebts() {
         return debts;
     }

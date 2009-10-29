@@ -47,11 +47,11 @@ public class UserObjFacade implements UserObjFacadeRemote {
 
         em.remove(em.merge(userObj));
     }
-
+/*
     public UserObj find(UserObj userObj) {
         return em.find(UserObj.class, userObj.getPhone());
     }
-
+*/
     public UserObj find(long phone) {
         return em.find(UserObj.class, phone);
     }

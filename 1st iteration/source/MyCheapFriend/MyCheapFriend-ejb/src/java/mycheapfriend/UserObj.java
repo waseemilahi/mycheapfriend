@@ -76,6 +76,10 @@ public class UserObj implements Serializable {
         this.email_domain = email;
     }
 
+    public void setFriendNickName(long friendPhone, String friendNickName){
+        
+    }
+
     public List<Bill> getDebts() {
         return debts;
     }

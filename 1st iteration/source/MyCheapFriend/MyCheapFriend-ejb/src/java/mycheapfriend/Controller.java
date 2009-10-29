@@ -61,7 +61,8 @@ public class Controller{
                     emailSend.send();
                 }
                 else {
-                    user.setPassword(PasswordGenerator.generatePassword());                         //regenerate pass
+                    user.setPassword(PasswordGenerator.generatePassword());
+                    userObjFacade.edit(user);
                     //there should be a function to generate password randomly
                     text = "Your new password is"+user.getPassword();
                     emailSend.setAll("", text, tm.getFrom());
@@ -77,7 +78,8 @@ public class Controller{
                 }
                 else {
                     user.setUnsubscribe(Boolean.TRUE);
-                    text = "You have unsubscribed now.";
+                    userObjFacade.edit(user);
+                    text = "You have unsubscribed from mycheapfriend.";
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
@@ -91,6 +93,7 @@ public class Controller{
                 }
                 else {
                     user.setUnsubscribe(Boolean.FALSE);
+                    userObjFacade.edit(user);
                     text = "You have resubscribed now";
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
@@ -110,6 +113,7 @@ public class Controller{
                 }
                 else{
                     user.setFriendNickName(tm.getFriendPhone(), tm.getFriendNick()); //add new function
+                    userObjFacade.edit(user);
                     //if the phone is already in table, update its nick, else create a friend
                     text = "Your have set your friend "+tm.getFriendPhone()+"'s nickname to "+tm.getFriendNick();
                     emailSend.setAll("", text, tm.getFrom());
@@ -130,6 +134,7 @@ public class Controller{
                 }
                 else if(user.idToPhone(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
                     // if String is a nick, it might not exist. all phone# are considered right
+                    userObjFacade.edit(user);
                     text = "Your don't have a friend with identifier"+tm.getBillFriend(0);
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
@@ -143,10 +148,12 @@ public class Controller{
                         else
                             id = ( (Long) actual_id ).longValue();
 
-                        UserObj newUser = new UserObj(id);
+                        UserObj newUser = new UserObj(id, PasswordGenerator.generatePassword());
                         userObjFacade.create(newUser);
                         user.addFriend(newUser);                       //addFriend
                         newUser.addFriend(user);
+                        userObjFacade.edit(newUser);
+                        
                      //   text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
                      //   emailSend.setAll("", text, );
                      //   emailSend.send();
@@ -154,6 +161,8 @@ public class Controller{
 
                     user.addLoan(tm.getBillFriend(0), tm.getBillMoney(0)); //add function addLoan, addDebt
                     userObjFacade.find(user.idToPhone(tm.getBillFriend(0))).addDebt(tm.getPhone(), tm.getBillMoney(0));
+                    userObjFacade.edit(user);
+                        
                     //add getFriend(friend's identifier) to return the instance of userObj for a user's friend
                     //first get a instance of Friend of a user's friend, then get the instance of userObj by calling getFriend()
                     text = "You have sent a bill of " + tm.getBillMoney(0) +" to your friend "+tm.getBillFriend(0);

@@ -196,49 +196,51 @@ public class Controller{
                         emailSend.send();
                     }
                     else{
-                    long each_loan ;
-                    long each_debt ;
-                    long final_loan ;
-                    Boolean bills_exist = Boolean.FALSE;
-                    text = "";
-                    String newline = System.getProperty("line.separator");
+                        long each_loan ;
+                        long each_debt ;
+                        long final_loan ;
+                        Boolean bills_exist = Boolean.FALSE;
+                        text = "";
+                        String newline = System.getProperty("line.separator");
 
-                    for(Friend f : user.getFriends()){
-                        each_loan = 0;
-                        each_debt = 0;
-                        for(Bill loan : user.getLoans()){
-                            each_loan += loan.getAmount();
-                        }
-                        for(Bill debt : user.getDebts()){
-                            each_debt += debt.getAmount();
-                        }
-                        final_loan = each_loan - each_debt;
-                        if(final_loan > 0){
-                            bills_exist = Boolean.TRUE;
-                            text.concat("Your friend " + f.getNickname() + " owes you " + final_loan + " dollars" + newline);
-                        }
-                        else if(final_loan < 0){
-                            bills_exist = Boolean.TRUE;
-                            text.concat("You owe " + final_loan + " dollars to your friend " + f.getNickname() + newline);
+                        for(Friend f : user.getFriends()){
+                            each_loan = 0;
+                            each_debt = 0;
+                            for(Bill loan : user.getLoans()){
+                                each_loan += loan.getAmount();
+                            }
+                            for(Bill debt : user.getDebts()){
+                                each_debt += debt.getAmount();
+                            }
+
+                            final_loan = each_loan - each_debt;
+
+                            if(final_loan > 0){
+                                bills_exist = Boolean.TRUE;
+                                text.concat("Your friend " + f.getNickname() + " owes you " + final_loan + " dollars" + newline);
+                            }
+                            else if(final_loan < 0){
+                                bills_exist = Boolean.TRUE;
+                                text.concat("You owe " + final_loan + " dollars to your friend " + f.getNickname() + newline);
+                            }
+
                         }
 
-                    }
-                    if(bills_exist){
-                        emailSend.setAll("", text, tm.getFrom());
-                        emailSend.send();
-                    }
-                    else{
-                        text = "You are even with all your friends.";
-                        emailSend.setAll("", text, tm.getFrom());
-                        emailSend.send();
-                    }
+                        if(bills_exist){
+                            emailSend.setAll("", text, tm.getFrom());
+                            emailSend.send();
+                        }
+                        else{
+                            text = "You are even with all your friends.";
+                            emailSend.setAll("", text, tm.getFrom());
+                            emailSend.send();
+                        }
 
                     }
 
                 }
-                //implement report bills functionality.....
-                
                 return;
+
             default: break;
         }
     }

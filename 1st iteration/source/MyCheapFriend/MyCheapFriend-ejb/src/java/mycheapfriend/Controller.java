@@ -46,11 +46,15 @@ public class Controller{
         switch(tm.getType()){
             case TextMessage.NEW_ACCOUNT:
                 user = userObjFacade.find(tm.getPhone());        //define =    //find by phone
-                if(user == null) {
+                if(user == null ) {
                     user = new UserObj(tm.getPhone(),PasswordGenerator.generatePassword()); //add a constructor by phone #
                     userObjFacade.create(user);
                 }
-                text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
+                else if( (user != null) && (user.getPassword() == null) ){
+                    user.setPassword(PasswordGenerator.generatePassword());
+                    user.setActive(Boolean.TRUE);
+                }
+                text = "Welcome to MyCheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
                 emailSend.setAll("", text, tm.getFrom());
                 emailSend.send();
                 return;
@@ -144,7 +148,7 @@ public class Controller{
                     else {
                     if(userObjFacade.find(user.getFriendId(tm.getBillFriend(i))) == null){ //phone# is new
                         
-                        UserObj newUser = new UserObj(user.getFriendId(tm.getBillFriend(i)), PasswordGenerator.generatePassword());
+                        UserObj newUser = new UserObj(user.getFriendId(tm.getBillFriend(i)));
                         userObjFacade.create(newUser);
                         user.addFriend(newUser,tm.getFriendNick());                       //addFriend
                         //newUser.addFriend(user,tm.getFriendNick());
@@ -173,7 +177,68 @@ public class Controller{
                 }
                 return;
 
-            case TextMessage.REPORT_BILLS: return;
+            case TextMessage.REPORT_BILLS:
+                user = userObjFacade.find(tm.getPhone());
+                if(user == null) {
+                    text = "You are not a user! Please register by ...";
+                    emailSend.setAll("", text, tm.getFrom());
+                    emailSend.send();
+                }
+                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
+                    text = "Your password is"+user.getPassword()+". Please send email to ***";
+                    emailSend.setAll("", text, tm.getFrom());
+                    emailSend.send();
+                }
+                else{
+                    if(((user.getLoans().isEmpty()) && (user.getDebts().isEmpty())) || (user.getFriends().isEmpty())){
+                        text = "No Bills Found";
+                        emailSend.setAll("", text, tm.getFrom());
+                        emailSend.send();
+                    }
+                    else{
+                    long each_loan ;
+                    long each_debt ;
+                    long final_loan ;
+                    Boolean bills_exist = Boolean.FALSE;
+                    text = "";
+                    String newline = System.getProperty("line.separator");
+
+                    for(Friend f : user.getFriends()){
+                        each_loan = 0;
+                        each_debt = 0;
+                        for(Bill loan : user.getLoans()){
+                            each_loan += loan.getAmount();
+                        }
+                        for(Bill debt : user.getDebts()){
+                            each_debt += debt.getAmount();
+                        }
+                        final_loan = each_loan - each_debt;
+                        if(final_loan > 0){
+                            bills_exist = Boolean.TRUE;
+                            text.concat("Your friend " + f.getNickname() + " owes you " + final_loan + " dollars" + newline);
+                        }
+                        else if(final_loan < 0){
+                            bills_exist = Boolean.TRUE;
+                            text.concat("You owe " + final_loan + " dollars to your friend " + f.getNickname() + newline);
+                        }
+
+                    }
+                    if(bills_exist){
+                        emailSend.setAll("", text, tm.getFrom());
+                        emailSend.send();
+                    }
+                    else{
+                        text = "You are even with all your friends.";
+                        emailSend.setAll("", text, tm.getFrom());
+                        emailSend.send();
+                    }
+
+                    }
+
+                }
+                //implement report bills functionality.....
+                
+                return;
             default: break;
         }
     }

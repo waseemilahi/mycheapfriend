@@ -132,17 +132,19 @@ public class Controller{
                     emailSend.send();
                 }
                 else{
-                    if(user.getFriendId(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
+                    int i;
+                    for(i = 0; i < tm.getNumBills(); i++){
+                    if(user.getFriendId(tm.getBillFriend(i)) == 0){    //add a function to change id to phonenumber
                     // if String is a nick, it might not exist. all phone# are considered right
                     userObjFacade.edit(user);
-                    text = "Your don't have a friend with identifier"+tm.getBillFriend(0);
+                    text = "Your don't have a friend with identifier"+tm.getBillFriend(i);
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                     }
                     else {
-                    if(userObjFacade.find(user.getFriendId(tm.getBillFriend(0))) == null){ //phone# is new
+                    if(userObjFacade.find(user.getFriendId(tm.getBillFriend(i))) == null){ //phone# is new
                         
-                        UserObj newUser = new UserObj(user.getFriendId(tm.getBillFriend(0)), PasswordGenerator.generatePassword());
+                        UserObj newUser = new UserObj(user.getFriendId(tm.getBillFriend(i)), PasswordGenerator.generatePassword());
                         userObjFacade.create(newUser);
                         user.addFriend(newUser,tm.getFriendNick());                       //addFriend
                         //newUser.addFriend(user,tm.getFriendNick());
@@ -153,19 +155,20 @@ public class Controller{
                      //   emailSend.send();
                     }
 
-                    user.addLoan(tm.getBillFriend(0), tm.getBillMoney(0)); //add function addLoan, addDebt
-                    userObjFacade.find(user.getFriendId(tm.getBillFriend(0))).addDebt(tm.getPhone(), tm.getBillMoney(0));
+                    user.addLoan(tm.getBillFriend(i), tm.getBillMoney(i)); //add function addLoan, addDebt
+                    userObjFacade.find(user.getFriendId(tm.getBillFriend(i))).addDebt(tm.getPhone(), tm.getBillMoney(i));
                     userObjFacade.edit(user);
                         
                     //add getFriend(friend's identifier) to return the instance of userObj for a user's friend
                     //first get a instance of Friend of a user's friend, then get the instance of userObj by calling getFriend()
-                    text = "You have sent a bill of " + tm.getBillMoney(0) +" to your friend "+tm.getBillFriend(0);
+                    text = "You have sent a bill of " + tm.getBillMoney(i) +" to your friend "+tm.getBillFriend(i);
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
-                    text = "Your friend " + tm.getPhone() + "request a bill of " + tm.getBillMoney(0) + "to you.";
-                    emailSend.setAll("", text, userObjFacade.find(user.getFriendId(tm.getBillFriend(0))).getEmail_domain());
+                    text = "Your friend " + tm.getPhone() + "request a bill of " + tm.getBillMoney(i) + "to you.";
+                    emailSend.setAll("", text, userObjFacade.find(user.getFriendId(tm.getBillFriend(i))).getEmail_domain());
                     //we dont know email domain for new user
                     emailSend.send();
+                    }
                     }
                 }
                 return;

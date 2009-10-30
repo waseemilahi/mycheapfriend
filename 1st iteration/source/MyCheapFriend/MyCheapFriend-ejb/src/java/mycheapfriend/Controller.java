@@ -190,8 +190,13 @@ public class Controller{
                     emailSend.send();
                 }
                 else{
-                    if(((user.getLoans().isEmpty()) && (user.getDebts().isEmpty())) || (user.getFriends().isEmpty())){
-                        text = "No Bills Found";
+                    if( (user.getFriends()).isEmpty()){
+                        text = "No Friends Found.";
+                        emailSend.setAll("", text, tm.getFrom());
+                        emailSend.send();
+                    }
+                    else if( ((user.getLoans()).isEmpty()) && ((user.getDebts()).isEmpty())){
+                        text = "No Bills Found.";
                         emailSend.setAll("", text, tm.getFrom());
                         emailSend.send();
                     }

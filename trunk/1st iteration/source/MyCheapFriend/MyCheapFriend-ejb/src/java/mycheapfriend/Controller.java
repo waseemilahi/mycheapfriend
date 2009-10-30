@@ -212,10 +212,12 @@ public class Controller{
                             each_loan = 0;
                             each_debt = 0;
                             for(Bill loan : user.getLoans()){
-                                each_loan += loan.getAmount();
+                                if(loan.getPaid() == Boolean.FALSE)
+                                    each_loan += loan.getAmount();
                             }
                             for(Bill debt : user.getDebts()){
-                                each_debt += debt.getAmount();
+                                if(debt.getPaid() == Boolean.FALSE)
+                                    each_debt += debt.getAmount();
                             }
 
                             final_loan = each_loan - each_debt;

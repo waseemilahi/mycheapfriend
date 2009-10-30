@@ -155,8 +155,8 @@ public class Controller{
                      //   emailSend.send();
                     }
 
-                    user.addLoan(tm.getBillFriend(i), tm.getBillMoney(i)); //add function addLoan, addDebt
-                    userObjFacade.find(user.getFriendId(tm.getBillFriend(i))).addDebt(tm.getPhone(), tm.getBillMoney(i));
+                    user.addLoan(userObjFacade.find(user.getFriendId(tm.getBillFriend(i))), tm.getBillMoney(i)); //add function addLoan, addDebt
+                    userObjFacade.find(user.getFriendId(tm.getBillFriend(i))).addDebt(user, tm.getBillMoney(i));
                     userObjFacade.edit(user);
                         
                     //add getFriend(friend's identifier) to return the instance of userObj for a user's friend

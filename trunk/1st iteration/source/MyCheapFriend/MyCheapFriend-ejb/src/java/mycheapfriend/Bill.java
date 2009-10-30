@@ -26,7 +26,7 @@ public class Bill implements Serializable {
 
     private String bill_date;
 
-    private int amount;
+    private long amount;
 
     @ManyToOne
     private UserObj lender;
@@ -42,11 +42,11 @@ public class Bill implements Serializable {
         this.id = id;
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 

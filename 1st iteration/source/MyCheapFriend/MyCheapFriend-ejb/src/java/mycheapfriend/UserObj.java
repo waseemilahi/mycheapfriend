@@ -81,14 +81,16 @@ public class UserObj implements Serializable {
 
     public long getFriendId(Object obj){
         
-         if(obj instanceof String )
+         if(obj instanceof String ){
              for(Friend f : this.friends)
                  if((f.getNickname()).equals((String)obj))
                      return f.getFriend().getPhone();
-            
-        return 0;
-         
-         
+         }
+         else if(obj instanceof Long){
+             Long id = (Long)obj;
+             return id.longValue();
+         }
+        return 0;         
     }
 
     public void addFriend(UserObj newUser,String nickname){

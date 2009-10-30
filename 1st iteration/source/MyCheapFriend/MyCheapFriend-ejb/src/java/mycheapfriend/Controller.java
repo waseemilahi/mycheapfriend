@@ -131,27 +131,22 @@ public class Controller{
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
                 }
-                else if(user.getFriendId(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
+                else{
+                    if(user.getFriendId(tm.getBillFriend(0)) == 0){    //add a function to change id to phonenumber
                     // if String is a nick, it might not exist. all phone# are considered right
                     userObjFacade.edit(user);
                     text = "Your don't have a friend with identifier"+tm.getBillFriend(0);
                     emailSend.setAll("", text, tm.getFrom());
                     emailSend.send();
-                }
-                else {
+                    }
+                    else {
                     if(userObjFacade.find(user.getFriendId(tm.getBillFriend(0))) == null){ //phone# is new
-                        long id;
-                        Object actual_id = tm.getBillFriend(0);
-                        if(actual_id instanceof String )
-                            id = user.getFriendId((String) actual_id);
-                        else
-                            id = ( (Long) actual_id ).longValue();
-
-                        UserObj newUser = new UserObj(id, PasswordGenerator.generatePassword());
+                        
+                        UserObj newUser = new UserObj(user.getFriendId(tm.getBillFriend(0)), PasswordGenerator.generatePassword());
                         userObjFacade.create(newUser);
                         user.addFriend(newUser,tm.getFriendNick());                       //addFriend
-                        newUser.addFriend(user,tm.getFriendNick());
-                        userObjFacade.edit(newUser);
+                        //newUser.addFriend(user,tm.getFriendNick());
+                        userObjFacade.edit(user);
                         
                      //   text = "Welcome to use cheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
                      //   emailSend.setAll("", text, );
@@ -171,6 +166,7 @@ public class Controller{
                     emailSend.setAll("", text, userObjFacade.find(user.getFriendId(tm.getBillFriend(0))).getEmail_domain());
                     //we dont know email domain for new user
                     emailSend.send();
+                    }
                 }
                 return;
 
@@ -186,11 +182,7 @@ public class Controller{
             if(newUser == null){
 
                 newUser = new UserObj(phone);
-                Friend newFriend = new Friend();
-                newFriend.setParent(user);
-                newFriend.setFriend(newUser);
-                newFriend.setNickname(nickname);
-                user.getFriends().add(newFriend);
+                user.addFriend(newUser, nickname);
 
                 userObjFacade.create(newUser);
                 userObjFacade.edit(user);

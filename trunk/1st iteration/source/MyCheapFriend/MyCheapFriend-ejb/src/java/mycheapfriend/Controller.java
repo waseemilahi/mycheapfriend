@@ -16,7 +16,7 @@ public class Controller{
     UserObjFacade userObjFacade;
 
     public void handle(TextMessage tm) {
-        if(tm.getErrorType() != Global.ERROR_NOERROR) {
+        if(tm.getErrorType() != TextMessage.NO_ERROR) {
             emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFrom());
             emailSend.send();
             return;
@@ -27,9 +27,10 @@ public class Controller{
 
     public String getErrorMessage(int errorType){ //Only for syntax Error
         switch(errorType) {
-            case Global.ERROR_FROMILLIGLEADDRESS:
+            case TextMessage.INVALID_SENDER:
                 return "Please use a cell phone to send the message.";
-            case Global.ERROR_INDISCERNIBLE:
+            case TextMessage.LEXICAL_ERROR:
+            case TextMessage.SYNTAX_ERROR:
                 return "Please check the format of your message.";
             default:
                 return "Undefined Error";
@@ -43,7 +44,7 @@ public class Controller{
         List<Long> friendPhones;
         
         switch(tm.getType()){
-            case Global.CREATACCONT:
+            case TextMessage.NEW_ACCOUNT:
                 user = userObjFacade.find(tm.getPhone());        //define =    //find by phone
                 if(user == null) {
                     user = new UserObj(tm.getPhone(),PasswordGenerator.generatePassword()); //add a constructor by phone #
@@ -53,7 +54,7 @@ public class Controller{
                 emailSend.setAll("", text, tm.getFrom());
                 emailSend.send();
                 return;
-            case Global.CHANGEPASSWORD:
+            case TextMessage.RESET_PASS:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
@@ -69,7 +70,7 @@ public class Controller{
                     emailSend.send();
                 }
                 return;
-            case Global.UNSUBSCRIBE:
+            case TextMessage.UNSUBSCRIBE:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
@@ -84,7 +85,7 @@ public class Controller{
                     emailSend.send();
                 }
                 return;
-            case Global.RESUBSCRIBE:
+            case TextMessage.RESUBSCRIBE:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
@@ -99,7 +100,7 @@ public class Controller{
                     emailSend.send();
                 }
                 return;
-            case Global.SETNICKNAME:
+            case TextMessage.NEW_FRIEND:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
@@ -118,7 +119,7 @@ public class Controller{
                     emailSend.send();
                 }
                 return;
-            case Global.SINGLEREQUEST:
+            case TextMessage.NEW_BILL:
                 user = userObjFacade.find(tm.getPhone());
                 if(user == null) {
                     text = "You are not a user! Please register by ...";
@@ -172,11 +173,8 @@ public class Controller{
                     emailSend.send();
                 }
                 return;
-            case Global.MULTIREQUEST: return;
-            case Global.RECEIVEBILL:
-                
-            case Global.SETTLEBILL: return;
-            case Global.REPORT: return;
+
+            case TextMessage.REPORT_BILLS: return;
             default: break;
         }
     }

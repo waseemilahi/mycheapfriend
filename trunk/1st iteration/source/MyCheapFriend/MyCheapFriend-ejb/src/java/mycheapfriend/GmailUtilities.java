@@ -30,15 +30,15 @@ public class GmailUtilities {
     private Store store = null;
     private String username, password;
     private Folder folder;
-    private ArrayList<emailinfo> info;
+    private ArrayList<EmailInfo> info;
 
-    public ArrayList<emailinfo> getInfo() {
+    public ArrayList<EmailInfo> getInfo() {
         return info;
     }
 
 
     public GmailUtilities() {
-        this.info=new ArrayList<emailinfo>();
+        this.info=new ArrayList<EmailInfo>();
     }
 
     public void setUserPass(String username, String password) {
@@ -122,7 +122,7 @@ public class GmailUtilities {
 
     public void setInfo(Message p) throws MessagingException,IOException{
         Address[] a;
-        emailinfo b = new emailinfo();
+        EmailInfo b = new EmailInfo();
         // FROM
         a=p.getFrom();
         b.setFrom(a[0].toString());

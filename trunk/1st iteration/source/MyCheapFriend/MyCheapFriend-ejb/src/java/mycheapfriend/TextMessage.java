@@ -12,54 +12,105 @@ import java.util.List;
  */
 public interface TextMessage {
 
-//    private int type; //defined in Global
-//    private int errorType; //syntax error type
-//    private long phone;    //347-244-6971
-//    private String fromAddress; //address = 347-244-6971@att.com or other address
-//                            //in case that people don't use cellphone to send msg
-//                            //if not start with 9 digits, it's a syntax error
-//    private String toAddress; //pass@cheapfriend.com will check whether password is for the phone
-//
-//    private long friendPhone; //to set nickname for a friend
-//    private String friendNick;
-//
-//    private List<String> billFriend; //to request/settle a bill
-//    private List<Float> billMoney;
+    /**
+     * Message types
+     */
 
-    
-    //message types
+    /** type set if error is true */
     public final static int ERROR = 0;
+    /** new bill type */
     public final static int NEW_BILL = 1;
+    /** new friend type */
     public final static int NEW_FRIEND = 2;
-    
-    //each of these types have their own URL
-    public final static int NEW_ACCOUNT = 3;
-    public final static int RESET_PASS = 4;
-    public final static int UNSUBSCRIBE = 5;
-    public final static int RESUBSCRIBE = 6;
-    //error types
+
+    /** bill report type */
+    public final static int REPORT_BILLS = 3;
+
+    /** new account url called */
+    public final static int NEW_ACCOUNT = 4;
+    /** reset pass url called */
+    public final static int RESET_PASS = 5;
+    /** unsubscribed url called */
+    public final static int UNSUBSCRIBE = 6;
+    /** resubscribe url called */
+    public final static int RESUBSCRIBE = 7;
+
+
+    /** no error code, (no error!) */
+    public final static int NO_ERROR = 0;
+    /** lexical error found */
     public final static int LEXICAL_ERROR = 1;
+    /** syntax error */
     public final static int SYNTAX_ERROR = 2;
+    /** other unknown error */
     public final static int UNKNOWN_TYPE = 3;
+    /** email sent not phone number */
     public final static int INVALID_SENDER = 4;
 
+    /**
+     * 
+     * @return type of message (0 for error)
+     */
     public int getType();
+
+    /**
+     *
+     * @return type of error message (0 for no error)
+     */
     public int getErrorType();
+
+    /**
+     * @return the phone number from the caller.  check for error before calling this
+     */
     public long getPhone();
 
+    /**
+     * 
+     * @return gets the from address of the email.
+     */
     public String getFrom();
 
+    /**
+     *
+     * @return gets the domain of the phone number.  check for error before calling this
+     */
     public String getDomain();
+
+
+    /**
+     *
+     * @return returns password parsed from to address.  only set for NEW_BILL and NEW_FRIEND
+     */
     public String getPassword();
 
+    /**
+     * if this is NEW_FRIEND returns friend's phone
+     * @return friend's new phone#
+     */
     public long getFriendPhone();
+    /**
+     * if this is NEW_FRIEND returns friend's nickname
+     * @return friend's new nickname
+     */
     public String getFriendNick();
-    
-    public int getNumBills();
 
-    /* Returns either a Long or a String. */
+    /**
+     * returns the number of bills in this message
+     * @return number of bills
+     */
+    public int getNumBills();
+    /**
+     * returns the index-th friend
+     * @param index
+     * @return the friend.  Can be of type String or Long
+     */
     public Object getBillFriend(int index);
 
+    /**
+     * returns what the index-th friend owes
+     * @param index
+     * @return what the index-th friend owes
+     */
     public long getBillMoney(int index);
 
 }

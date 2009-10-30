@@ -29,9 +29,9 @@ public class UserObj implements Serializable {
     private List<Friend> friends;
 
     private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long phone;
+    private long phone;
 
     private String password;
 
@@ -176,7 +176,7 @@ public class UserObj implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (phone != null ? phone.hashCode() : 0);
+        hash += (phone != 0 ? phone : 0);
         return hash;
     }
 
@@ -187,7 +187,7 @@ public class UserObj implements Serializable {
             return false;
         }
         UserObj other = (UserObj) object;
-        if ((this.phone == null && other.phone != null) || (this.phone != null && !this.phone.equals(other.phone))) {
+        if (((this.phone == 0) && (other.phone != 0)) || (this.phone != 0 && (this.phone != other.phone))) {
             return false;
         }
         return true;

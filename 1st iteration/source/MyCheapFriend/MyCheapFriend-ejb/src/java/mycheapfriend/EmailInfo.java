@@ -15,10 +15,11 @@ class EmailInfo implements TextMessage{
     private final static String UNSUBSCRIBE_ADDR = "unsubscribe";
     private final static String RESUBSCRIBE_ADDR = "resubscribe";
     private final static String VALID_PASS_REGEX = "[0-9a-z]{6,6}";
+    private final static String REPORT_MESSAGE = "report";
 
-    private final static String phoneNumPattern = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
-    private final static String nicknamePattern = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
-    private final static String amountPattern = "\\$?\\d{1,4}(\\.\\d{2})?";
+    private final static String PHONE_PATTERN = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
+    private final static String NICKNAME_PATTERN = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
+    private final static String AMOUNT_PATTERN = "\\$?\\d{1,4}(\\.\\d{2})?";
 
     private String from,to,subject,date,content;
 
@@ -55,6 +56,14 @@ class EmailInfo implements TextMessage{
     public void setContent(String content) {
         this.content = content;
         String body = content.trim();
+        
+        if(body.equalsIgnoreCase(REPORT_MESSAGE))
+        {
+            this.type = TextMessage.REPORT_BILLS;
+            this.errorType = TextMessage.NO_ERROR;
+            return;
+        }
+
         String[] atoms = body.split("\\s+");
 
         boolean multiple_friends = false;
@@ -67,11 +76,11 @@ class EmailInfo implements TextMessage{
         {
             atom = atom.trim();
 
-            if(atom.matches(nicknamePattern))
+            if(atom.matches(NICKNAME_PATTERN))
                 billFriends.add(atom.toLowerCase());
-            else if (atom.matches(phoneNumPattern))
+            else if (atom.matches(PHONE_PATTERN))
                 billFriends.add(new Long(atom.replaceAll("\\D", "")));
-            else if (atom.matches(amountPattern))
+            else if (atom.matches(AMOUNT_PATTERN))
             {
                 atom = atom.replaceAll("[^\\d.]", "");
                 int ival = 0;
@@ -121,6 +130,7 @@ class EmailInfo implements TextMessage{
                     this.friendNick = nick;
                     this.friendPhone = num.longValue();
                     this.type = TextMessage.NEW_FRIEND;
+                    this.errorType = TextMessage.NO_ERROR;
                 }
             }
             if(fail)
@@ -162,7 +172,10 @@ class EmailInfo implements TextMessage{
         }
 
         if(this.type != TextMessage.ERROR && this.type != TextMessage.NEW_FRIEND);
+        {
             this.type = TextMessage.NEW_BILL;
+            this.errorType = TextMessage.NO_ERROR;
+        }
         
     }
 
@@ -200,11 +213,17 @@ class EmailInfo implements TextMessage{
             this.type = TextMessage.UNSUBSCRIBE;
         else if(parsed_to.equals(EmailInfo.RESUBSCRIBE_ADDR))
             this.type = TextMessage.RESUBSCRIBE;
-        else if(!parsed_to.matches(EmailInfo.VALID_PASS_REGEX))
+        else if(parsed_to.matches(EmailInfo.VALID_PASS_REGEX))
+        {
+            this.password = parsed_to;
+        }
+        else
         {
             this.type = TextMessage.ERROR;
             this.errorType = TextMessage.UNKNOWN_TYPE;
         }
+        if(this.type != TextMessage.ERROR)
+            this.errorType = TextMessage.NO_ERROR;
     }
     
     public int getType() {

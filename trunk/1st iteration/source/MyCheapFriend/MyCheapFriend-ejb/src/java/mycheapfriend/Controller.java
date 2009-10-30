@@ -54,7 +54,7 @@ public class Controller{
                     user.setPassword(PasswordGenerator.generatePassword());
                     user.setActive(Boolean.TRUE);
                 }
-                text = "Welcome to MyCheapFriend! Your pass is"+user.getPassword(); //treat all users as new users, but only create account for really new users
+                text = "Welcome to MyCheapFriend! Your password is"+user.getPassword(); //treat all users as new users, but only create account for really new users
                 emailSend.setAll("", text, tm.getFrom());
                 emailSend.send();
                 return;

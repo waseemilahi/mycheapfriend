@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 class EmailInfo implements TextMessage{
 
-    private final static String NEW_ACCOUNT_ADDR = "new_account";
+    public final static String NEW_ACCOUNT_ADDR = "new_account";
     private final static String RERSET_PASS_ADDR = "reset_pass";
     private final static String UNSUBSCRIBE_ADDR = "unsubscribe";
     private final static String RESUBSCRIBE_ADDR = "resubscribe";

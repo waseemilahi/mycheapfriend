@@ -93,6 +93,13 @@ public class UserObj implements Serializable {
          }
         return 0;         
     }
+    
+    public Boolean hasFriend(Long phone) {
+        for(Friend f : this.friends)
+            if(f.getFriend().phone == phone)
+                return Boolean.TRUE;
+        return Boolean.FALSE;
+    }
 
     public void addFriend(UserObj newUser,String nickname){
 

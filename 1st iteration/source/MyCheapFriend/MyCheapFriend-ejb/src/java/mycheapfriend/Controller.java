@@ -403,7 +403,7 @@ public class Controller{
     }
 
     public void replyNoFriend(String address){
-        emailSend.setAll("", "You don't have any bill at this point", address);
+        emailSend.setAll("", "You don't have any friend at this point", address);
         emailSend.send();
     }
 

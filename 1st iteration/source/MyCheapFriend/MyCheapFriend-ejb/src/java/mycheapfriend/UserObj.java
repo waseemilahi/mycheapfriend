@@ -94,7 +94,7 @@ public class UserObj implements Serializable {
         return 0;         
     }
     
-    public Boolean hasFriend(Long phone) {
+    public Boolean hasFriend(long phone) {
         for(Friend f : this.friends)
             if(f.getFriend().phone == phone)
                 return Boolean.TRUE;

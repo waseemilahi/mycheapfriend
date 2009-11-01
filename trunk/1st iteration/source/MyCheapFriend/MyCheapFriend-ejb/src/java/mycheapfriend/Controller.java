@@ -187,7 +187,7 @@ public class Controller{
                     }
                     for(int i = 0; i < tm.getNumBills(); i++) {
 
-                        Long friendPhone = user.getFriendId(tm.getBillFriend(i));
+                        long friendPhone = user.getFriendId(tm.getBillFriend(i));
                         UserObj newUser = userObjFacade.find(friendPhone);
 
                         if(user.hasFriend(friendPhone)) {
@@ -373,7 +373,7 @@ public class Controller{
         emailSend.send();
     }
 
-    public void replyAddFriend(Long phone, String nick, String address){
+    public void replyAddFriend(long phone, String nick, String address){
         String text = "Your have set your friend "+phone+"'s nickname to "+nick;
         emailSend.setAll("", text, address);
         emailSend.send();
@@ -386,7 +386,7 @@ public class Controller{
         emailSend.send();
     }
 
-    public void replyBillRequest(Long money, Object id, String address, int type){
+    public void replyBillRequest(long money, Object id, String address, int type){
         String text = "";
         if(type == -1){
             text = "Your friend " + id + "has unsubscribed from mycheapfriend";

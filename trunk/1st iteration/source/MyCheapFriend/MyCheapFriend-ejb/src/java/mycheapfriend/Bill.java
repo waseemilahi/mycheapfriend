@@ -3,11 +3,13 @@
 package mycheapfriend;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -24,7 +26,8 @@ public class Bill implements Serializable {
 
     private Boolean approved;
 
-    private String bill_date;
+    @Temporal(javax.persistence.TemporalType.TIME)
+    private Date timeCreated = new Date();
 
     private long amount;
 
@@ -32,7 +35,7 @@ public class Bill implements Serializable {
     private UserObj lender;
 
     @ManyToOne
-    private UserObj debtor;
+    private UserObj borrower;
 
     public Long getId() {
         return id;
@@ -58,20 +61,20 @@ public class Bill implements Serializable {
         this.approved = approved;
     }
 
-    public String getBill_date() {
-        return bill_date;
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
-    public void setBill_date(String bill_date) {
-        this.bill_date = bill_date;
+    public void setTimeCreated(Date date) {
+        this.timeCreated = date;
     }
 
-    public UserObj getDebtor() {
-        return debtor;
+    public UserObj getBorrower() {
+        return borrower;
     }
 
-    public void setDebtor(UserObj debtor) {
-        this.debtor = debtor;
+    public void setBorrower(UserObj debtor) {
+        this.borrower = debtor;
     }
 
     public UserObj getLender() {
@@ -114,5 +117,7 @@ public class Bill implements Serializable {
     public String toString() {
         return "ejb.Bill[id=" + id + "]";
     }
+
+
 
 }

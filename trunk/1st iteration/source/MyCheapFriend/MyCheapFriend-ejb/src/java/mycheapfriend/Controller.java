@@ -1,6 +1,19 @@
 
 package mycheapfriend;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 
 /**
  * Controller is used to handle incoming messages sent by a cell phone.
@@ -8,8 +21,11 @@ package mycheapfriend;
  */
 public class Controller{
 
+    private final String[] POSSIBLE_DOMAINS = {"txt.att.net", "cingularme.com","messaging.nextel.com", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
+    //["airtelkk.com", "alertas.personal.com.ar", "bplmobile.com", "cingularme.com", "clarotorpedo.com.br", "comcel.com.co", "cwemail.com", "email.uscc.net", "emtelworld.net", "fido.ca", "ideasclaro-ca.com", "ivctext.com", "iwspcs.net", "mas.aw", "message.alltel.com", "messaging.nextel.com", "messaging.sprintpcs.com", "mmst5.tracfone.com", "mobile.celloneusa.com", "mobipcs.net", "movistar.com.co", "msg.acsalaska.com", "msg.gci.net", "msg.globalstarusa.com", "msg.iridium.com", "msg.koodomobile.com", "msg.telus.com", "myboostmobile.com", "mymetropcs.com", "nextel.net.ar", "orange.pl", "page.att.net", "pcs.rogers.com", "qwestmp.com", "rek2.com.mx", "slinteractive.com.au", "sms.airtelmontana.com", "sms.co.za", "sms.ctimovil.com.ar", "sms.lmt.lv", "sms.mobitel.lk", "sms.movistar.net.ar", "sms.mymeteor.ie", "sms.sasktel.com", "sms.spicenepal.com", "sms.t-mobile.at", "sms.thumbcellular.com", "sms.tigo.com.co", "sms.vodafone.it", "sms.ycc.ru", "t-mobile.uk.net", "tachyonsms.co.uk", "text.aql.com", "text.mtsmobility.com", "text.plusgsm.pl", "tmomail.net", "tms.suncom.com", "txt.att.net", "txt.bell.ca", "utext.com", "vmobile.ca", "vmobl.com", "voda.co.za", "vtext.com"]
     EmailSend emailSend;
-    UserObjFacade userObjFacade;
+    InitialContext context;
+    UserObjFacadeRemote userObjFacade;
 
     /**
      * handle(TextMessage) is used to handle a parsed message.
@@ -17,287 +33,327 @@ public class Controller{
      */
     public void handle(TextMessage tm) {
 
-        if(tm.getErrorType() != TextMessage.NO_ERROR) {
+        try {
+            emailSend = new EmailSend();
+            context = new InitialContext();
+            userObjFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
+        } catch (NamingException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            emailSend.setAll("", "Internal error, try back later (SORRY!!)", tm.getFrom());
+            return;
+        }
+
+        //handle error
+        if(tm.getType() == TextMessage.ERROR)
+        {
             emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFrom());
             emailSend.send();
             return;
         }
-        else
-            handleMessage(tm);
-    }
 
-    /**
-     * getErrorMessage(int) is used to handle syntax error in a message.
-     * @param errorType
-     * @return
-     */
-    public String getErrorMessage(int errorType){
+        //initializing common vars
+        UserObj user = userObjFacade.find(tm.getPhone());
+        boolean newUser = user == null;
+        boolean userAuthenticated = !newUser && user.getPassword().equalsIgnoreCase(tm.getPassword());
 
-        switch(errorType) {
-            case TextMessage.INVALID_SENDER:
-                return "Please use a cell phone to send the message.";
-            case TextMessage.LEXICAL_ERROR:
-            case TextMessage.SYNTAX_ERROR:
-                return "Please check the format of your message.";
-            default: //undefined error
-                return "Please check your message.";
+        if(newUser)
+        {
+            user = new UserObj(tm.getPhone(), tm.getDomain()); //create inactive user
+            userObjFacade.create(user);
         }
-    }
+        else
+        {
+            if(user.getEmail_domain() == null)
+            {
+                user.setEmail_domain(tm.getDomain());
+                userObjFacade.edit(user);
+            }
+            if(user.getUnsubscribe())
+            {
+                if(tm.getType() == TextMessage.RESUBSCRIBE)
+                    resubscribe(user);
+                return;
+            }
+        }
 
-    /**
-     * handleMessage(TextMessage) is used to handle a message free from syntax error
-     * @param tm
-     */
-    public void handleMessage(TextMessage tm)
-    {
-        UserObj user;
-        String text;
-        
+
         switch(tm.getType()){
 
             case TextMessage.NEW_ACCOUNT:
-                //the message is sent to EmailInfo.NEW_ACCOUNT_ADDR
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    user = new UserObj(tm.getPhone(),PasswordGenerator.generatePassword()); //set active
-                    userObjFacade.create(user);
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    user.setPassword(PasswordGenerator.generatePassword());
-                    user.setActive(Boolean.TRUE);
-                    userObjFacade.edit(user);
-                }
-                else {
-                //else it's already an active user, we don't modify it
-                }
-
-                this.replyNewUser(user.getPassword(), tm.getFrom());
-                return;
-
             case TextMessage.RESET_PASS:
-                //the message is sent to EmailInfo.RERSET_PASS_ADDR
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    replyInactiveUser(tm.getFrom());
-                }
-                else {
-
-                    user.setPassword(PasswordGenerator.generatePassword());
-                    userObjFacade.edit(user);
-                    this.replyResetPassword(user.getPassword(), tm.getFrom());
-                }
+                newAccountOrReset(user, newUser);
                 return;
-
             case TextMessage.UNSUBSCRIBE:
-                //the message is sent to EmailInfo.UNSUBSCRIBE_ADDR
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                /*else if(user.getActive() == Boolean.FALSE){
-                    //an inactive user could unsubscribe
-                    replyInactiveUser(tm.getFrom());
-                }*/
-                else {
-
-                    user.setUnsubscribe(Boolean.TRUE);
-                    userObjFacade.edit(user);
-                    this.replyUnsubscribe(tm.getFrom());
-                }
+                unsubscribe(user);
                 return;
-
             case TextMessage.RESUBSCRIBE:
-                //the message is sent to EmailInfo.RESUBSCRIBE_ADDR
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    replyInactiveUser(tm.getFrom());
-                }
-                else {
-
-                    user.setUnsubscribe(Boolean.FALSE);
-                    userObjFacade.edit(user);
-
-                    this.replyResubscribe(user.getPassword(), tm.getFrom());
-                }
+                resubscribe(user);
                 return;
+        }
 
+        //make sure user is authorized for other types...
+        
+        if(newUser) {
+            replyUnregisteredUser(tm.getFrom());
+            return;
+        }
+
+        if(tm.getType() == TextMessage.ACCEPT_BILL)
+        {
+            acceptBill(user);
+            return;
+        }
+
+        else if(!userAuthenticated) {
+            replyWrongPasswordUser(user.getPassword(), tm.getFrom());
+            return;
+        }
+
+        
+        switch(tm.getType()){
             case TextMessage.NEW_FRIEND:
-                //the message is sent to XXX@mycheapfriend
-                //the message contains a phone number and a nickname
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    replyInactiveUser(tm.getFrom());
-                }
-                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
-
-                    replyWrongPasswordUser(user.getPassword(), tm.getFrom());
-                }
-                else{
-                    //mutal friend
-                    setFriendNickName(tm.getFriendPhone(), tm.getFriendNick(), user);
-                    setFriendNickName(user.getPhone(),""+user.getPhone(),userObjFacade.find(tm.getFriendPhone()));
-                    this.replyAddFriend(tm.getFriendPhone(), tm.getFriendNick(), tm.getFrom());
-                }
+                newFriend(user, tm.getFriendPhone(), tm.getFriendNick());
                 return;
-
             case TextMessage.NEW_BILL:
-                //the message is sent to XXX@mycheapfriend
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    replyInactiveUser(tm.getFrom());
-                }
-                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
-
-                    replyWrongPasswordUser(user.getPassword(), tm.getFrom());
-                }
-                else{
-                    for(int i = 0; i < tm.getNumBills(); i++){
-                        //a nickname is used but the user doesn't have a friend with the nickname
-                        if(user.getFriendId(tm.getBillFriend(i)) == 0){
-                            this.replyIdentifierWrong(tm.getBillFriend(i), tm.getFrom());
-                            return;
-                        }
-                    }
-                    for(int i = 0; i < tm.getNumBills(); i++) {
-
-                        long friendPhone = user.getFriendId(tm.getBillFriend(i));
-                        UserObj newUser = userObjFacade.find(friendPhone);
-
-                        if(user.hasFriend(friendPhone)) {
-                            //don't change if user already has this friend
-                        }
-                        else{
-                            //add as a friend
-                            if(newUser == null) {
-                                newUser = new UserObj(friendPhone);
-                                userObjFacade.create(newUser);
-                            }
-                            newUser.addFriend(user, ""+user.getPhone());
-                            user.addFriend(newUser, ""+friendPhone);
-                        }
-                        user.addLoan(newUser, tm.getBillMoney(i));
-                        newUser.addDebt(user, tm.getBillMoney(i));
-                        userObjFacade.edit(user);
-                        userObjFacade.edit(newUser);
-
-                        if(newUser.getUnsubscribe()){
-                            this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), tm.getFrom(), -1);
-                        }
-                        else {
-                            this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), tm.getFrom(), 0);
-                            this.replyBillRequest(tm.getBillMoney(i), tm.getPhone(), newUser.getEmail_domain(), 1);
-                        }
-                    }
-                }
+                newBill(user, tm);
                 return;
 
             case TextMessage.REPORT_BILLS:
-                user = userObjFacade.find(tm.getPhone());
-                if(user == null) {
-
-                    replyUnregisteredUser(tm.getFrom());
-                }
-                else if(user.getActive() == Boolean.FALSE){
-
-                    replyInactiveUser(tm.getFrom());
-                }
-                else if(!tm.getPassword().equalsIgnoreCase(user.getPassword())){
-
-                    replyWrongPasswordUser(user.getPassword(), tm.getFrom());
-                }
-                else{
-                    if( (user.getFriends()).isEmpty()){
-                        this.replyNoFriend(tm.getFrom());
-                    }
-                    else if( ((user.getLoans()).isEmpty()) && ((user.getDebts()).isEmpty())){
-                        this.replyNoBill(tm.getFrom());
-                    }
-                    else{
-                        long each_loan ;
-                        long each_debt ;
-                        long final_loan ;
-                        Boolean bills_exist = Boolean.FALSE;
-                        text = "";
-                        String newline = System.getProperty("line.separator");
-                        //the system is not the user's system
-
-                        for(Friend f : user.getFriends()){
-                            each_loan = 0;
-                            each_debt = 0;
-                            for(Bill loan : user.getLoans()){
-                                each_loan += loan.getAmount();
-                            }
-                            for(Bill debt : user.getDebts()){
-                                each_debt += debt.getAmount();
-                            }
-
-                            final_loan = each_loan - each_debt;
-
-                            if(final_loan > 0){
-                                bills_exist = Boolean.TRUE;
-                                text.concat("Your friend " + f.getNickname() + " owes you " + final_loan + " dollars" + newline);
-
-                            }
-                            else if(final_loan < 0){
-                                bills_exist = Boolean.TRUE;
-                                text.concat("You owe " + final_loan + " dollars to your friend " + f.getNickname() + newline);
-                            }
-
-                        }
-
-                        if(!bills_exist){
-                            text = "You are even with all your friends.";
-                        }
-                        this.replyReport(text, tm.getFrom());
-                    }
-
-                }
+                reportBills(user);
                 return;
-
-            default: break;
         }
     }
-    public void setFriendNickName(long phone, String nickname, UserObj user){
 
-            UserObj newUser = userObjFacade.find(phone);
+    private void newAccountOrReset(UserObj user, boolean newUser)
+    {
+                user.setActive(true);
+                user.setPassword(PasswordGenerator.generatePassword());
+                user.setUnsubscribe(false);
+                userObjFacade.edit(user);
+
+                if(newUser)
+                    this.replyNewUser(user.getPassword(), user.getEmail());
+                else
+                    this.replyResetPassword(user.getPassword(), user.getEmail());
+
+    }
+
+    private void unsubscribe(UserObj user)
+    {
+        user.setUnsubscribe(Boolean.TRUE);
+        userObjFacade.edit(user);
+        this.replyUnsubscribe(user.getEmail());
+    }
+
+    private void resubscribe(UserObj user)
+    {
+        user.setUnsubscribe(Boolean.FALSE);
+        userObjFacade.edit(user);
+        this.replyResubscribe(user.getPassword(), user.getEmail());
+    }
+
+    private void newFriend(UserObj user, long friendPhone, String friendNick)
+    {
+        String email = user.getEmail();
+        //only one way
+        setFriendNickName(friendPhone, friendNick, user);
+        this.replyAddFriend(friendPhone, friendNick, email);
+    }
+
+    private void newBill(UserObj user, TextMessage tm)
+    {
+        ArrayList<UserObj> toBeBilled = new ArrayList<UserObj>();
+        for(int i = 0; i < tm.getNumBills(); i++){
+            UserObj friendUser = this.identifierToUserObj(user, tm.getBillFriend(i));
+            //a nickname is used but the user doesn't have a friend with the nickname
+            if(friendUser == null) {
+                this.replyIdentifierWrong(tm.getBillFriend(i), user.getEmail());
+                return;
+            }
+            else
+                toBeBilled.add(friendUser);
+
+        }
+        for(int i = 0; i < tm.getNumBills(); i++) {
+            UserObj friendUser = toBeBilled.get(i);
+            user.loanTo(friendUser, tm.getBillMoney(i));
+            userObjFacade.edit(user);
+
+            if(friendUser.getUnsubscribe()){
+                this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), user.getEmail(), -1);
+            }
+            else {
+                this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), user.getEmail(), 0);
+
+                ArrayList<String> emailsToTry = new ArrayList<String>();
+                String newAddress;
+                if((newAddress = friendUser.getEmail()) != null)
+                    emailsToTry.add(newAddress);
+                else
+                    for(String domain:POSSIBLE_DOMAINS)
+                        emailsToTry.add(friendUser.getPhone() + "@" + domain);
+                for(String address: emailsToTry)
+                    this.replyBillRequest(tm.getBillMoney(i), user.getPhone(), address, 1);
+            }
+        }
+    }
+
+    private void reportBills(UserObj user)
+    {
+        HashMap<UserObj, Long> nets = new HashMap<UserObj, Long>();
+        HashMap<UserObj, String> nicknames = new HashMap<UserObj, String>();
+
+        String text = "";
+        String newline = "\r\n";
+        List<Bill> assets = user.getAssets();
+        for(Bill asset: assets)
+        {
+            if(asset.getApproved() && !asset.getPaid())
+            {
+                UserObj borrower = asset.getBorrower();
+                long amount = asset.getAmount();
+                Long oldAmount = nets.get(borrower);
+                long oldVal = (oldAmount == null)? 0 : oldAmount.longValue();
+                Long newAmount = new Long(oldVal + amount);
+                nets.put(borrower, newAmount);
+            }
+        }
+
+        List<Bill> debts = user.getDebts();
+        for(Bill debt: debts)
+        {
+            if(debt.getApproved() && !debt.getPaid())
+            {
+                UserObj borrower = debt.getBorrower();
+                long amount = debt.getAmount();
+                Long oldAmount = nets.get(borrower);
+                long oldVal = (oldAmount == null)? 0 : oldAmount.longValue();
+                Long newAmount = new Long(oldVal - amount);
+                nets.put(borrower, newAmount);
+            }
+        }
+        ArrayList<UserObj> owesUser = new ArrayList<UserObj>();
+        ArrayList<UserObj> userOwes = new ArrayList<UserObj>();
+        Set<UserObj> users = nets.keySet();
+
+        List<Friend> friends = user.getFriends();
+
+
+        //populate nicknames hash
+        for(Friend f : friends)
+        {
+            UserObj friend = f.getFriend();
+            if(nets.containsKey(friend))
+                nicknames.put(friend, f.getNickname());
+        }
+
+        for(UserObj u : users)
+        {
+            if(nets.get(u).longValue() > 0)
+                owesUser.add(u);
+            else if (nets.get(u).longValue() < 0)
+                userOwes.add(u);
+
+        }
+
+
+        if(!owesUser.isEmpty())
+        {
+            text += "They owe you: ";
+            for(UserObj u : owesUser)
+            {
+
+                String money = readableAmount( nets.get(u).longValue() );
+
+                String identifier = nicknames.get(u);
+                if(identifier == null)
+                    identifier = u.getPhone().toString();
+                text += identifier + "-$" + money +", ";
+            }
+        }
+        if(!userOwes.isEmpty())
+        {
+            if(text.length() > 0)
+                text += ". "+ newline;
+
+            text += "You owe: ";
+            for(UserObj u : userOwes)
+            {
+
+                String money = readableAmount( nets.get(u).longValue() );
+
+                String identifier = nicknames.get(u);
+                if(identifier == null)
+                    identifier = ""+u.getPhone();
+                text += identifier + "-$" + money +", ";
+            }
+        }
+        if(userOwes.isEmpty() && owesUser.isEmpty())
+            text = "no current debts or loans";
+
+        replyReport(text, user.getEmail());
+    }
+
+    private void acceptBill(UserObj user)
+    {
+        List<Bill> debts = user.getDebts();
+        Bill most_recent_bill = null;
+        Date most_recent = null;
+        for(Bill b : debts)
+        {
+            Date next_date = b.getTimeCreated();
+            if( most_recent == null || next_date.after(most_recent))
+            {
+                most_recent = next_date;
+                most_recent_bill = b;
+            }
+
+        }
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -1);
+        if(most_recent.after(c.getTime()))
+        {
+            most_recent_bill.setApproved(true);
+            //TODO: settle any other bills
+            
+            userObjFacade.edit(user);
+            replyAcceptBill(most_recent_bill);
+        }
+        else
+        {
+            replyBillTooOld(user);
+        }
+    }
+
+    private String readableAmount(long val)
+    {
+        String money;
+        if(val % 100 == 0)
+            money = ""+ (val / 100);
+        else
+            money = (new BigDecimal(BigInteger.valueOf(val), 2)).toPlainString();
+
+        return money;
+    }
+
+    private void setFriendNickName(long phone, String nickname, UserObj user){
+
+            UserObj friendUser = userObjFacade.find(phone);
             Boolean found = Boolean.FALSE;
 
-            if(newUser == null){
+            if(friendUser == null){
 
-                newUser = new UserObj(phone);
-                user.addFriend(newUser, nickname);
+                friendUser = new UserObj(phone);
+                user.addFriend(friendUser, nickname);
 
-                userObjFacade.create(newUser);
+                userObjFacade.create(friendUser);
                 userObjFacade.edit(user);
             }
             else{
 
                 Friend newFriend = new Friend();
                 newFriend.setParent(user);
-                newFriend.setFriend(newUser);
+                newFriend.setFriend(friendUser);
 
                 for(Friend f : user.getFriends()){
                     if(f.getFriend().getPhone() == phone){
@@ -316,73 +372,58 @@ public class Controller{
             }
     }
 
-    public void replyUnregisteredUser(String address){
+    private void replyUnregisteredUser(String address){
         String text = "You are not registered yet. ";
         text += "Please text "+EmailInfo.NEW_ACCOUNT_ADDR+"@mycheapfriend.com to register.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyInactiveUser(String address){
-        String text = "You are not registered yet. ";
-        text += "Please text "+EmailInfo.NEW_ACCOUNT_ADDR+"@mycheapfriend.com to register.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
-    }
-
-    public void replyWrongPasswordUser(String password, String address){
+    private void replyWrongPasswordUser(String password, String address){
         String text = "Please text your own address. ";
         text += "Your unique address is <" + password+"@mycheapfriend.com>. ";
         text += "Please add it to your address book.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyNewUser(String password, String address){
+    private void replyNewUser(String password, String address){
         String text = "Welcome to MyCheapFriend! ";
         text += "Your unique address is <" + password+"@mycheapfriend.com>. ";
         text += "Please add it to your address book.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyResetPassword(String password, String address){
+    private void replyResetPassword(String password, String address){
         String text = "Your new address is <" + password+"@mycheapfriend.com>. ";
         text += "Please add it to your address book.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyUnsubscribe(String address) {
+    private void replyUnsubscribe(String address) {
 
         String text = "You have unsubscribed from mycheapfriend now. ";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport( text, address);
     }
 
-    public void replyResubscribe(String password, String address) {
+    private void replyResubscribe(String password, String address) {
 
         String text = "You have subscribed from mycheapfriend now. ";
         text = "Your unique address is <" + password+"@mycheapfriend.com>. ";
         text += "Please add it to your address book.";
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport( text, address);
     }
 
-    public void replyAddFriend(long phone, String nick, String address){
+    private void replyAddFriend(long phone, String nick, String address){
         String text = "Your have set your friend "+phone+"'s nickname to "+nick;
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyIdentifierWrong(Object id, String address){
+    private void replyIdentifierWrong(Object id, String address){
 
         String text = "Your don't have a friend with identifier"+id;
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport(text, address);
     }
 
-    public void replyBillRequest(long money, Object id, String address, int type){
+    private void replyBillRequest(long money, Object id, String address, int type){
         String text = "";
         if(type == -1){
             text = "Your friend " + id + "has unsubscribed from mycheapfriend";
@@ -394,22 +435,58 @@ public class Controller{
             text = "Your friend " + id + "requests a bill of " + money + "to you.";
         }
         else ;
-        emailSend.setAll("", text, address);
-        emailSend.send();
+        replyReport( text, address);
     }
 
-    public void replyNoFriend(String address){
-        emailSend.setAll("", "You don't have any friend at this point", address);
-        emailSend.send();
-    }
-
-    public void replyNoBill(String address){
-        emailSend.setAll("", "You don't have any bill at this point", address);
-        emailSend.send();
-    }
-
-    public void replyReport(String message, String address){
+    private void replyReport(String message, String address){
         emailSend.setAll("", message, address);
         emailSend.send();
     }
+
+    private void replyAcceptBill(Bill b)
+    {
+        long amount = b.getAmount();
+        
+    }
+
+    private void replyBillTooOld(UserObj u)
+    {
+        replyReport("You tried to accept a bill, but you have bills from the last 24 hours to accept", u.getEmail());
+    }
+
+    /**
+     * getErrorMessage(int) is used to handle syntax error in a message.
+     * @param errorType
+     * @return
+     */
+    private String getErrorMessage(int errorType){
+
+        switch(errorType) {
+            case TextMessage.INVALID_SENDER:
+                return "Please use a cell phone to send the message.";
+            case TextMessage.LEXICAL_ERROR:
+            case TextMessage.SYNTAX_ERROR:
+                return "Please check the format of your message.";
+            default: //undefined error
+                return "Please check your message.";
+        }
+    }
+
+    private UserObj identifierToUserObj(UserObj user, Object id)
+    {
+        if(id instanceof String)
+            return user.getFriend((String)id);
+        else
+        {
+            long phone = ((Long)id).longValue();
+            UserObj friendUser = userObjFacade.find(phone);
+            if(friendUser == null)
+            {
+                friendUser = new UserObj(phone);
+                userObjFacade.create(friendUser);
+            }
+            return user;
+        }
+    }
+
 }

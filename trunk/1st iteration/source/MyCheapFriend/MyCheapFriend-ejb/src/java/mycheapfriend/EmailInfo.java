@@ -16,7 +16,9 @@ class EmailInfo implements TextMessage{
     private final static String RESUBSCRIBE_ADDR = "resubscribe";
     private final static String VALID_PASS_REGEX = "[0-9a-z]{6,6}";
     private final static String REPORT_MESSAGE = "report";
+    private final static String ACCEPT_BILL_ADDR = "robot";
 
+    private final static String ACCEPT_BILL_PATTERN = "^(y[a-z]*)?$";
     private final static String PHONE_PATTERN = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
     private final static String NICKNAME_PATTERN = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
     private final static String AMOUNT_PATTERN = "\\$?\\d{1,4}(\\.\\d{2})?";
@@ -54,15 +56,19 @@ class EmailInfo implements TextMessage{
     }
 
     public void setContent(String content) {
-        this.content = content;
-        String body = content.trim();
-        
+        this.content = content.toLowerCase().trim();
+        String body = this.content;
+
+        //get rid of simple cases first
         if(body.equalsIgnoreCase(REPORT_MESSAGE))
         {
             this.type = TextMessage.REPORT_BILLS;
             this.errorType = TextMessage.NO_ERROR;
             return;
         }
+        if(body.matches(ACCEPT_BILL_PATTERN))
+            return; //let it set this up in the to: 
+
 
         String[] atoms = body.split("\\s+");
 
@@ -184,7 +190,7 @@ class EmailInfo implements TextMessage{
     }
 
     public void setFrom(String from) {
-        this.from = from;
+        this.from = from.toLowerCase().trim();
         int atLocation = from.indexOf('@');
         String parsed_phone = from.substring(0, atLocation).replace("\\D", "");
         try{
@@ -198,24 +204,26 @@ class EmailInfo implements TextMessage{
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        this.subject = subject.toLowerCase().trim();
     }
 
     public void setTo(String to) {
-        this.to = to;
-        String parsed_to = to.substring(0, to.indexOf('@')).toLowerCase();
+        this.to = to.toLowerCase().trim();
+        String prefix = this.to.substring(0, this.to.indexOf('@'));
 
-        if(parsed_to.equals(EmailInfo.NEW_ACCOUNT_ADDR))
+        if(prefix.equals(EmailInfo.NEW_ACCOUNT_ADDR))
             this.type = TextMessage.NEW_ACCOUNT;
-        else if(parsed_to.equals(EmailInfo.RERSET_PASS_ADDR))
+        else if(prefix.equals(EmailInfo.RERSET_PASS_ADDR))
             this.type = TextMessage.RESET_PASS;
-        else if(parsed_to.equals(EmailInfo.UNSUBSCRIBE_ADDR))
+        else if(prefix.equals(EmailInfo.UNSUBSCRIBE_ADDR))
             this.type = TextMessage.UNSUBSCRIBE;
-        else if(parsed_to.equals(EmailInfo.RESUBSCRIBE_ADDR))
+        else if(prefix.equals(EmailInfo.RESUBSCRIBE_ADDR))
             this.type = TextMessage.RESUBSCRIBE;
-        else if(parsed_to.matches(EmailInfo.VALID_PASS_REGEX))
+        else if(prefix.equals(EmailInfo.ACCEPT_BILL_ADDR))
+            this.type = TextMessage.ACCEPT_BILL;
+        else if(prefix.matches(EmailInfo.VALID_PASS_REGEX))
         {
-            this.password = parsed_to;
+            this.password = prefix;
         }
         else
         {

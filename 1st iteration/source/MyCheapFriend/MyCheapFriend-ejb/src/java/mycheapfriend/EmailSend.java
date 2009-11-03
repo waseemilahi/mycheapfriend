@@ -39,6 +39,7 @@ public class EmailSend
 
     public void send()
     {
+
         Properties props = new Properties();
         props.put("mail.smtp.user", d_email);
         props.put("mail.smtp.host", d_host);
@@ -51,7 +52,6 @@ public class EmailSend
         props.put("mail.smtp.socketFactory.fallback", "false");
 
         SecurityManager security = System.getSecurityManager();
-
         try
         {
             Authenticator auth = new SMTPAuthenticator();

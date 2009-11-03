@@ -34,6 +34,9 @@ public interface TextMessage {
     public final static int UNSUBSCRIBE = 6;
     /** resubscribe url called */
     public final static int RESUBSCRIBE = 7;
+    /** accept bill*/
+    public final static int ACCEPT_BILL = 8;
+
 
 
     /** no error code, (no error!) */
@@ -46,7 +49,7 @@ public interface TextMessage {
     public final static int UNKNOWN_TYPE = 3;
     /** email sent not phone number */
     public final static int INVALID_SENDER = 4;
-
+    
     /**
      * 
      * @return type of message (0 for error)

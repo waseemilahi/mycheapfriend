@@ -180,10 +180,10 @@ public class Controller{
             userObjFacade.edit(user);
 
             if(friendUser.getUnsubscribe()){
-                this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), user.getEmail(), -1);
+                this.replyFriendUnsubscribed(readableFriend(user, friendUser), user.getEmail());
             }
             else {
-                this.replyBillRequest(tm.getBillMoney(i), tm.getBillFriend(i), user.getEmail(), 0);
+                this.replyBillRequest(tm.getBillMoney(i), readableFriend(user, friendUser), user.getEmail(), 0);
 
                 ArrayList<String> emailsToTry = new ArrayList<String>();
                 String newAddress;
@@ -193,7 +193,7 @@ public class Controller{
                     for(String domain:POSSIBLE_DOMAINS)
                         emailsToTry.add(friendUser.getPhone() + "@" + domain);
                 for(String address: emailsToTry)
-                    this.replyBillRequest(tm.getBillMoney(i), user.getPhone(), address, 1);
+                    this.replyBillRequest(tm.getBillMoney(i), readableFriend(friendUser, user) , address, 1);
             }
         }
     }
@@ -256,7 +256,6 @@ public class Controller{
 
         }
 
-
         if(!owesUser.isEmpty())
         {
             text += "They owe you: ";
@@ -265,9 +264,7 @@ public class Controller{
 
                 String money = readableAmount( nets.get(u).longValue() );
 
-                String identifier = nicknames.get(u);
-                if(identifier == null)
-                    identifier = u.getPhone().toString();
+                String identifier = readableFriend(nicknames.get(u), u.getPhone());
                 text += identifier + "-$" + money +", ";
             }
         }
@@ -281,10 +278,8 @@ public class Controller{
             {
 
                 String money = readableAmount( nets.get(u).longValue() );
+                String identifier = readableFriend(nicknames.get(u), u.getPhone());
 
-                String identifier = nicknames.get(u);
-                if(identifier == null)
-                    identifier = ""+u.getPhone();
                 text += identifier + "-$" + money +", ";
             }
         }
@@ -309,19 +304,23 @@ public class Controller{
             }
 
         }
+
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -1);
         if(most_recent.after(c.getTime()))
         {
             most_recent_bill.setApproved(true);
+            UserObj lender = most_recent_bill.getLender();
+            if(lender.getUnsubscribe())
+                this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
             //TODO: settle any other bills
-            
+            long new_balance = 0;
             userObjFacade.edit(user);
-            replyAcceptBill(most_recent_bill);
+            replyAcceptBill(most_recent_bill, new_balance);
         }
         else
         {
-            replyBillTooOld(user);
+            replyBillTooOld(user); //perhaps also allow debtor to refersh bill...
         }
     }
 
@@ -334,6 +333,18 @@ public class Controller{
             money = (new BigDecimal(BigInteger.valueOf(val), 2)).toPlainString();
 
         return money;
+    }
+    private String readableFriend(UserObj user, UserObj friend)
+    {
+        return readableFriend(user.getNickname(friend), friend.getPhone());
+    }
+
+    private String readableFriend(String nickname, long phone)
+    {
+        if(nickname == null)
+            return "@ "+phone;
+        else
+            return nickname;
     }
 
     private void setFriendNickName(long phone, String nickname, UserObj user){
@@ -423,16 +434,18 @@ public class Controller{
         replyReport(text, address);
     }
 
-    private void replyBillRequest(long money, Object id, String address, int type){
+    private void replyFriendUnsubscribed(String id, String address)
+    {
+        replyReport("Your friend " + id + "has unsubscribed from mycheapfriend", address);
+    }
+
+    private void replyBillRequest(long money, String id, String address, int type){
         String text = "";
-        if(type == -1){
-            text = "Your friend " + id + "has unsubscribed from mycheapfriend";
-        }
-        else if(type == 0){
+        if(type == 0){
             text = "You have sent a bill of " + money + " to your friend " + id + ".";
         }
         else if(type == 1){
-            text = "Your friend " + id + "requests a bill of " + money + "to you.";
+            text = "Your friend " + id + " says you owe " + money + "to them.";
         }
         else ;
         replyReport( text, address);
@@ -443,12 +456,34 @@ public class Controller{
         emailSend.send();
     }
 
-    private void replyAcceptBill(Bill b)
+
+    //TODO: INCOMPLETE!! need to deal with accepted bills / balances
+    private void replyAcceptBill(Bill b, long new_balance)
     {
         long amount = b.getAmount();
+        UserObj borrower = b.getBorrower();
+        UserObj lender = b.getLender();
+        
+        String borrowerText = "You have confirmed that you paid your friend " + readableFriend(borrower, lender) + ".";
+        String lenderText = "Your friend " + readableFriend(lender, borrower) + " has confirmed that you paid them " + this.readableAmount(amount) +".";
+
+        if(new_balance > 0)
+        {
+            //lender has settled settledAmount and now owes *
+        }
+        else if(new_balance < 0)
+        {
+            //borrower has settled settleAmount and still owes *
+        }
+        else //new_balance == 0
+        {
+
+        }
+
         
     }
 
+    //TODO: INCOMPLETE!! NEED TO DEAL WITH bills that are more than a day old
     private void replyBillTooOld(UserObj u)
     {
         replyReport("You tried to accept a bill, but you have bills from the last 24 hours to accept", u.getEmail());

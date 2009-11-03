@@ -114,7 +114,16 @@ public class UserObj implements Serializable {
         newFriend.setParent(this);
         newFriend.setNickname(nickname);
         this.getFriends().add(newFriend);
+    }
 
+    public String getNickname(UserObj friend)
+    {
+        for(Friend f: friends)
+        {
+            if(f.getFriend().equals(friend))
+                return f.getNickname();
+        }
+        return null;
     }
 
     public void borrowFrom(UserObj friend , long amount){
@@ -258,10 +267,10 @@ public class UserObj implements Serializable {
             return false;
         }
         UserObj other = (UserObj) object;
-        if (((this.phone == 0) && (other.phone != 0)) || (this.phone != 0 && (this.phone != other.phone))) {
-            return false;
-        }
-        return true;
+        if(this.phone == 0 || other.phone == 0)
+                return false;
+        else
+            return this.phone == other.phone;
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class Controller{
      * @param tm
      */
     public void handle(TextMessage tm) {
-
+        log("new message from " + tm.getFrom());
         try {
             emailSend = new EmailSend();
             context = new InitialContext();
@@ -46,6 +47,7 @@ public class Controller{
         //handle error
         if(tm.getType() == TextMessage.ERROR)
         {
+            log("error: " + getErrorMessage(tm.getErrorType()));
             emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFrom());
             emailSend.send();
             return;
@@ -54,10 +56,11 @@ public class Controller{
         //initializing common vars
         UserObj user = userObjFacade.find(tm.getPhone());
         boolean newUser = user == null;
-        boolean userAuthenticated = !newUser && user.getPassword().equalsIgnoreCase(tm.getPassword());
-
+        boolean userAuthenticated = !newUser && user.getActive() && tm.getPassword() != null && user.getPassword().equalsIgnoreCase(tm.getPassword());
+        log("sender phone:" + tm.getPhone());
         if(newUser)
         {
+            log("sender is a new user");
             user = new UserObj(tm.getPhone(), tm.getDomain()); //create inactive user
             userObjFacade.create(user);
         }
@@ -70,6 +73,7 @@ public class Controller{
             }
             if(user.getUnsubscribe())
             {
+                log("Sender is unsubscribed");
                 if(tm.getType() == TextMessage.RESUBSCRIBE)
                     resubscribe(user);
                 return;
@@ -126,20 +130,22 @@ public class Controller{
 
     private void newAccountOrReset(UserObj user, boolean newUser)
     {
-                user.setActive(true);
-                user.setPassword(PasswordGenerator.generatePassword());
-                user.setUnsubscribe(false);
-                userObjFacade.edit(user);
-
-                if(newUser)
-                    this.replyNewUser(user.getPassword(), user.getEmail());
-                else
-                    this.replyResetPassword(user.getPassword(), user.getEmail());
+        log("new account or reset");
+        user.setActive(true);
+        user.setPassword(PasswordGenerator.generatePassword());
+        user.setUnsubscribe(false);
+        userObjFacade.edit(user);
+        log("sending password to " + user.getEmail());
+        if(newUser)
+            this.replyNewUser(user.getPassword(), user.getEmail());
+        else
+            this.replyResetPassword(user.getPassword(), user.getEmail());
 
     }
 
     private void unsubscribe(UserObj user)
     {
+        log("unsubscribe");
         user.setUnsubscribe(Boolean.TRUE);
         userObjFacade.edit(user);
         this.replyUnsubscribe(user.getEmail());
@@ -147,13 +153,15 @@ public class Controller{
 
     private void resubscribe(UserObj user)
     {
+        log("resubscribe");
         user.setUnsubscribe(Boolean.FALSE);
         userObjFacade.edit(user);
-        this.replyResubscribe(user.getPassword(), user.getEmail());
+        this.replyResubscribe(user.getEmail());
     }
 
     private void newFriend(UserObj user, long friendPhone, String friendNick)
     {
+        log("new friend");
         String email = user.getEmail();
         //only one way
         setFriendNickName(friendPhone, friendNick, user);
@@ -162,6 +170,7 @@ public class Controller{
 
     private void newBill(UserObj user, TextMessage tm)
     {
+        log("new bill");
         ArrayList<UserObj> toBeBilled = new ArrayList<UserObj>();
         for(int i = 0; i < tm.getNumBills(); i++){
             UserObj friendUser = this.identifierToUserObj(user, tm.getBillFriend(i));
@@ -200,6 +209,7 @@ public class Controller{
 
     private void reportBills(UserObj user)
     {
+        log("report bills");
         HashMap<UserObj, Long> nets = new HashMap<UserObj, Long>();
         HashMap<UserObj, String> nicknames = new HashMap<UserObj, String>();
 
@@ -291,6 +301,7 @@ public class Controller{
 
     private void acceptBill(UserObj user)
     {
+        log("accept bill");
         List<Bill> debts = user.getDebts();
         Bill most_recent_bill = null;
         Date most_recent = null;
@@ -436,11 +447,9 @@ public class Controller{
         replyReport( text, address);
     }
 
-    private void replyResubscribe(String password, String address) {
+    private void replyResubscribe(String address) {
 
         String text = "You have subscribed from mycheapfriend now. ";
-        text = "Your unique address is <" + password+"@mycheapfriend.com>. ";
-        text += "Please add it to your address book.";
         replyReport( text, address);
     }
 
@@ -479,35 +488,42 @@ public class Controller{
 
 
     //TODO: INCOMPLETE!! need to deal with accepted bills / balances
-    private void replyAcceptBill(Bill b, long new_balance)
+    private void replyAcceptBill(Bill b, long newBalance)
     {
         long amount = b.getAmount();
         UserObj borrower = b.getBorrower();
         UserObj lender = b.getLender();
-        
-        String borrowerText = "You have confirmed that you paid your friend " + readableFriend(borrower, lender) + ".";
-        String lenderText = "Your friend " + readableFriend(lender, borrower) + " has confirmed that you paid them " + this.readableAmount(amount) +".";
 
-        if(new_balance > 0)
+        String readableAmount = readableAmount(amount);
+        String readableNewBalance = readableAmount(newBalance);
+        String borrowerText = "You have confirmed that you paid your friend " + readableFriend(borrower, lender) + " $" + readableAmount + ".";
+        String lenderText = "Your friend " + readableFriend(lender, borrower) + " has confirmed that you paid them " + readableAmount +".";
+
+        if(newBalance > 0)
         {
-            //lender has settled settledAmount and now owes *
+            borrowerText += "  They now owe you $" + readableNewBalance +".";
+            lenderText += "  You now owe them $" + readableNewBalance +".";
         }
-        else if(new_balance < 0)
+        else if(newBalance < 0)
         {
-            //borrower has settled settleAmount and still owes *
+            lenderText += "  They now owe you $" + readableNewBalance+".";
+            borrowerText += "  You now owe them $" + readableNewBalance+".";
         }
         else //new_balance == 0
         {
-
+            String suffix = " You guys have now settled all of your debts.";
+            lenderText +=  suffix;
+            borrowerText += suffix;
         }
 
-        
+        this.replyReport(lenderText, lender.getEmail());
+        this.replyReport(borrowerText, borrower.getEmail());
     }
 
     //TODO: INCOMPLETE!! NEED TO DEAL WITH bills that are more than a day old
     private void replyBillTooOld(UserObj u)
     {
-        replyReport("You tried to accept a bill, but you have bills from the last 24 hours to accept", u.getEmail());
+        replyReport("You tried to accept a bill, but you don't have bills from the last 24 hours to accept", u.getEmail());
     }
 
     /**
@@ -543,6 +559,11 @@ public class Controller{
             }
             return user;
         }
+    }
+
+    private void log(String message)
+    {
+        System.out.println(message);
     }
 
 }

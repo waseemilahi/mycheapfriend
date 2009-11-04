@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author David
  */
 
-class EmailInfo implements TextMessage{
+public class EmailInfo implements TextMessage{
 
     public final static String NEW_ACCOUNT_ADDR = "new_account";
     private final static String RERSET_PASS_ADDR = "reset_pass";

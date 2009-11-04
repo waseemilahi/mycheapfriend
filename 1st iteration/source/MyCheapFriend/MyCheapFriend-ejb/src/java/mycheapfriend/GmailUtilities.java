@@ -30,12 +30,7 @@ public class GmailUtilities {
     private Store store = null;
     private String username, password;
     private Folder folder;
-    private ArrayList<EmailInfo> info;
-
-    public ArrayList<EmailInfo> getInfo() {
-        return info;
-    }
-
+    public ArrayList<EmailInfo> info;
 
     public GmailUtilities() {
         this.info=new ArrayList<EmailInfo>();
@@ -113,9 +108,9 @@ public class GmailUtilities {
         folder.fetch(msgs, fp);
 
         for (int i = 0; i < msgs.length; i++) {
-            if(!msgs[i].isSet(Flags.Flag.SEEN)){
+            if(!msgs[i].isSet(Flags.Flag.DELETED)){
                 setInfo(msgs[i]);
-                msgs[i].setFlag(Flags.Flag.SEEN, true);
+                msgs[i].setFlag(Flags.Flag.DELETED, true);
             }
         }
     }

@@ -314,9 +314,30 @@ public class Controller{
             if(lender.getUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
             //TODO: settle any other bills
-            long new_balance = 0;
+            long recentBillBalance = most_recent_bill.getAmount();
+            long newBalance = 0;
+
+            List<Bill> assets = user.getAssets();
+            for(Bill b : assets)
+                if(b.getApproved() && !b.getPaid() && b.getBorrower().equals(lender))
+                {
+                    long newAmount = b.getAmount();
+                    if(recentBillBalance >= newAmount) //if he loaned me $x, any previous bills up to $x are settled
+                    {
+                        b.setPaid(true);
+                        recentBillBalance -= newAmount;
+                    }
+
+                    newBalance += newAmount;
+                }
+                        
+            for(Bill b : debts)
+                if(b.getApproved() && !b.getPaid() && b.getLender().equals(lender))
+                    newBalance -= b.getAmount();
+
             userObjFacade.edit(user);
-            replyAcceptBill(most_recent_bill, new_balance);
+
+            replyAcceptBill(most_recent_bill, newBalance);
         }
         else
         {

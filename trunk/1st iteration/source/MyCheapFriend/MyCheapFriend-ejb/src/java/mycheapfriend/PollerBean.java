@@ -11,16 +11,13 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
+import javax.ejb.*;
 
 /**
  *
  * @author Waseem Ilahi
  */
-@Stateless
+@Stateless(mappedName="mycheapfriend/PollerBean")
 public class PollerBean implements PollerRemote {
 
         @Resource
@@ -28,7 +25,7 @@ public class PollerBean implements PollerRemote {
 
         public void startTimer() {
 
-            ctx.getTimerService().createTimer(5000, 5000, null);
+            ctx.getTimerService();//.createTimer(5000, 5000, null);
             System.out.println("Timers set");
             
         }
@@ -48,12 +45,13 @@ public class PollerBean implements PollerRemote {
 
     @Timeout
     public void handleTimeout(Timer timer) {
-        try {
+     /*   try {
             EmailRead.read();
         } catch (Exception ex) {
             Logger.getLogger(PollerBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+*/
+        System.out.println("HandleTimeout called.");
     }
 
 }

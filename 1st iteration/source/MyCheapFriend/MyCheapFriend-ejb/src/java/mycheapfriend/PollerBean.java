@@ -17,7 +17,7 @@ import javax.ejb.*;
  *
  * @author Waseem Ilahi
  */
-@Stateless(mappedName="mycheapfriend/PollerBean")
+@Stateless(mappedName="ejb.PollerBean")
 public class PollerBean implements PollerRemote {
 
         @Resource
@@ -25,9 +25,14 @@ public class PollerBean implements PollerRemote {
 
         public void startPoller(long timeInterval) {
 
+<<<<<<< .mine
+            ctx.getTimerService().createTimer(0, 5000, null);
+            System.out.println("Timers set");
+=======
             TimerService timerService = ctx.getTimerService();
             Timer timer = timerService.createTimer(timeInterval, timeInterval, null);
            // System.out.println("Timers set");
+>>>>>>> .r118
             
         }
     public String checkTimerStatus() {
@@ -46,7 +51,12 @@ public class PollerBean implements PollerRemote {
 
     @Timeout
     public void handleTimeout(Timer timer) {
+<<<<<<< .mine
+       //call read(), process each email in the return arraylist.
+     /*   try {
+=======
         try {
+>>>>>>> .r118
             EmailRead.read();
         } catch (Exception ex) {
             Logger.getLogger(PollerBean.class.getName()).log(Level.SEVERE, null, ex);

@@ -23,10 +23,11 @@ public class PollerBean implements PollerRemote {
         @Resource
         private SessionContext ctx;
 
-        public void startTimer() {
+        public void startPoller() {
 
-            ctx.getTimerService();//.createTimer(5000, 5000, null);
-            System.out.println("Timers set");
+            TimerService timerService = ctx.getTimerService();
+            Timer timer = timerService.createTimer(5000, 5000, null);
+           // System.out.println("Timers set");
             
         }
     public String checkTimerStatus() {
@@ -45,13 +46,12 @@ public class PollerBean implements PollerRemote {
 
     @Timeout
     public void handleTimeout(Timer timer) {
-     /*   try {
+        try {
             EmailRead.read();
         } catch (Exception ex) {
             Logger.getLogger(PollerBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-*/
-        System.out.println("HandleTimeout called.");
+
     }
 
 }

@@ -50,7 +50,7 @@ public class CreateUser extends HttpServlet {
         old.setEmail_domain("blah@blah.com");
         old.setPassword("blahblah");
         old.setDebts(null);
-        old.setLoans(null);
+        old.setAssets(null);
         old.setFriends(null);
         
         System.out.printf("\n The Generated Number is: %d\n", number);

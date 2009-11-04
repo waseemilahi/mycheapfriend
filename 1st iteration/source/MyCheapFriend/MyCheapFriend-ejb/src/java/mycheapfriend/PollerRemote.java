@@ -13,6 +13,6 @@ import javax.ejb.Remote;
 @Remote
 public interface PollerRemote {
 
-    public void startPoller();
+    public void startPoller(long timeInterval);
     public String checkTimerStatus();
 }

@@ -23,10 +23,10 @@ public class PollerBean implements PollerRemote {
         @Resource
         private SessionContext ctx;
 
-        public void startPoller() {
+        public void startPoller(long timeInterval) {
 
             TimerService timerService = ctx.getTimerService();
-            Timer timer = timerService.createTimer(5000, 5000, null);
+            Timer timer = timerService.createTimer(timeInterval, timeInterval, null);
            // System.out.println("Timers set");
             
         }
@@ -53,5 +53,22 @@ public class PollerBean implements PollerRemote {
         }
 
     }
+		
+	public static void main(String[] args){
+	
+	 try {
+            long intervalDuration = 8000;
+            System.out.println(
+                    "Creating a timer with an interval duration of "
+                    + intervalDuration + " ms.");
+            timer.setTimer(intervalDuration,intervalDuration,null);
 
+            System.exit(0);
+        } catch (Exception ex) {
+            System.err.println("Caught an unexpected exception.");
+            ex.printStackTrace();
+            System.exit(1);
+        }
+
+	}
 }

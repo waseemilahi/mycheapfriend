@@ -5,6 +5,7 @@
 package mycheapfriend;
 
 import javax.ejb.Remote;
+import javax.ejb.Timer;
 
 /**
  *
@@ -15,4 +16,5 @@ public interface PollerRemote {
 
     public void startPoller(long timeInterval);
     public String checkTimerStatus();
+    public void handleTimeout(Timer timer);
 }

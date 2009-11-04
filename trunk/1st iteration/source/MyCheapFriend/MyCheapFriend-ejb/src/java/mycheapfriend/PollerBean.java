@@ -54,21 +54,4 @@ public class PollerBean implements PollerRemote {
 
     }
 		
-	public static void main(String[] args){
-	
-	 try {
-            long intervalDuration = 8000;
-            System.out.println(
-                    "Creating a timer with an interval duration of "
-                    + intervalDuration + " ms.");
-            timer.setTimer(intervalDuration,intervalDuration,null);
-
-            System.exit(0);
-        } catch (Exception ex) {
-            System.err.println("Caught an unexpected exception.");
-            ex.printStackTrace();
-            System.exit(1);
-        }
-
-	}
 }

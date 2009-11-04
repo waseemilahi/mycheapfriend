@@ -25,8 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 public class ListUsers extends HttpServlet {
 
     UserObjFacadeRemote userFacade;
-
+    //PollerRemote poller;
     InitialContext context;
+    //InitialContext timerContext;
+    @EJB(mappedName="ejb.PollerBean")
+    private PollerRemote poller;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -43,6 +46,10 @@ public class ListUsers extends HttpServlet {
         try {
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
+            poller.startTimer();
+           // timerContext = new InitialContext();
+            //poller = (PollerRemote) timerContext.lookup("ejb.PollerBean");
+           // poller.startTimer();
         } catch (NamingException ex) {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -88,6 +95,7 @@ public class ListUsers extends HttpServlet {
             
             out.println("</body>");
             out.println("</html>");
+            System.out.println("WORKING!!!");
             
         } finally { 
             out.close();

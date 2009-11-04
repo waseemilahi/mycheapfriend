@@ -43,7 +43,7 @@ public class UserObj implements Serializable {
     private String email_domain;
 
     public UserObj() {
-       
+
         this.password = null;
         this.salt = null;
         this.active = Boolean.FALSE;
@@ -52,7 +52,7 @@ public class UserObj implements Serializable {
     }
 
      public UserObj(long phone) {
-        
+        this.phone = phone;
         this.password = null;
         this.salt = null;
         this.active = Boolean.FALSE;
@@ -64,13 +64,14 @@ public class UserObj implements Serializable {
 
 //        this.password = password;
 //        this.salt = "";
+        this.phone = phone;
         this.active = Boolean.FALSE;
         this.unsubscribe = Boolean.FALSE;
         this.email_domain = domain;
     }
 
     public UserObj(long phone,String domain, String password) {
-        
+        this.phone = phone;
         this.password = password;
         this.salt = "";
         this.active = Boolean.TRUE;

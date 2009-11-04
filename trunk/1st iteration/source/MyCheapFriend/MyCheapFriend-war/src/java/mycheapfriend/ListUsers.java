@@ -27,7 +27,7 @@ public class ListUsers extends HttpServlet {
     UserObjFacadeRemote userFacade;
     //PollerRemote poller;
     InitialContext context;
-    //InitialContext timerContext;
+    InitialContext timerContext;
     @EJB(mappedName="ejb.PollerBean")
     private PollerRemote poller;
    
@@ -46,10 +46,9 @@ public class ListUsers extends HttpServlet {
         try {
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
+            timerContext = new InitialContext();
+            poller = (PollerRemote) timerContext.lookup("ejb.PollerBean");
             poller.startTimer();
-           // timerContext = new InitialContext();
-            //poller = (PollerRemote) timerContext.lookup("ejb.PollerBean");
-           // poller.startTimer();
         } catch (NamingException ex) {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }

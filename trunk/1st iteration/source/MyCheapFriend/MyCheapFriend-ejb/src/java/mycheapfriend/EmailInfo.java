@@ -55,20 +55,30 @@ public class EmailInfo implements TextMessage{
         return to;
     }
 
+    //need to set To first...
     public void setContent(String content) {
         this.content = content.toLowerCase().trim();
         String body = this.content;
 
-        //get rid of simple cases first
+
+        switch(this.type) {
+            case TextMessage.NEW_ACCOUNT:
+            case TextMessage.RESET_PASS:
+            case TextMessage.UNSUBSCRIBE:
+            case TextMessage.RESUBSCRIBE:
+                return;
+            case TextMessage.ACCEPT_BILL:
+                if(body.matches(ACCEPT_BILL_PATTERN))
+                return; //let it set this up in the to:
+        }
         if(body.equalsIgnoreCase(REPORT_MESSAGE))
         {
             this.type = TextMessage.REPORT_BILLS;
             this.errorType = TextMessage.NO_ERROR;
             return;
         }
-        if(body.matches(ACCEPT_BILL_PATTERN))
-            return; //let it set this up in the to: 
-
+        
+        
 
         String[] atoms = body.split("\\s+");
 
@@ -210,7 +220,7 @@ public class EmailInfo implements TextMessage{
     public void setTo(String to) {
         this.to = to.toLowerCase().trim();
         String prefix = this.to.substring(0, this.to.indexOf('@'));
-
+        System.out.println("prefix: " + prefix);
         if(prefix.equals(EmailInfo.NEW_ACCOUNT_ADDR))
             this.type = TextMessage.NEW_ACCOUNT;
         else if(prefix.equals(EmailInfo.RERSET_PASS_ADDR))

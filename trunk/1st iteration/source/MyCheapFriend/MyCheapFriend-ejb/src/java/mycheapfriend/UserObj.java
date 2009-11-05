@@ -127,52 +127,23 @@ public class UserObj implements Serializable {
         return null;
     }
 
-    public void borrowFrom(UserObj friend , long amount){
-        
+    /**
+     * note this bill is not persisted
+     *
+     * @param friend
+     * @param amount
+     */
+     public void loanTo(UserObj friend , long amount){
         Bill loan = new Bill();
         loan.setAmount(amount);
         loan.setApproved(Boolean.FALSE);
         loan.setPaid(Boolean.FALSE);
 
-//        Date today = new Date();
-//        String today_date = new String();
-//        today_date = "";
-//        today_date.concat(Integer.toString(today.getMonth()));
-//        today_date.concat("/");
-//        today_date.concat(Integer.toString(today.getDate()));
-//        today_date.concat("/");
-//        today_date.concat(Integer.toString(today.getYear()));
-//
-//        loan.setBill_date(today_date);
 
         loan.setLender(this);
         loan.setBorrower(friend);
 
         (this.getAssets()).add(loan);
-    }
-
-     public void loanTo(UserObj friend , long amount){
-        friend.borrowFrom(this, amount);
-//        Bill debt = new Bill();
-//        debt.setAmount(amount);
-//        debt.setApproved(Boolean.FALSE);
-//        debt.setPaid(Boolean.FALSE);
-//
-////        Date today = new Date();
-////        String today_date = new String();
-////        today_date = "";
-////        today_date.concat(Integer.toString(today.getMonth()));
-////        today_date.concat("/");
-////        today_date.concat(Integer.toString(today.getDate()));
-////        today_date.concat("/");
-////        today_date.concat(Integer.toString(today.getYear()));
-////
-////        debt.setBill_date(today_date);
-//
-//        debt.setLender(friend);
-//        debt.setBorrower(this);
-//
-//        this.getDebts().add(debt);
     }
 
     public List<Bill> getDebts() {

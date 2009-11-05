@@ -144,7 +144,12 @@ public class UserObj implements Serializable {
         loan.setBorrower(friend);
 
         (this.getAssets()).add(loan);
+        (friend.getDebts()).add(loan);
     }
+
+     public void borrowFrom(UserObj friend, long amount){
+        friend.loanTo(this, amount);
+     }
 
     public List<Bill> getDebts() {
         return debts;

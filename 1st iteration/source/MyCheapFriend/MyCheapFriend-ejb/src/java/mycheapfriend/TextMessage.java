@@ -49,7 +49,8 @@ public interface TextMessage {
     public final static int UNKNOWN_TYPE = 3;
     /** email sent not phone number */
     public final static int INVALID_SENDER = 4;
-    
+    /** email not parsed errror    */
+    public final static int UNPARSED = 5;
     /**
      * 
      * @return type of message (0 for error)

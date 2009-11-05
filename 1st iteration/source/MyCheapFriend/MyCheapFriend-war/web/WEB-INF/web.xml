@@ -12,6 +12,14 @@
         <servlet-name>DeleteUsers</servlet-name>
         <servlet-class>mycheapfriend.DeleteUsers</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoginUser</servlet-name>
+        <servlet-class>mycheapfriend.LoginUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoginHandler</servlet-name>
+        <servlet-class>mycheapfriend.LoginHandler</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CreateUser</servlet-name>
         <url-pattern>/CreateUser</url-pattern>
@@ -23,6 +31,14 @@
     <servlet-mapping>
         <servlet-name>DeleteUsers</servlet-name>
         <url-pattern>/DeleteUsers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginUser</servlet-name>
+        <url-pattern>/LoginUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginHandler</servlet-name>
+        <url-pattern>/LoginHandler</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

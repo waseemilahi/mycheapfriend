@@ -32,20 +32,7 @@ public class PollerBean implements PollerRemote {
             System.out.println("Timers set");
 
         }
-    public String checkTimerStatus() {
-        Timer timer = null;
-        Collection timers = ctx.getTimerService().getTimers();
-        Iterator iter = timers.iterator();
-        while (iter.hasNext()) {
-            timer = (Timer) iter.next();
-            return ("Timer will expire after " + timer.getTimeRemaining() + " milliseconds.");
-
-        }
-
-        return ("No timer found");
-
-    }
-
+        
     @Timeout
     public void handleTimeout(Timer timer) {
        //call read(), process each email in the return arraylist.

@@ -58,7 +58,7 @@ public class EmailInfo implements TextMessage{
 
     //need to set To first...
     public void setContent(String content) {
-        this.content = content.toLowerCase().trim();
+        this.content = content.toLowerCase().substring(0, content.indexOf("--")).trim();
         this.parseEmail();
         
     }
@@ -306,3 +306,4 @@ public class EmailInfo implements TextMessage{
         }
     }
 }
+

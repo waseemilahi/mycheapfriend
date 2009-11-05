@@ -115,20 +115,30 @@ public class GmailUtilities {
         }
     }
 
-    public void setInfo(Message p) throws MessagingException,IOException{
+     public void setPart(Part p) throws MessagingException, IOException{
+         if (p instanceof Message)
+            setInfo((Message)p);
+         System.out.println("aaaa"+(String)p.getContent());
+         
+     }
+    public void setInfo(Part p) throws MessagingException,IOException{
         Address[] a;
         EmailInfo b = new EmailInfo();
         // FROM
-        a=p.getFrom();
+        a=((Message)p).getFrom();
         b.setFrom(a[0].toString());
-        a=p.getRecipients(Message.RecipientType.TO);
+        a=((Message)p).getRecipients(Message.RecipientType.TO);
         b.setTo(a[0].toString());
         // Here might have Nullpointer exception.
         //b.setSubject(p.getSubject().toString());
-        b.setDate(p.getSentDate().toString());
+        b.setDate(((Message)p).getSentDate().toString());
         b.setContent(p.getContent().toString());
+        System.out.println("testing: "+ p.getContent().toString());
         info.add(b);
     }
+
+
+
 
     public void printAllMessages() throws Exception {
 

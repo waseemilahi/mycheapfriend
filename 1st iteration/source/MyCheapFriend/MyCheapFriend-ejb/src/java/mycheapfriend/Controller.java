@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -193,7 +192,9 @@ public class Controller{
                 this.replyFriendUnsubscribed(readableFriend(user, friendUser), user.getEmail());
             }
             else {
-                this.replyBillRequest(tm.getBillMoney(i), readableFriend(user, friendUser), user.getEmail(), 0);
+                String money = readableAmount(tm.getBillMoney(i));
+
+                this.replyBillRequest(money, readableFriend(user, friendUser), user.getEmail(), 0);
 
                 ArrayList<String> emailsToTry = new ArrayList<String>();
                 String newAddress;
@@ -202,8 +203,9 @@ public class Controller{
                 else
                     for(String domain:POSSIBLE_DOMAINS)
                         emailsToTry.add(friendUser.getPhone() + "@" + domain);
+
                 for(String address: emailsToTry)
-                    this.replyBillRequest(tm.getBillMoney(i), readableFriend(friendUser, user) , address, 1);
+                    this.replyBillRequest(money , readableFriend(friendUser, user) , address, 1);
             }
         }
     }
@@ -364,7 +366,6 @@ public class Controller{
             money = ""+ (val / 100);
         else
             money = (new BigDecimal(BigInteger.valueOf(val), 2)).toPlainString();
-
         return money;
     }
     private String readableFriend(UserObj user, UserObj friend)
@@ -470,7 +471,7 @@ public class Controller{
         replyReport("Your friend " + id + "has unsubscribed from mycheapfriend", address);
     }
 
-    private void replyBillRequest(long money, String id, String address, int type){
+    private void replyBillRequest(String money, String id, String address, int type){
         String text = "";
         if(type == 0){
             text = "You have sent a bill of " + money + " to your friend " + id + ".";

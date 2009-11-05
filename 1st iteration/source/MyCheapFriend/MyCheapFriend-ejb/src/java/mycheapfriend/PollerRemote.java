@@ -15,6 +15,5 @@ import javax.ejb.Timer;
 public interface PollerRemote {
 
     public void startTimer();
-    public String checkTimerStatus();
     public void handleTimeout(Timer timer);
 }

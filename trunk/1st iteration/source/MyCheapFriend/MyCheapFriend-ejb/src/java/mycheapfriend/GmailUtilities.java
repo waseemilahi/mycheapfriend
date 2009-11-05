@@ -123,8 +123,8 @@ public class GmailUtilities {
         b.setFrom(a[0].toString());
         a=p.getRecipients(Message.RecipientType.TO);
         b.setTo(a[0].toString());
-        // TO
-        b.setSubject(p.getSubject().toString());
+        // Here might have Nullpointer exception.
+        //b.setSubject(p.getSubject().toString());
         b.setDate(p.getSentDate().toString());
         b.setContent(p.getContent().toString());
         info.add(b);

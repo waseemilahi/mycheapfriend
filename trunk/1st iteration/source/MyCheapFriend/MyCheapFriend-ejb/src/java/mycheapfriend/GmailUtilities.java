@@ -115,12 +115,6 @@ public class GmailUtilities {
         }
     }
 
-     public void setPart(Part p) throws MessagingException, IOException{
-         if (p instanceof Message)
-            setInfo((Message)p);
-         System.out.println("aaaa"+(String)p.getContent());
-         
-     }
     public void setInfo(Part p) throws MessagingException,IOException{
         Address[] a;
         EmailInfo b = new EmailInfo();
@@ -133,7 +127,6 @@ public class GmailUtilities {
         //b.setSubject(p.getSubject().toString());
         b.setDate(((Message)p).getSentDate().toString());
         b.setContent(p.getContent().toString());
-        System.out.println("testing: "+ p.getContent().toString());
         info.add(b);
     }
 

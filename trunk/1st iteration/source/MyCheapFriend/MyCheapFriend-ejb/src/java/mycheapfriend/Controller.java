@@ -34,6 +34,7 @@ public class Controller{
      */
     public void handle(TextMessage tm) {
         log("new message from " + tm.getFrom());
+        log("message: " + ((EmailInfo)tm).getContent());
         try {
             emailSend = new EmailSend();
             context = new InitialContext();

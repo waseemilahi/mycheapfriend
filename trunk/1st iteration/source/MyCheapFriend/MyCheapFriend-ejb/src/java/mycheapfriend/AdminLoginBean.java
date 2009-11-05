@@ -16,8 +16,20 @@ public class AdminLoginBean implements AdminLoginRemote {
     
     UserObjFacadeRemote userObjFacade;
 
-    public Boolean check_login(long phone){
-        return Boolean.FALSE;
+    public Boolean check_login(long phone, String password){
+        UserObj user = userObjFacade.find(phone);
+        if(user == null){
+            return Boolean.FALSE;
+        }
+        else if(!((user.getPassword()).equals(password))){
+                return Boolean.FALSE;
+        }
+        else if(!(user.getActive())){
+                return Boolean.FALSE;
+        }
+
+            return Boolean.TRUE;
+
     }
     
 }

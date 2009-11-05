@@ -13,5 +13,5 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface AdminLoginRemote {
-    public Boolean check_login(long phone);
+    public Boolean check_login(long phone, String password);
 }

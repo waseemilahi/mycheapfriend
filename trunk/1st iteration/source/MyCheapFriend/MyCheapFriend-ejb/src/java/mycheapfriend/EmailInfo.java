@@ -58,7 +58,11 @@ public class EmailInfo implements TextMessage{
 
     //need to set To first...
     public void setContent(String content) {
-        this.content = content.toLowerCase().substring(0, content.indexOf("--")).trim();
+        int signatureLocation = content.indexOf("--");
+        if(signatureLocation >= 0)
+            content = content.substring(0, signatureLocation);
+
+        this.content = content.toLowerCase().trim();
         this.parseEmail();
         
     }

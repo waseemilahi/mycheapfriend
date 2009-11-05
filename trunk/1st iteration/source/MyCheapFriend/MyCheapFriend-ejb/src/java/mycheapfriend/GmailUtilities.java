@@ -133,12 +133,12 @@ public class GmailUtilities {
         }else{
         Multipart multipart = (Multipart)p.getContent();
         content=multipart.getBodyPart(0).getContent().toString();
-        }
+        
         b.setContent(content);
         info.add(b);
     }
 
-
+    }
 
 
     public void printAllMessages() throws Exception {

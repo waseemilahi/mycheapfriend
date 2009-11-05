@@ -310,24 +310,30 @@ public class Controller{
         Date most_recent = null;
         for(Bill b : debts)
         {
+            if(b.getApproved())
+                continue;
             Date next_date = b.getTimeCreated();
             if( most_recent == null || next_date.after(most_recent))
             {
                 most_recent = next_date;
                 most_recent_bill = b;
             }
-
         }
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -1);
-        if(most_recent.after(c.getTime()))
+        if(most_recent == null)
+        {
+            System.out.println("no recent date");
+        }
+        else
+          System.out.println("bill date:" + most_recent + ", calendar date" + c.getTime());
+        if(most_recent != null && most_recent.after(c.getTime()))
         {
             most_recent_bill.setApproved(true);
             UserObj lender = most_recent_bill.getLender();
             if(lender.getUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
-            //TODO: settle any other bills
             long recentBillBalance = most_recent_bill.getAmount();
             long newBalance = 0;
 
@@ -497,8 +503,8 @@ public class Controller{
         UserObj lender = b.getLender();
 
         String readableAmount = readableAmount(amount);
-        String readableNewBalance = readableAmount(newBalance);
-        String borrowerText = "You have confirmed that you paid your friend " + readableFriend(borrower, lender) + " $" + readableAmount + ".";
+        String readableNewBalance = readableAmount(Math.abs(newBalance));
+        String borrowerText = "You have confirmed that your friend " + readableFriend(borrower, lender) + " loaned you $" + readableAmount + ".";
         String lenderText = "Your friend " + readableFriend(lender, borrower) + " has confirmed that you paid them " + readableAmount +".";
 
         if(newBalance > 0)
@@ -559,7 +565,7 @@ public class Controller{
                 friendUser = new UserObj(phone);
                 userObjFacade.create(friendUser);
             }
-            return user;
+            return friendUser;
         }
     }
 

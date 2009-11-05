@@ -3,6 +3,7 @@
 package mycheapfriend;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,8 +27,9 @@ public class Bill implements Serializable {
 
     private Boolean approved;
 
-    @Temporal(javax.persistence.TemporalType.TIME)
-    private Date timeCreated = new Date();
+    
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date timeCreated = (Calendar.getInstance()).getTime();
 
     private long amount;
 

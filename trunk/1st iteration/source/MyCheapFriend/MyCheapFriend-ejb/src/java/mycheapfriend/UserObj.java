@@ -18,13 +18,13 @@ import javax.persistence.OneToMany;
 @Entity
 public class UserObj implements Serializable {
 
-    @OneToMany(mappedBy = "borrower", fetch=FetchType.EAGER, cascade={CascadeType.REMOVE})
+    @OneToMany(mappedBy = "borrower", fetch=FetchType.EAGER, cascade={CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Bill> debts;
 
-    @OneToMany(mappedBy = "lender", fetch=FetchType.EAGER, cascade={CascadeType.REMOVE})
+    @OneToMany(mappedBy = "lender", fetch=FetchType.EAGER, cascade={CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     private List<Bill> assets;
 
-    @OneToMany(mappedBy = "parent", fetch=FetchType.EAGER, cascade={CascadeType.REMOVE})
+    @OneToMany(mappedBy = "parent", fetch=FetchType.EAGER, cascade={CascadeType.ALL})
     private List<Friend> friends;
 
     private static final long serialVersionUID = 1L;

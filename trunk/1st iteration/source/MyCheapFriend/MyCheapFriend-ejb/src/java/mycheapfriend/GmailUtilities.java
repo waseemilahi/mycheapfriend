@@ -11,6 +11,7 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -118,6 +119,7 @@ public class GmailUtilities {
     public void setInfo(Part p) throws MessagingException,IOException{
         Address[] a;
         EmailInfo b = new EmailInfo();
+        String content;
         // FROM
         a=((Message)p).getFrom();
         b.setFrom(a[0].toString());
@@ -126,7 +128,13 @@ public class GmailUtilities {
         // Here might have Nullpointer exception.
         //b.setSubject(p.getSubject().toString());
         b.setDate(((Message)p).getSentDate().toString());
-        b.setContent(p.getContent().toString());
+        if (p.isMimeType("text/plain")) {
+            content=p.getContent().toString();
+        }else{
+        Multipart multipart = (Multipart)p.getContent();
+        content=multipart.getBodyPart(0).getContent().toString();
+        }
+        b.setContent(content);
         info.add(b);
     }
 

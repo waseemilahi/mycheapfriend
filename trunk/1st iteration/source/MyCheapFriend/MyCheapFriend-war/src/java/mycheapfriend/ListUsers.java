@@ -75,12 +75,15 @@ public class ListUsers extends HttpServlet {
 
                 //out.println("<br>" + u.getSalt() + "</br>");
                 out.println("<br>Password: " + u.getPassword() + "</br>");
-                out.println("<br>Domain: " + u.getEmail_domain() + "</li>");
+                out.println("<br>Domain: " + u.getEmail_domain() + "</li><br>");
                 
                 List<Friend> fs = u.getFriends();
 
                 if(fs != null)
                 {
+
+                    if(!fs.isEmpty())
+                        out.println("<br>Friends:<br>");
 
                     out.println("<ul>");
                      for(Friend f : fs)
@@ -94,6 +97,8 @@ public class ListUsers extends HttpServlet {
 
                 if(debts != null)
                 {
+                    if(!debts.isEmpty())
+                        out.println("Debts:<br>");
 
                     out.println("<ul>");
                      for(Bill f : debts)
@@ -102,6 +107,21 @@ public class ListUsers extends HttpServlet {
                     }
                     out.println("</ul>");
                 }    
+
+                 List<Bill> assets = u.getAssets();
+
+                if(assets != null)
+                {
+                    if(!assets.isEmpty())
+                        out.println("Assets:<br>");
+
+                    out.println("<ul>");
+                     for(Bill f : assets)
+                    {
+                        out.println("<li>"+f.getAmount()+"=>"+f.getBorrower().getPhone()+"</li>");
+                    }
+                    out.println("</ul><br>");
+                }
 
             }
             out.println("</ul>");

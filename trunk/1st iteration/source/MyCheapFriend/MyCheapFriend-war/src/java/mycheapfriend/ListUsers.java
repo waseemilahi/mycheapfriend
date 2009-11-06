@@ -90,9 +90,26 @@ public class ListUsers extends HttpServlet {
                     out.println("</ul>");
                 }
 
+                 List<Bill> debts = u.getDebts();
+
+                if(debts != null)
+                {
+
+                    out.println("<ul>");
+                     for(Bill f : debts)
+                    {
+                        out.println("<li>"+f.getAmount()+"=>"+f.getLender().getPhone()+"</li>");
+                    }
+                    out.println("</ul>");
+                }    
+
             }
             out.println("</ul>");
             out.println("<br>");
+
+
+
+
             out.println("<a href='ListUsers'>Refresh</a>");
             out.println("<br>");
             if(poller.testStarted()) {

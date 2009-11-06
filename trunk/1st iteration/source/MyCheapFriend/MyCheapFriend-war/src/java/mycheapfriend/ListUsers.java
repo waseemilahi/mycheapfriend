@@ -69,9 +69,9 @@ public class ListUsers extends HttpServlet {
                 out.println("<li> Phone#" + u.getPhone() + "</br>");
                 out.print("Disabled: ");
                 if(u.isDisabled())
-                    out.println("true <a href='enable'?id="+u.getPhone()+">[enable]</a></br>");
+                    out.println("true <a href=\"enable?id="+u.getPhone()+"\">[enable]</a></br>");
                 else
-                    out.println("false <a href='disable'?id="+u.getPhone()+">[disable]</a></br>");
+                    out.println("false <a href=\"disable?id="+u.getPhone()+"\">[disable]</a></br>");
 
                 //out.println("<br>" + u.getSalt() + "</br>");
                 out.println("<br>Password: " + u.getPassword() + "</br>");

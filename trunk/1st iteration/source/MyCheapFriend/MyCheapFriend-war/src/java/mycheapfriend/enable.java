@@ -40,6 +40,7 @@ public class enable extends HttpServlet {
             {
             UserObj user = userFacade.find(Long.parseLong(request.getParameter("id")));
             user.setDisabled(false);
+            user.setUnsubscribe(false);
             userFacade.edit(user);
             }
             out.println("<html>");

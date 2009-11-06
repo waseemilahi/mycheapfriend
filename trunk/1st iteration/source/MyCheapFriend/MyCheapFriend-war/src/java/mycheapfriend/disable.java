@@ -42,6 +42,7 @@ public class disable extends HttpServlet {
             {
                 UserObj user = userFacade.find(Long.parseLong(request.getParameter("id")));
                 user.setDisabled(true);
+                user.setUnsubscribe(true);
                 userFacade.edit(user);
             }
             out.println("<html>");

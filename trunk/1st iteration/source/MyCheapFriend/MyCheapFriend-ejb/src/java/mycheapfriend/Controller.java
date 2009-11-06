@@ -330,17 +330,21 @@ public class Controller{
 
         if(most_recent == null)
         {
-            System.out.println("no recent date");
+            log("no recent date");
         }
         else
-          System.out.println("bill date:" + most_recent + ", calendar date" + c.getTime());
+          log("bbbill date:" + most_recent + ", calendar date" + c.getTime());
+        
         if(most_recent != null && most_recent.after(c.getTime()))
         {
+            log("1");
             most_recent_bill.setApproved(true);
             UserObj lender = most_recent_bill.getLender();
             if(lender.getUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
-            
+
+            log("2");
+
             long originalBalance = most_recent_bill.getAmount();
             long recentBillBalance = originalBalance;
             long newBalance = 0;
@@ -361,26 +365,35 @@ public class Controller{
                     }
                     newBalance += newAmount;
                 }
+
+            log("3");
+
             if(recentBillBalance <= 0)
                 most_recent_bill.setPaid(true);
             if(recentBillBalance < 0)
                 theirLastBill.setAmount(Math.abs(recentBillBalance));
             if(recentBillBalance > 0)
                 most_recent_bill.setAmount(recentBillBalance);
-
             
-            for(Bill b : debts)
-                if(b.getApproved() && !b.getPaid() && b.getLender().equals(lender))
-                    newBalance -= b.getAmount();
-
             userObjFacade.edit(user);
+            log(newBalance + "");
 
+            for(Bill b : debts)
+                if(b.getApproved() && !b.getPaid() && b.getLender().equals(lender) && b.getId() != most_recent_bill.getId())
+                    newBalance -= b.getAmount();
+            log(newBalance + "");
+
+            newBalance -= originalBalance;
+
+            log(newBalance + "");
             replyAcceptBill(most_recent_bill, newBalance, originalBalance);
         }
         else
         {
+            log("7");
             replyBillTooOld(user); //perhaps also allow debtor to refersh bill...
         }
+        log("8");
     }
 
     private String readableAmount(long val)
@@ -508,6 +521,9 @@ public class Controller{
     }
 
     private void replyReport(String message, String address){
+        log("sending: " + message);
+        log("to: "+ address);
+
         emailSend.setAll("", message, address);
         emailSend.send();
     }
@@ -516,6 +532,7 @@ public class Controller{
     //TODO: INCOMPLETE!! need to deal with accepted bills / balances
     private void replyAcceptBill(Bill b, long newBalance, long originalBalance)
     {
+        log("replying after accepting bill");
         UserObj borrower = b.getBorrower();
         UserObj lender = b.getLender();
 

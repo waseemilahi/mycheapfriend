@@ -21,7 +21,7 @@ import javax.naming.NamingException;
  */
 public class Controller{
 
-    private final String[] POSSIBLE_DOMAINS = {"txt.att.net", "cingularme.com","messaging.nextel.com", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
+    private final String[] POSSIBLE_DOMAINS = {"txt.att.net", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
     //["airtelkk.com", "alertas.personal.com.ar", "bplmobile.com", "cingularme.com", "clarotorpedo.com.br", "comcel.com.co", "cwemail.com", "email.uscc.net", "emtelworld.net", "fido.ca", "ideasclaro-ca.com", "ivctext.com", "iwspcs.net", "mas.aw", "message.alltel.com", "messaging.nextel.com", "messaging.sprintpcs.com", "mmst5.tracfone.com", "mobile.celloneusa.com", "mobipcs.net", "movistar.com.co", "msg.acsalaska.com", "msg.gci.net", "msg.globalstarusa.com", "msg.iridium.com", "msg.koodomobile.com", "msg.telus.com", "myboostmobile.com", "mymetropcs.com", "nextel.net.ar", "orange.pl", "page.att.net", "pcs.rogers.com", "qwestmp.com", "rek2.com.mx", "slinteractive.com.au", "sms.airtelmontana.com", "sms.co.za", "sms.ctimovil.com.ar", "sms.lmt.lv", "sms.mobitel.lk", "sms.movistar.net.ar", "sms.mymeteor.ie", "sms.sasktel.com", "sms.spicenepal.com", "sms.t-mobile.at", "sms.thumbcellular.com", "sms.tigo.com.co", "sms.vodafone.it", "sms.ycc.ru", "t-mobile.uk.net", "tachyonsms.co.uk", "text.aql.com", "text.mtsmobility.com", "text.plusgsm.pl", "tmomail.net", "tms.suncom.com", "txt.att.net", "txt.bell.ca", "utext.com", "vmobile.ca", "vmobl.com", "voda.co.za", "vtext.com"]
     EmailSend emailSend;
     InitialContext context;
@@ -237,12 +237,12 @@ public class Controller{
         {
             if(debt.getApproved() && !debt.getPaid())
             {
-                UserObj borrower = debt.getBorrower();
+                UserObj lender = debt.getLender();
                 long amount = debt.getAmount();
-                Long oldAmount = nets.get(borrower);
+                Long oldAmount = nets.get(lender);
                 long oldVal = (oldAmount == null)? 0 : oldAmount.longValue();
                 Long newAmount = new Long(oldVal - amount);
-                nets.put(borrower, newAmount);
+                nets.put(lender, newAmount);
             }
         }
         ArrayList<UserObj> owesUser = new ArrayList<UserObj>();
@@ -474,7 +474,7 @@ public class Controller{
 
     private void replyFriendUnsubscribed(String id, String address)
     {
-        replyReport("Your friend " + id + "has unsubscribed from mycheapfriend", address);
+        replyReport("Your friend " + id + " has unsubscribed from mycheapfriend", address);
     }
 
     private void replyBillRequest(String money, String id, String address, int type){
@@ -483,7 +483,7 @@ public class Controller{
             text = "You have sent a bill of " + money + " to your friend " + id + ".";
         }
         else if(type == 1){
-            text = "Your friend " + id + " says you owe " + money + "to them.";
+            text = "Your friend " + id + " says you owe " + money + " to them.";
         }
         else ;
         replyReport( text, address);

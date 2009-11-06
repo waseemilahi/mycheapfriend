@@ -22,7 +22,9 @@ public class EmailInfo implements TextMessage{
     private final static String PHONE_PATTERN = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
     private final static String NICKNAME_PATTERN = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
     private final static String AMOUNT_PATTERN = "\\$?\\d{1,4}(\\.\\d{2})?";
-    
+    private final static String FROM_PHONE_PATTERN = "\\d{10,10}";
+
+
     private String from,to,subject,date,content;
 
     private int type = TextMessage.ERROR;
@@ -136,25 +138,40 @@ public class EmailInfo implements TextMessage{
 
     private void parseEmail()
     {
+        log("parsing...");
         if(this.to != null && this.from != null && this.content != null)
         {
             //parse from first.  reject anything not from a cellphone.
             int atLocation = from.indexOf('@');
             String parsed_phone = from.substring(0, atLocation).replace("\\D", "");
-            try{
-                this.phone = Long.parseLong(parsed_phone);
-                this.domain = from.substring(atLocation+1).toLowerCase();
-            } catch( Exception e)
+            boolean fail = true;
+
+            if(parsed_phone.matches(FROM_PHONE_PATTERN))
+            {
+                try{
+                    this.phone = Long.parseLong(parsed_phone);
+                    this.domain = from.substring(atLocation+1).toLowerCase();
+                    fail = false;
+                } catch( Exception e)
+                {}
+            }
+            else
+            {
+                log("from didn't match regex.");
+            }
+            if(fail)
             {
                 this.type = TextMessage.ERROR;
                 this.errorType = TextMessage.INVALID_SENDER;
                 return;
             }
 
+            log("from: " + this.phone);
+
 
             //parse to next.  for a lot of addresses we don't care about body contents...
             String prefix = this.to.substring(0, this.to.indexOf('@'));
-            System.out.println("prefix: " + prefix);
+            log("prefix: " + prefix);
             if(prefix.equals(EmailInfo.NEW_ACCOUNT_ADDR))
                 this.type = TextMessage.NEW_ACCOUNT;
             else if(prefix.equals(EmailInfo.RERSET_PASS_ADDR))
@@ -174,6 +191,8 @@ public class EmailInfo implements TextMessage{
                 this.errorType = TextMessage.UNKNOWN_TYPE;
                 return;
             }
+
+            log("set type, didn't fail with TO, parsing contents now");
 
             //parse content
             switch(this.type) {
@@ -206,11 +225,18 @@ public class EmailInfo implements TextMessage{
             for(String atom : atoms)
             {
                 atom = atom.trim();
+                log("parsing atom \"" + atom + "\"");
 
                 if(atom.matches(NICKNAME_PATTERN))
+                {
                     billFriends.add(atom.toLowerCase());
+                    log("nickname");
+                }
                 else if (atom.matches(PHONE_PATTERN))
+                {
                     billFriends.add(new Long(atom.replaceAll("\\D", "")));
+                    log("phone");
+                }
                 else if (atom.matches(AMOUNT_PATTERN))
                 {
                     atom = atom.replaceAll("[^\\d.]", "");
@@ -225,28 +251,34 @@ public class EmailInfo implements TextMessage{
                         ival = Integer.parseInt(atom) * 100;
                     }
                     billAmounts.add(new Integer(ival));
+                    log("amount");
+
                 }
                 else if(billAmounts.size() <= 1 && atom.equalsIgnoreCase("me"))
                 {
                     billFriends.add(atom);
                     multiple_friends = true;
+                    log("me");
+
                 }
                 else
                 {
                     this.type = TextMessage.ERROR;
                     this.errorType = TextMessage.LEXICAL_ERROR;
-                    break;
+                    log("atom error");
+                    return;
                 }
             }
 
             if(billFriends.size() == 0)
             {
+                    log("no friends, error");
                     this.type = TextMessage.ERROR;
                     this.errorType = TextMessage.SYNTAX_ERROR;
             }
             else if(billAmounts.size() == 0)
             {
-                boolean fail = true;
+                fail = true;
                 if(billFriends.size() == 2)
                 {
                     Long num  = null;
@@ -262,6 +294,7 @@ public class EmailInfo implements TextMessage{
                         this.friendPhone = num.longValue();
                         this.type = TextMessage.NEW_FRIEND;
                         this.errorType = TextMessage.NO_ERROR;
+                        fail = false;
                     }
                 }
                 if(fail)
@@ -308,6 +341,13 @@ public class EmailInfo implements TextMessage{
             if(this.type != TextMessage.ERROR)
                 this.errorType = TextMessage.NO_ERROR;
         }
+        else
+            log("from and content and to aren't set");
+    }
+
+    public static void log(String log_message)
+    {
+        System.out.println(log_message);
     }
 }
 

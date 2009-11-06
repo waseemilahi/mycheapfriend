@@ -77,33 +77,14 @@ public class LoginHandler extends HttpServlet {
             }
             else {
 
-                Long long_phone = Long.getLong(phone);
+                long test_phone = (Long.getLong(phone)).longValue();
+                
                 Boolean answer;
                 long David = 9175200211L;
                 long Waseem = 6467034172L;
                 long Michael = 6462294050L;
-                
-                if(long_phone == null){
+             
                     
-                    out.println("<html>");
-                    out.println("<head>");
-                    out.println("<title>LoginHandler</title>");
-                    out.println("</head>");
-                    out.println("<body>");
-                    out.println("Invalid Phone number. Try Again!");
-                    out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
-                    out.println("Enter your Phone Number: ");
-                    out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-                    out.println("<br>Enter your Password:     ");
-                    out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
-                    out.println("<br>");
-                    out.println("<input type=\"submit\" value=\"Submit\">");
-                    out.println("</form>");
-                    out.println("</body>");
-                    out.println("</html>");
-                }
-                else{
-                    long test_phone = long_phone.longValue();
                     if((test_phone == David) || (test_phone == Waseem) || (test_phone == Michael)){
                         answer = loginSession.check_password(test_phone, password);
                         if(answer == Boolean.TRUE){
@@ -141,7 +122,7 @@ public class LoginHandler extends HttpServlet {
                         out.println("<title>LoginHandler</title>");
                         out.println("</head>");
                         out.println("<body>");
-                        out.println("Invalid Phone number. Try Again!");
+                        out.println("Wrong Phone number. Try Again!");
                         out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
                         out.println("Enter your Phone Number: ");
                         out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
@@ -154,7 +135,7 @@ public class LoginHandler extends HttpServlet {
                         out.println("</html>");
                     }
                 }           
-            }
+            
         } finally { 
             out.close();
         }

@@ -27,11 +27,11 @@ public class AdminLoginBean implements AdminLoginRemote {
         
         UserObj user = userObjFacade.find(phone);
        
-        if(!((user.getPassword()).equals(password))){
-                return Boolean.FALSE;
+        if((user.getPassword()).equals(password)){
+                return Boolean.TRUE;
         }
         else{
-             return Boolean.TRUE;
+             return Boolean.FALSE;
         }
     }
       

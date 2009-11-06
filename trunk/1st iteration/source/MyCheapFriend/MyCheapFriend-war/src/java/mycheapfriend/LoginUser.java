@@ -43,14 +43,18 @@ public class LoginUser extends HttpServlet {
             out.println("<title>Servlet LoginUser</title>");  
             out.println("</head>");
             out.println("<body>");
+            out.println("<center>");
+            out.println("MyCheapFriend Administrator Console");
+            out.println("<br>");
             out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
             out.println("Enter your Phone Number: ");
             out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-            out.println("<br>Enter your Password:   &nbs  ");
-            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+            out.println("<br>Enter your Password:");
+            out.println("<input type=\"password\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
             out.println("<br>");
             out.println("<input type=\"submit\" value=\"Submit\">");
             out.println("</form>");
+            out.println("</center>");
             out.println("</body>");
             out.println("</html>");
             

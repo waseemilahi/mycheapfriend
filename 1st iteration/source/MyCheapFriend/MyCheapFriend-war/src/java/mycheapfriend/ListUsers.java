@@ -88,7 +88,7 @@ public class ListUsers extends HttpServlet {
                     out.println("<ul>");
                      for(Friend f : fs)
                     {
-                        out.println("<li>"+f.getNickname()+"=>"+f.getFriend().getPhone()+"</li>");
+                        out.println("<li>"+f.getNickname()+" => "+f.getFriend().getPhone()+"</li>");
                     }
                     out.println("</ul>");
                 }
@@ -103,7 +103,7 @@ public class ListUsers extends HttpServlet {
                     out.println("<ul>");
                      for(Bill f : debts)
                     {
-                        out.println("<li>"+f.getAmount()+"=>"+f.getLender().getPhone()+"</li>");
+                        out.println("<li>"+f.getAmount()/100.0 +" => "+f.getLender().getPhone()+"</li>");
                     }
                     out.println("</ul>");
                 }    
@@ -118,7 +118,7 @@ public class ListUsers extends HttpServlet {
                     out.println("<ul>");
                      for(Bill f : assets)
                     {
-                        out.println("<li>"+f.getAmount()+"=>"+f.getBorrower().getPhone()+"</li>");
+                        out.println("<li>"+f.getAmount()/100.0 +" => "+f.getBorrower().getPhone()+"</li>");
                     }
                     out.println("</ul><br>");
                 }

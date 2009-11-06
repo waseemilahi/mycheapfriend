@@ -32,6 +32,14 @@
         <servlet-name>StopService</servlet-name>
         <servlet-class>mycheapfriend.StopService</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>disable</servlet-name>
+        <servlet-class>mycheapfriend.disable</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>enable</servlet-name>
+        <servlet-class>mycheapfriend.enable</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CreateUser</servlet-name>
         <url-pattern>/CreateUser</url-pattern>
@@ -63,6 +71,10 @@
     <servlet-mapping>
         <servlet-name>StopService</servlet-name>
         <url-pattern>/StopService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>disable</servlet-name>
+        <url-pattern>/disable</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

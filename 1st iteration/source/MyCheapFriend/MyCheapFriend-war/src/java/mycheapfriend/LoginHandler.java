@@ -84,45 +84,76 @@ public class LoginHandler extends HttpServlet {
                 long Michael = 6462294050L;
                 
                 if(long_phone == null){
-                    answer = Boolean.FALSE;
+                    
+                    out.println("<html>");
+                    out.println("<head>");
+                    out.println("<title>LoginHandler</title>");
+                    out.println("</head>");
+                    out.println("<body>");
+                    out.println("Invalid Phone number. Try Again!");
+                    out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
+                    out.println("Enter your Phone Number: ");
+                    out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
+                    out.println("<br>Enter your Password:     ");
+                    out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+                    out.println("<br>");
+                    out.println("<input type=\"submit\" value=\"Submit\">");
+                    out.println("</form>");
+                    out.println("</body>");
+                    out.println("</html>");
                 }
                 else{
                     long test_phone = long_phone.longValue();
                     if((test_phone == David) || (test_phone == Waseem) || (test_phone == Michael)){
                         answer = loginSession.check_password(test_phone, password);
+                        if(answer == Boolean.TRUE){
+                                out.println("<html>");
+                                out.println("<head>");
+                                out.println("<title>LoginHandler</title>");
+                                out.println("</head>");
+                                out.println("<body>");
+                                out.println("Valid Fields");
+                                out.println("</body>");
+                                out.println("</html>");
+                        }
+                        else if(answer == Boolean.FALSE){
+                            out.println("<html>");
+                            out.println("<head>");
+                            out.println("<title>LoginHandler</title>");
+                            out.println("</head>");
+                            out.println("<body>");
+                            out.println("Invalid Password. Try Again!");
+                            out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
+                            out.println("Enter your Phone Number: ");
+                            out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
+                            out.println("<br>Enter your Password:     ");
+                            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+                            out.println("<br>");
+                            out.println("<input type=\"submit\" value=\"Submit\">");
+                            out.println("</form>");
+                            out.println("</body>");
+                            out.println("</html>");
+                        }
                     }
                     else{
-                        answer = Boolean.FALSE;
+                        out.println("<html>");
+                        out.println("<head>");
+                        out.println("<title>LoginHandler</title>");
+                        out.println("</head>");
+                        out.println("<body>");
+                        out.println("Invalid Phone number. Try Again!");
+                        out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
+                        out.println("Enter your Phone Number: ");
+                        out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
+                        out.println("<br>Enter your Password:     ");
+                        out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+                        out.println("<br>");
+                        out.println("<input type=\"submit\" value=\"Submit\">");
+                        out.println("</form>");
+                        out.println("</body>");
+                        out.println("</html>");
                     }
-                if(answer == Boolean.FALSE){
-                     out.println("<html>");
-            out.println("<head>");
-            out.println("<title>LoginHandler</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("Invalid Phone number or Password. Try Again!");
-            out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
-            out.println("Enter your Phone Number: ");
-            out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-            out.println("<br>Enter your Password:     ");
-            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
-            out.println("<br>");
-            out.println("<input type=\"submit\" value=\"Submit\">");
-            out.println("</form>");
-            out.println("</body>");
-            out.println("</html>");
-                }
-                else{
-
-                out.println("<html>");
-            out.println("<head>");
-            out.println("<title>LoginHandler</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("Valid Fields");
-            out.println("</body>");
-            out.println("</html>");
-            }
+                }           
             }
         } finally { 
             out.close();

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -22,8 +23,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginHandler extends HttpServlet {
 
-     AdminLoginRemote loginSession;
-    InitialContext context;
+    @EJB (mappedName="ejb.AdminLoginBean")
+    AdminLoginRemote loginSession;
+
+    @EJB (mappedName="ejb.UserObjFacade")
+    UserObjFacadeRemote userFacade;
+
+    //InitialContext context;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,14 +44,14 @@ public class LoginHandler extends HttpServlet {
         PrintWriter out = response.getWriter();
 
          System.setProperty("org.omg.CORBA.ORBInitialHost", "localhost");
-        try {
+   /*     try {
             context = new InitialContext();
             loginSession = (AdminLoginRemote) context.lookup("ejb.AdminLoginBean");
 
         } catch (NamingException ex) {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+     */
 
          String phone = request.getParameter("Phone");
          String password = request.getParameter("Password");
@@ -70,11 +76,15 @@ public class LoginHandler extends HttpServlet {
             out.println("</html>");
             }
             else {
-                
-                Long long_phone = new Long(phone);
-                        
-                Boolean answer = loginSession.check_login(long_phone.longValue(), password);
-System.out.print(answer);
+
+                Long long_phone = Long.getLong(phone);
+                Boolean answer;
+                if(long_phone == null){
+                    answer = Boolean.FALSE;
+                }
+                else{
+                    answer = loginSession.check_login(long_phone.longValue(), password);
+                }
                 if(answer == Boolean.FALSE){
                      out.println("<html>");
             out.println("<head>");

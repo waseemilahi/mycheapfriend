@@ -17,6 +17,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.URLName;
 import javax.mail.internet.ContentType;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.ParseException;
 
 /**
@@ -104,9 +105,9 @@ public class GmailUtilities {
         Message[] msgs = folder.getMessages();
 
         // Use a suitable FetchProfile
-        FetchProfile fp = new FetchProfile();
+        /*FetchProfile fp = new FetchProfile();
         fp.add(FetchProfile.Item.ENVELOPE);
-        folder.fetch(msgs, fp);
+        folder.fetch(msgs, fp);*/
 
         for (int i = 0; i < msgs.length; i++) {
             if(!msgs[i].isSet(Flags.Flag.DELETED)){
@@ -117,14 +118,18 @@ public class GmailUtilities {
     }
 
     public void setInfo(Part p) throws MessagingException,IOException{
-        Address[] a;
         EmailInfo b = new EmailInfo();
+        Address[] a;
         String content;
         // FROM
-        a=((Message)p).getFrom();
-        b.setFrom(a[0].toString());
+        //System.out.println("from"+ InternetAddress.toString(((Message)p).getFrom()));
+
+        b.setFrom(InternetAddress.toString(((Message)p).getFrom()));
+        //System.out.println("from"+ b.getFrom());
         a=((Message)p).getRecipients(Message.RecipientType.TO);
-        b.setTo(a[0].toString());
+        
+        b.setTo(InternetAddress.toString(a));
+        //System.out.println("to"+ b.getTo());
         // Here might have Nullpointer exception.
         //b.setSubject(p.getSubject().toString());
         b.setDate(((Message)p).getSentDate().toString());
@@ -133,11 +138,9 @@ public class GmailUtilities {
         }else{
         Multipart multipart = (Multipart)p.getContent();
         content=multipart.getBodyPart(0).getContent().toString();
-        
+        }
         b.setContent(content);
         info.add(b);
-    }
-
     }
 
 

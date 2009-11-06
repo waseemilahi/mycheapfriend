@@ -69,7 +69,7 @@ public class PollerBean implements PollerRemote {
         } catch (Exception ex) {
             Logger.getLogger(PollerBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("HandleTimeout called.");
+        //System.out.println("HandleTimeout called.");
     }
 
 }

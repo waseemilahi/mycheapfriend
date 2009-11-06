@@ -56,7 +56,7 @@ public class Controller{
         //initializing common vars
         UserObj user = userObjFacade.find(tm.getPhone());
         boolean newUser = user == null;
-        boolean userAuthenticated = !newUser && user.getActive() && tm.getPassword() != null && user.getPassword().equalsIgnoreCase(tm.getPassword());
+        boolean userAuthenticated = !newUser && user.isActive() && tm.getPassword() != null && user.getPassword().equalsIgnoreCase(tm.getPassword());
         log("sender phone:" + tm.getPhone());
         if(newUser)
         {
@@ -71,7 +71,11 @@ public class Controller{
                 user.setEmail_domain(tm.getDomain());
                 userObjFacade.edit(user);
             }
-            if(user.getUnsubscribe())
+
+            if(user.isDisabled())
+                return;
+
+            if(user.isUnsubscribe())
             {
                 log("Sender is unsubscribed");
                 if(tm.getType() == TextMessage.RESUBSCRIBE)
@@ -188,7 +192,7 @@ public class Controller{
             user.loanTo(friendUser, tm.getBillMoney(i));
             userObjFacade.edit(user);
 
-            if(friendUser.getUnsubscribe()){
+            if(friendUser.isUnsubscribe()){
                 this.replyFriendUnsubscribed(readableFriend(user, friendUser), user.getEmail());
             }
             else {
@@ -340,7 +344,7 @@ public class Controller{
             log("1");
             most_recent_bill.setApproved(true);
             UserObj lender = most_recent_bill.getLender();
-            if(lender.getUnsubscribe())
+            if(lender.isUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
 
             log("2");
@@ -514,7 +518,7 @@ public class Controller{
             text = "You have sent a bill of " + money + " to your friend " + id + ".";
         }
         else if(type == 1){
-            text = "Your friend " + id + " says you owe " + money + " to them.";
+            text = "Your friend " + id + " says you owe " + money + " to them.  Send a 'y' to robot@mycheapfriend.com to confirm.";
         }
         else ;
         replyReport( text, address);

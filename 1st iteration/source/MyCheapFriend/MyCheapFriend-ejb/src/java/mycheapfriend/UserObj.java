@@ -3,7 +3,6 @@
 package mycheapfriend;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -119,6 +118,8 @@ public class UserObj implements Serializable {
 
     public String getNickname(UserObj friend)
     {
+        if(friends == null)
+            return null;
         for(Friend f: friends)
         {
             if(f.getFriend().equals(friend))
@@ -144,7 +145,7 @@ public class UserObj implements Serializable {
         loan.setBorrower(friend);
 
         (this.getAssets()).add(loan);
-        (friend.getDebts()).add(loan);
+//        (friend.getDebts()).add(loan);
     }
 
      public void borrowFrom(UserObj friend, long amount){

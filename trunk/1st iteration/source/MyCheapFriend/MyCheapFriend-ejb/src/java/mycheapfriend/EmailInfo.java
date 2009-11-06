@@ -216,7 +216,7 @@ public class EmailInfo implements TextMessage{
 
             String[] atoms = content.split("\\s+");
 
-            boolean multiple_friends = false;
+            boolean me_included = false;
             boolean nickname = false;
 
             this.billFriends = new ArrayList<Object>();
@@ -256,8 +256,7 @@ public class EmailInfo implements TextMessage{
                 }
                 else if(billAmounts.size() <= 1 && atom.equalsIgnoreCase("me"))
                 {
-                    billFriends.add(atom);
-                    multiple_friends = true;
+                    me_included = true;
                     log("me");
 
                 }
@@ -305,7 +304,7 @@ public class EmailInfo implements TextMessage{
             }
             else if(billAmounts.size() == billFriends.size() )
             {
-                if(multiple_friends)
+                if(me_included)
                 {
                     //"me" not allowed in billFriendssize
                     this.type = TextMessage.ERROR;
@@ -315,12 +314,14 @@ public class EmailInfo implements TextMessage{
             else if (billAmounts.size() == 1 && billFriends.size() >= 2)
             {
                 Integer bill = billAmounts.remove(0);
-                int bill_amount = bill.intValue() / billFriends.size();
-                int extra = bill.intValue() - (bill_amount * billFriends.size());
+                int billSize = billFriends.size() + (me_included ? 1 : 0);
+                int billValue = bill.intValue();
+                int billAmount = billValue / billSize;
+                int extra = billValue - (billAmount * billSize);
 
                 for(int i = 0; i < billFriends.size(); i++)
                 {
-                    int this_bill_amount = bill_amount;
+                    int this_bill_amount = billAmount;
                     if(extra > 0)
                     {
                         this_bill_amount++;

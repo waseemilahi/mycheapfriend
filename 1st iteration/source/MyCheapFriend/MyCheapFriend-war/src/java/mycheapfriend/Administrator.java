@@ -46,7 +46,7 @@ public class Administrator extends HttpServlet {
             out.println("<body>");
             if(poller.testStarted()) {
                 out.print("The server is running.");
-                out.println("<a href='StopService'>[stop]</a>");
+                out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
             }
             else {
                 out.print("The server is stopped.");

@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package mycheapfriend;
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,15 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Waseem Ilahi
+ * @author Administrator
  */
-public class ListUsers extends HttpServlet {
+public class disable extends HttpServlet {
 
     UserObjFacadeRemote userFacade;
     InitialContext context;
-    //@EJB(mappedName="ejb.PollerBean")
-    //private PollerRemote poller;
-   
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -40,64 +34,26 @@ public class ListUsers extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        System.setProperty("org.omg.CORBA.ORBInitialHost", "localhost");
         try {
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
-            //poller.startTimer();
-        } catch (NamingException ex) {
-            Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            
+
+            if(request.getParameter("id") != null)
+            {
+                UserObj user = userFacade.find(Long.parseLong(request.getParameter("id")));
+                user.setDisabled(true);
+                userFacade.edit(user);
+            }
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>List Users</title>");
+            out.println("<title>StartService</title>");
             out.println("</head>");
-            out.println("<body>");
-            out.println("<a href='CreateUser'>Create a User.</a>");
-            out.println("<br>");
-            out.println("<a href='DeleteUsers'>Delete all Users.</a>");
-            out.println("<h1>List User Info.</h1>");
-
-            List<UserObj> users = userFacade.findAll();
-
-            out.println("<h3>" + users.size() + " Users:</h3>");
-            out.println("<ul>");
-            for(UserObj u : users)
-            {
-                out.println("<li> Phone#" + u.getPhone() + "</br>");
-                out.print("Disabled: ");
-                if(u.isDisabled())
-                    out.println("true <a href='enable'?id="+u.getPhone()+">[enable]</a></br>");
-                else
-                    out.println("false <a href='disable'?id="+u.getPhone()+">[disable]</a></br>");
-
-                //out.println("<br>" + u.getSalt() + "</br>");
-                out.println("<br>Password: " + u.getPassword() + "</br>");
-                out.println("<br>Domain: " + u.getEmail_domain() + "</li>");
-                
-                List<Friend> fs = u.getFriends();
-
-                if(fs != null)
-                {
-
-                    out.println("<ul>");
-                     for(Friend f : fs)
-                    {
-                        out.println("<li>"+f.getNickname()+"=>"+f.getFriend().getPhone()+"</li>");
-                    }
-                    out.println("</ul>");
-                }
-
-            }
-            out.println("</ul>");
-
-            
-            out.println("</body>");
+            out.println("<body onLoad=\"parent.location='ListUsers'\">");
             out.println("</html>");
-            
-        } finally { 
+
+        } catch (NamingException ex) {
+            Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
             out.close();
         }
     } 

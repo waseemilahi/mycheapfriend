@@ -1,3 +1,6 @@
 private.properties
 private.xml
 *.class
+web.xml
+build/
+dist/

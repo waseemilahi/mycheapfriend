@@ -38,14 +38,12 @@ public class StartService extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            
+
+            poller.startTimer();
             out.println("<html>");
             out.println("<head>");
             out.println("<title>StartService</title>");  
             out.println("</head>");
-            if(poller.testCreated())
-                poller.startTimer();
-            else poller.createTimer();
             out.println("<body onLoad=\"parent.location='Administrator'\">");
             out.println("</html>");
             

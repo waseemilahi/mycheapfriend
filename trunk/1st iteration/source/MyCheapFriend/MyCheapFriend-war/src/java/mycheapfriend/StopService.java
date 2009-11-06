@@ -39,6 +39,7 @@ public class StopService extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
+
             poller.stopTimer();
             out.println("<html>");
             out.println("<head>");

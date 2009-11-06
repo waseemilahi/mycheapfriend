@@ -20,6 +20,18 @@
         <servlet-name>LoginHandler</servlet-name>
         <servlet-class>mycheapfriend.LoginHandler</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StartService</servlet-name>
+        <servlet-class>mycheapfriend.StartService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Administrator</servlet-name>
+        <servlet-class>mycheapfriend.Administrator</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StopService</servlet-name>
+        <servlet-class>mycheapfriend.StopService</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CreateUser</servlet-name>
         <url-pattern>/CreateUser</url-pattern>
@@ -39,6 +51,18 @@
     <servlet-mapping>
         <servlet-name>LoginHandler</servlet-name>
         <url-pattern>/LoginHandler</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StartService</servlet-name>
+        <url-pattern>/StartService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Administrator</servlet-name>
+        <url-pattern>/Administrator</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StopService</servlet-name>
+        <url-pattern>/StopService</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

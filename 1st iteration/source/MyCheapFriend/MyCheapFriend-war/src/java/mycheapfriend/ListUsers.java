@@ -55,9 +55,9 @@ public class ListUsers extends HttpServlet {
             out.println("<title>List Users</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<a href='CreateUser'>Create a User.</a>");
+            /*out.println("<a href='CreateUser'>Create a User.</a>");
             out.println("<br>");
-            out.println("<a href='DeleteUsers'>Delete all Users.</a>");
+            out.println("<a href='DeleteUsers'>Delete all Users.</a>");*/
             out.println("<h1>List User Info.</h1>");
 
             List<UserObj> users = userFacade.findAll();

@@ -26,8 +26,8 @@ public class ListUsers extends HttpServlet {
 
     UserObjFacadeRemote userFacade;
     InitialContext context;
-  //  @EJB(mappedName="ejb.PollerBean")
-   // private PollerRemote poller;
+    @EJB(mappedName="ejb.PollerBean")
+    private PollerRemote poller;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,7 +44,7 @@ public class ListUsers extends HttpServlet {
         try {
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
-          //  poller.startTimer();
+            poller.startTimer();
         } catch (NamingException ex) {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }

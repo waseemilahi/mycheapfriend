@@ -55,6 +55,7 @@ public class UserObjFacade implements UserObjFacadeRemote {
 */
     public UserObj find(long phone) {
         UserObj u = em.find(UserObj.class, phone);
+        if(u != null)
         try {
             em.refresh(u);
         } catch(EntityNotFoundException ex){

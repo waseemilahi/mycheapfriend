@@ -35,9 +35,20 @@ public class UserObj implements Serializable {
 
     private String salt;
 
-    private Boolean active;
+    private boolean active;
 
-    private Boolean unsubscribe;
+    private boolean unsubscribe;
+
+    private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
 
     private String email_domain;
 
@@ -45,8 +56,9 @@ public class UserObj implements Serializable {
 
         this.password = null;
         this.salt = null;
-        this.active = Boolean.FALSE;
-        this.unsubscribe = Boolean.FALSE;
+        this.active = false;
+        this.unsubscribe = false;
+        this.disabled = false;
         this.email_domain = null;
     }
 
@@ -54,8 +66,9 @@ public class UserObj implements Serializable {
         this.phone = phone;
         this.password = null;
         this.salt = null;
-        this.active = Boolean.FALSE;
-        this.unsubscribe = Boolean.FALSE;
+        this.active = false;
+        this.disabled = false;
+        this.unsubscribe = false;
         this.email_domain = null;
     }
 
@@ -64,8 +77,9 @@ public class UserObj implements Serializable {
 //        this.password = password;
 //        this.salt = "";
         this.phone = phone;
-        this.active = Boolean.FALSE;
-        this.unsubscribe = Boolean.FALSE;
+        this.active = false;
+        this.disabled = false;
+        this.unsubscribe = false;
         this.email_domain = domain;
     }
 
@@ -73,8 +87,8 @@ public class UserObj implements Serializable {
         this.phone = phone;
         this.password = password;
         this.salt = "";
-        this.active = Boolean.TRUE;
-        this.unsubscribe = Boolean.FALSE;
+        this.active = true;
+        this.unsubscribe = false;
         this.email_domain = domain;
     }
 
@@ -100,11 +114,11 @@ public class UserObj implements Serializable {
         return null;
     }
     
-    public Boolean hasFriend(long phone) {
+    public boolean hasFriend(long phone) {
         for(Friend f : this.friends)
             if(f.getFriend().phone == phone)
-                return Boolean.TRUE;
-        return Boolean.FALSE;
+                return true;
+        return false;
     }
 
     public void addFriend(UserObj newUser,String nickname){
@@ -137,8 +151,8 @@ public class UserObj implements Serializable {
      public void loanTo(UserObj friend , long amount){
         Bill loan = new Bill();
         loan.setAmount(amount);
-        loan.setApproved(Boolean.FALSE);
-        loan.setPaid(Boolean.FALSE);
+        loan.setApproved(false);
+        loan.setPaid(false);
 
 
         loan.setLender(this);
@@ -176,11 +190,11 @@ public class UserObj implements Serializable {
         this.friends = friends;
     }
 
-    public Boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -215,19 +229,19 @@ public class UserObj implements Serializable {
         this.salt = salt;
     }
 
-    public Boolean getUnsubscribe() {
+    public boolean isUnsubscribe() {
         return unsubscribe;
     }
 
-    public void setUnsubscribe(Boolean unsubscribe) {
+    public void setUnsubscribe(boolean unsubscribe) {
         this.unsubscribe = unsubscribe;
     }
 
-    public Long getPhone() {
+    public long getPhone() {
         return phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(long phone) {
         this.phone = phone;
     }
 

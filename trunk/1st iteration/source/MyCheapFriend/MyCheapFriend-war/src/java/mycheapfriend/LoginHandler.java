@@ -79,12 +79,21 @@ public class LoginHandler extends HttpServlet {
 
                 Long long_phone = Long.getLong(phone);
                 Boolean answer;
+                long David = 9175200211L;
+                long Waseem = 6467034172L;
+                long Michael = 6462294050L;
+                
                 if(long_phone == null){
                     answer = Boolean.FALSE;
                 }
                 else{
-                    answer = loginSession.check_login(long_phone.longValue(), password);
-                }
+                    long test_phone = long_phone.longValue();
+                    if((test_phone == David) || (test_phone == Waseem) || (test_phone == Michael)){
+                        answer = loginSession.check_password(test_phone, password);
+                    }
+                    else{
+                        answer = Boolean.FALSE;
+                    }
                 if(answer == Boolean.FALSE){
                      out.println("<html>");
             out.println("<head>");

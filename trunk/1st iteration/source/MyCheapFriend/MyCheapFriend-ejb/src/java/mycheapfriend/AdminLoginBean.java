@@ -7,6 +7,7 @@ package mycheapfriend;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -18,33 +19,20 @@ import javax.naming.NamingException;
 @Stateful(mappedName="ejb.AdminLoginBean")
 public class AdminLoginBean implements AdminLoginRemote {
     
+    @EJB (mappedName="ejb.UserObjFacade")
     UserObjFacadeRemote userObjFacade;
-    InitialContext context;
 
-    public Boolean check_login(long phone, String password){
 
-         try {
-
-            context = new InitialContext();
-            userObjFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
-        } catch (NamingException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
-
+    public Boolean check_password(long phone, String password){
+        
         UserObj user = userObjFacade.find(phone);
-        if(user == null){
-            return Boolean.FALSE;
-        }
-        else if(!((user.getPassword()).equals(password))){
+       
+        if(!((user.getPassword()).equals(password))){
                 return Boolean.FALSE;
         }
-        else if(!(user.getActive())){
-                return Boolean.FALSE;
+        else{
+             return Boolean.TRUE;
         }
-
-            return Boolean.TRUE;
-
     }
-    
+      
 }

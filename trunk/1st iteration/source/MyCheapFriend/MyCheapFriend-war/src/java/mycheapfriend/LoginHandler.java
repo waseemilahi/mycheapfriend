@@ -63,22 +63,26 @@ public class LoginHandler extends HttpServlet {
             out.println("<title>LoginHandler</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("Please Enter valid Phone number and Password in the Appropriate Fields");
+            out.println("<center>");
+            out.println("MyCheapFriend Administrator Console");
+            out.println("<br>");
+            out.println("<b><font color=red>Please Enter valid Phone number and Password in the Appropriate Fields</font></b> ");
+            out.println("<br>");
             out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
             out.println("Enter your Phone Number: ");
             out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-            out.println("<br>Enter your Password:     ");
-            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+            out.println("<br>Enter your Password:");
+            out.println("<input type=\"password\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
             out.println("<br>");
             out.println("<input type=\"submit\" value=\"Submit\">");
             out.println("</form>");
+            out.println("</center>");
             out.println("</body>");
             out.println("</html>");
             }
             else {
 
                 Long long_phone = Long.valueOf(phone);
-                
                  long test_phone = 0L;
                 if(long_phone != null){
                     test_phone = Long.parseLong(phone);
@@ -107,15 +111,20 @@ public class LoginHandler extends HttpServlet {
                             out.println("<title>LoginHandler</title>");
                             out.println("</head>");
                             out.println("<body>");
-                            out.println("Invalid Password. Try Again!");
+                            out.println("<center>");
+                            out.println("MyCheapFriend Administrator Console");
+                            out.println("<br>");
+                            out.println("<b><font color=red>Invalid Password. Try Again!</font></b> ");
+                            out.println("<br>");
                             out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
                             out.println("Enter your Phone Number: ");
                             out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-                            out.println("<br>Enter your Password:     ");
-                            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+                            out.println("<br>Enter your Password:");
+                            out.println("<input type=\"password\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
                             out.println("<br>");
                             out.println("<input type=\"submit\" value=\"Submit\">");
                             out.println("</form>");
+                            out.println("</center>");
                             out.println("</body>");
                             out.println("</html>");
                         }
@@ -126,15 +135,20 @@ public class LoginHandler extends HttpServlet {
                         out.println("<title>LoginHandler</title>");
                         out.println("</head>");
                         out.println("<body>");
-                        out.println("Wrong Phone number. Try Again!");
+                        out.println("<center>");
+                        out.println("MyCheapFriend Administrator Console");
+                        out.println("<br>");
+                        out.println("<b><font color=red>Invalid PhoneNumber. Try Again!</font></b> ");
+                        out.println("<br>");
                         out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
                         out.println("Enter your Phone Number: ");
                         out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
-                        out.println("<br>Enter your Password:     ");
-                        out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
+                        out.println("<br>Enter your Password:");
+                        out.println("<input type=\"password\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
                         out.println("<br>");
                         out.println("<input type=\"submit\" value=\"Submit\">");
                         out.println("</form>");
+                        out.println("</center>");
                         out.println("</body>");
                         out.println("</html>");
                     }

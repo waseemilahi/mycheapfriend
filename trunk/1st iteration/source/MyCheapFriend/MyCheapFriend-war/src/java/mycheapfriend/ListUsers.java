@@ -90,7 +90,6 @@ public class ListUsers extends HttpServlet {
             
             out.println("</body>");
             out.println("</html>");
-            System.out.println("WORKING!!!");
             
         } finally { 
             out.close();

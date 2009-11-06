@@ -26,8 +26,8 @@ public class ListUsers extends HttpServlet {
 
     UserObjFacadeRemote userFacade;
     InitialContext context;
-    //@EJB(mappedName="ejb.PollerBean")
-    //private PollerRemote poller;
+    @EJB(mappedName="ejb.PollerBean")
+    private PollerRemote poller;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -92,8 +92,20 @@ public class ListUsers extends HttpServlet {
 
             }
             out.println("</ul>");
-
-            
+            out.println("<br>");
+            out.println("<a href='ListUsers'>Refresh</a>");
+            out.println("<br>");
+            if(poller.testStarted()) {
+                out.print("The server is running.");
+                out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
+            }
+            else {
+                out.print("The server is stopped.");
+                out.println("<a href='StartService'>[start]</a>");
+            }
+            out.println("<br>");
+            out.println("<a href='LoginUser'>Logout</a>");
+            out.println("<br>");
             out.println("</body>");
             out.println("</html>");
             

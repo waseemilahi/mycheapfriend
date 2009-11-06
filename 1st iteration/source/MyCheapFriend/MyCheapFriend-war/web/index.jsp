@@ -9,11 +9,21 @@
    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>MyCheapFriend</title>
-    </head>
-    <body>
-         <a href='ListUsers'>Click Here To View User Info.</a>
-    </body>
+<head>
+<title>Servlet LoginUser</title>
+</head>
+<body>
+<center>
+MyCheapFriend Administrator Console
+<br>
+<form name="login" action="LoginHandler" method="POST">
+Enter your Phone Number:
+<input type="text" name="Phone" MAXLENGTH = "10" size="10">
+<br>Enter your Password:
+<input type="password" name="Password" MAXLENGTH = "6" size="6">
+<br>
+<input type="submit" value="Submit">
+</form>
+</center>
+</body>
 </html>

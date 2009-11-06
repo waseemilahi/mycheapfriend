@@ -76,6 +76,10 @@
         <servlet-name>disable</servlet-name>
         <url-pattern>/disable</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>enable</servlet-name>
+        <url-pattern>/enable</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

@@ -308,10 +308,15 @@ public class Controller{
         List<Bill> debts = user.getDebts();
         Bill most_recent_bill = null;
         Date most_recent = null;
+        log("traversing " + debts.size() + " debts.");
         for(Bill b : debts)
         {
+
             if(b.getApproved())
+            {
+                log("bill approved :(");
                 continue;
+            }
             Date next_date = b.getTimeCreated();
             if( most_recent == null || next_date.after(most_recent))
             {
@@ -322,6 +327,7 @@ public class Controller{
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -1);
+
         if(most_recent == null)
         {
             System.out.println("no recent date");
@@ -334,30 +340,42 @@ public class Controller{
             UserObj lender = most_recent_bill.getLender();
             if(lender.getUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
-            long recentBillBalance = most_recent_bill.getAmount();
+            
+            long originalBalance = most_recent_bill.getAmount();
+            long recentBillBalance = originalBalance;
             long newBalance = 0;
 
             List<Bill> assets = user.getAssets();
+            Bill theirLastBill = null;
             for(Bill b : assets)
                 if(b.getApproved() && !b.getPaid() && b.getBorrower().equals(lender))
                 {
                     long newAmount = b.getAmount();
-                    if(recentBillBalance >= newAmount) //if he loaned me $x, any previous bills up to $x are settled
+                    if(recentBillBalance > 0)
                     {
-                        b.setPaid(true);
+                        theirLastBill = b;
+                        if(recentBillBalance >= newAmount) //if he loaned me $x, any previous bills up to $x are settled
+                            b.setPaid(true);
+                        
                         recentBillBalance -= newAmount;
                     }
-
                     newBalance += newAmount;
                 }
-                        
+            if(recentBillBalance <= 0)
+                most_recent_bill.setPaid(true);
+            if(recentBillBalance < 0)
+                theirLastBill.setAmount(Math.abs(recentBillBalance));
+            if(recentBillBalance > 0)
+                most_recent_bill.setAmount(recentBillBalance);
+
+            
             for(Bill b : debts)
                 if(b.getApproved() && !b.getPaid() && b.getLender().equals(lender))
                     newBalance -= b.getAmount();
 
             userObjFacade.edit(user);
 
-            replyAcceptBill(most_recent_bill, newBalance);
+            replyAcceptBill(most_recent_bill, newBalance, originalBalance);
         }
         else
         {
@@ -496,13 +514,12 @@ public class Controller{
 
 
     //TODO: INCOMPLETE!! need to deal with accepted bills / balances
-    private void replyAcceptBill(Bill b, long newBalance)
+    private void replyAcceptBill(Bill b, long newBalance, long originalBalance)
     {
-        long amount = b.getAmount();
         UserObj borrower = b.getBorrower();
         UserObj lender = b.getLender();
 
-        String readableAmount = readableAmount(amount);
+        String readableAmount = readableAmount(originalBalance);
         String readableNewBalance = readableAmount(Math.abs(newBalance));
         String borrowerText = "You have confirmed that your friend " + readableFriend(borrower, lender) + " loaned you $" + readableAmount + ".";
         String lenderText = "Your friend " + readableFriend(lender, borrower) + " has confirmed that you paid them " + readableAmount +".";

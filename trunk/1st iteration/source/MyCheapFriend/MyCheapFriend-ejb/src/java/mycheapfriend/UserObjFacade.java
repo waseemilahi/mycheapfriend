@@ -5,6 +5,7 @@ package mycheapfriend;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -53,7 +54,10 @@ public class UserObjFacade implements UserObjFacadeRemote {
     }
 */
     public UserObj find(long phone) {
-        return em.find(UserObj.class, phone);
+        em.flush();
+        UserObj u = em.find(UserObj.class, phone);
+        em.refresh(u);
+        return u;
     }
 
     public List<UserObj> findAll() {

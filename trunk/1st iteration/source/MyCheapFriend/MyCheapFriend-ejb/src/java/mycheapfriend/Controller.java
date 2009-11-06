@@ -23,7 +23,6 @@ public class Controller{
 
     private final String[] POSSIBLE_DOMAINS = {"txt.att.net", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
     //["airtelkk.com", "alertas.personal.com.ar", "bplmobile.com", "cingularme.com", "clarotorpedo.com.br", "comcel.com.co", "cwemail.com", "email.uscc.net", "emtelworld.net", "fido.ca", "ideasclaro-ca.com", "ivctext.com", "iwspcs.net", "mas.aw", "message.alltel.com", "messaging.nextel.com", "messaging.sprintpcs.com", "mmst5.tracfone.com", "mobile.celloneusa.com", "mobipcs.net", "movistar.com.co", "msg.acsalaska.com", "msg.gci.net", "msg.globalstarusa.com", "msg.iridium.com", "msg.koodomobile.com", "msg.telus.com", "myboostmobile.com", "mymetropcs.com", "nextel.net.ar", "orange.pl", "page.att.net", "pcs.rogers.com", "qwestmp.com", "rek2.com.mx", "slinteractive.com.au", "sms.airtelmontana.com", "sms.co.za", "sms.ctimovil.com.ar", "sms.lmt.lv", "sms.mobitel.lk", "sms.movistar.net.ar", "sms.mymeteor.ie", "sms.sasktel.com", "sms.spicenepal.com", "sms.t-mobile.at", "sms.thumbcellular.com", "sms.tigo.com.co", "sms.vodafone.it", "sms.ycc.ru", "t-mobile.uk.net", "tachyonsms.co.uk", "text.aql.com", "text.mtsmobility.com", "text.plusgsm.pl", "tmomail.net", "tms.suncom.com", "txt.att.net", "txt.bell.ca", "utext.com", "vmobile.ca", "vmobl.com", "voda.co.za", "vtext.com"]
-    EmailSend emailSend;
     InitialContext context;
     UserObjFacadeRemote userObjFacade;
 
@@ -34,13 +33,13 @@ public class Controller{
     public void handle(TextMessage tm) {
         log("new message from " + tm.getFrom());
         log("message: " + ((EmailInfo)tm).getContent());
+        
         try {
-            emailSend = new EmailSend();
             context = new InitialContext();
             userObjFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
         } catch (NamingException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            emailSend.setAll("", "Internal error, try back later (SORRY!!)", tm.getFrom());
+            replyReport("Internal error, try back later (SORRY!!)", tm.getFrom());
             return;
         }
 
@@ -48,8 +47,7 @@ public class Controller{
         if(tm.getType() == TextMessage.ERROR)
         {
             log("error: " + getErrorMessage(tm.getErrorType()));
-            emailSend.setAll("", getErrorMessage(tm.getErrorType()), tm.getFrom());
-            emailSend.send();
+            replyReport(getErrorMessage(tm.getErrorType()), tm.getFrom());
             return;
         }
 
@@ -527,6 +525,7 @@ public class Controller{
     private void replyReport(String message, String address){
         log("sending: " + message);
         log("to: "+ address);
+        EmailSend emailSend = new EmailSend();
 
         emailSend.setAll("", message, address);
         emailSend.send();

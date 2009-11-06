@@ -174,6 +174,8 @@ public class Controller{
     {
         log("new bill");
         ArrayList<UserObj> toBeBilled = new ArrayList<UserObj>();
+
+        //make sure all of the friends make sense.
         for(int i = 0; i < tm.getNumBills(); i++){
             UserObj friendUser = this.identifierToUserObj(user, tm.getBillFriend(i));
             //a nickname is used but the user doesn't have a friend with the nickname
@@ -313,12 +315,6 @@ public class Controller{
         log("traversing " + debts.size() + " debts.");
         for(Bill b : debts)
         {
-
-            if(b.getApproved())
-            {
-                log("bill approved :(");
-                continue;
-            }
             Date next_date = b.getTimeCreated();
             if( most_recent == null || next_date.after(most_recent))
             {
@@ -337,7 +333,7 @@ public class Controller{
         else
           log("bbbill date:" + most_recent + ", calendar date" + c.getTime());
         
-        if(most_recent != null && most_recent.after(c.getTime()))
+        if(most_recent != null && !most_recent_bill.getApproved() && most_recent.after(c.getTime()))
         {
             log("1");
             most_recent_bill.setApproved(true);
@@ -568,7 +564,7 @@ public class Controller{
     //TODO: INCOMPLETE!! NEED TO DEAL WITH bills that are more than a day old
     private void replyBillTooOld(UserObj u)
     {
-        replyReport("You tried to accept a bill, but you don't have bills from the last 24 hours to accept", u.getEmail());
+        replyReport("You tried to accept a bill, but you don't have any pending bills from the last 24 hours to accept", u.getEmail());
     }
 
     /**

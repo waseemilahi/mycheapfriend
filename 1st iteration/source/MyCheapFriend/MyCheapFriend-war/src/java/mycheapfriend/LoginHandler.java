@@ -77,8 +77,14 @@ public class LoginHandler extends HttpServlet {
             }
             else {
 
-                long test_phone = (Long.getLong(phone)).longValue();
+                Long long_phone = Long.valueOf(phone);
                 
+                 long test_phone = 0L;
+                if(long_phone != null){
+                    test_phone = Long.parseLong(phone);
+                    
+                }
+               
                 Boolean answer;
                 long David = 9175200211L;
                 long Waseem = 6467034172L;

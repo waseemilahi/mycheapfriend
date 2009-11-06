@@ -23,20 +23,45 @@ public class PollerBean implements PollerRemote {
         
         @Resource
         private SessionContext ctx;
-        private boolean started = false;
-        public void startTimer() {
-            if(started)
+        static private boolean started = false;
+        static private boolean created = false;
+        public void createTimer() {
+            if(created)
                 return;
             started = true;
+            created = true;
             ctx.getTimerService().createTimer(0, 5000, null);
             System.out.println("Timers set");
 
         }
-        
+        public void startTimer() {
+            if(!created) {
+                createTimer();
+                return;
+            }
+            if(started)
+                return;
+            started = true;
+            System.out.println("Timers started");
+        }
+        public void stopTimer() {
+            if(!started)
+                return;
+            started = false;
+            System.out.println("Timers stopped");
+        }
+        public boolean testStarted() {
+            return started;
+        }
+        public boolean testCreated() {
+            return created;
+        }
     @Timeout
     public void handleTimeout(Timer timer) {
        //call read(), process each email in the return arraylist.
         Controller c = new Controller();
+        if(!started)
+            return;
         try {
             List<EmailInfo> messages = EmailRead.read();
             for(EmailInfo e : messages)

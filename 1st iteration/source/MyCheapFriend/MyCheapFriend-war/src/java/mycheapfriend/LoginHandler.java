@@ -98,9 +98,7 @@ public class LoginHandler extends HttpServlet {
                                 out.println("<head>");
                                 out.println("<title>LoginHandler</title>");
                                 out.println("</head>");
-                                out.println("<body>");
-                                out.println("Valid Fields");
-                                out.println("</body>");
+                                out.println("<body onLoad=\"parent.location='Administrator'\">");
                                 out.println("</html>");
                         }
                         else if(answer == Boolean.FALSE){

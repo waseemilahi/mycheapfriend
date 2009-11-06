@@ -66,9 +66,9 @@ public class LoginHandler extends HttpServlet {
             out.println("Please Enter valid Phone number and Password in the Appropriate Fields");
             out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
             out.println("Enter your Phone Number: ");
-            out.println("<input type=\"text\" name=\"Phone\" size=\"20\">");
+            out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
             out.println("<br>Enter your Password:     ");
-            out.println("<input type=\"text\" name=\"Password\" size=\"20\">");
+            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
             out.println("<br>");
             out.println("<input type=\"submit\" value=\"Submit\">");
             out.println("</form>");
@@ -94,9 +94,9 @@ public class LoginHandler extends HttpServlet {
             out.println("Invalid Phone number or Password. Try Again!");
             out.println("<form name=\"login\" action=\"LoginHandler\" method=\"POST\">");
             out.println("Enter your Phone Number: ");
-            out.println("<input type=\"text\" name=\"Phone\" size=\"20\">");
+            out.println("<input type=\"text\" name=\"Phone\" MAXLENGTH = \"10\" size=\"10\">");
             out.println("<br>Enter your Password:     ");
-            out.println("<input type=\"text\" name=\"Password\" size=\"20\">");
+            out.println("<input type=\"text\" name=\"Password\" MAXLENGTH = \"6\" size=\"6\">");
             out.println("<br>");
             out.println("<input type=\"submit\" value=\"Submit\">");
             out.println("</form>");

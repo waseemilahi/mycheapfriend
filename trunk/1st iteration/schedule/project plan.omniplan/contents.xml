@@ -41,9 +41,9 @@
 			<key>GanttGroupShading</key>
 			<false/>
 			<key>GanttVisibleRect</key>
-			<string>{{71, 28}, {1224, 1006}}</string>
+			<string>{{246, 52}, {1224, 1006}}</string>
 			<key>OutlineVisibleRect</key>
-			<string>{{0, 28}, {650, 1006}}</string>
+			<string>{{0, 52}, {650, 1006}}</string>
 			<key>ScaleWidths</key>
 			<dict>
 				<key>Automatic</key>
@@ -68,7 +68,7 @@
 			<key>SelectedScale</key>
 			<string>Automatic</string>
 			<key>SelectedView</key>
-			<integer>0</integer>
+			<integer>2</integer>
 			<key>SheetSettings</key>
 			<dict>
 				<key>LevelConstrainsCompletionDate</key>
@@ -98,7 +98,7 @@
 			<key>calendarController</key>
 			<dict>
 				<key>OutlineVisibleRect</key>
-				<string>{{0, 0}, {283, 681}}</string>
+				<string>{{0, 0}, {389, 819}}</string>
 				<key>activeColumnIdentifiers</key>
 				<array>
 					<string>IM</string>
@@ -115,13 +115,13 @@
 					<key>Notes</key>
 					<real>20</real>
 					<key>Resource</key>
-					<real>190</real>
+					<real>254</real>
 					<key>Type</key>
 					<real>48</real>
 				</dict>
 			</dict>
 			<key>calendarSplit</key>
-			<real>0.78591954708099365</real>
+			<real>0.78596466779708862</real>
 			<key>columnWidths</key>
 			<dict>
 				<key>%Done</key>
@@ -140,13 +140,13 @@
 			<key>overviewView</key>
 			<string>YES</string>
 			<key>resourceSplit</key>
-			<real>0.68390804529190063</real>
+			<real>0.68395978212356567</real>
 			<key>resourcesController</key>
 			<dict>
 				<key>DayWidth</key>
 				<real>99.186660766601562</real>
 				<key>OutlineVisibleRect</key>
-				<string>{{0, 0}, {425, 868}}</string>
+				<string>{{0, 0}, {582, 1006}}</string>
 				<key>ScaleWidths</key>
 				<dict>
 					<key>Automatic</key>
@@ -169,7 +169,7 @@
 				<key>SelectedScale</key>
 				<string>Automatic</string>
 				<key>TimelineVisibleRect</key>
-				<string>{{-205, 0}, {909, 868}}</string>
+				<string>{{178, 0}, {1249, 1006}}</string>
 				<key>activeColumnIdentifiers</key>
 				<array>
 					<string>IM</string>
@@ -188,7 +188,7 @@
 					<key>Notes</key>
 					<real>20</real>
 					<key>Resource</key>
-					<real>231</real>
+					<real>325</real>
 					<key>Type</key>
 					<real>48</real>
 				</dict>
@@ -214,7 +214,7 @@
 	<key>displayTimes</key>
 	<true/>
 	<key>endDate</key>
-	<string>20091101 18:15</string>
+	<string>20091105 20:45</string>
 	<key>flatNumbering</key>
 	<false/>
 	<key>groupTaskStyle</key>
@@ -343,6 +343,23 @@
 						<real>32400</real>
 					</dict>
 				</array>
+			</dict>
+			<dict>
+				<key>date</key>
+				<string>20091105</string>
+				<key>spans</key>
+				<array>
+					<dict>
+						<key>endTime</key>
+						<real>77400</real>
+						<key>startTime</key>
+						<real>52200</real>
+					</dict>
+				</array>
+			</dict>
+			<dict>
+				<key>date</key>
+				<string>20091106</string>
 			</dict>
 		</array>
 		<key>friday</key>
@@ -1647,11 +1664,11 @@
 				</dict>
 			</array>
 			<key>doneSeconds</key>
-			<real>8884.919921875</real>
+			<real>20193</real>
 			<key>effort</key>
 			<real>20193</real>
 			<key>effortDone</key>
-			<real>8884.919921875</real>
+			<real>20193</real>
 			<key>endPlanDate</key>
 			<string>20091030102217</string>
 			<key>forcedStart</key>
@@ -1668,7 +1685,7 @@
 			<key>task</key>
 			<string>Implementing Data Model (User, Friend, Bill)</string>
 			<key>workDone</key>
-			<real>2.4680333137512207</real>
+			<real>5.6091666221618652</real>
 			<key>workSeconds</key>
 			<real>20193</real>
 			<key>workTime</key>
@@ -1714,7 +1731,11 @@
 					<real>1</real>
 				</dict>
 			</array>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023145544</string>
@@ -1729,6 +1750,8 @@
 			</dict>
 			<key>task</key>
 			<string>User account System</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1746,7 +1769,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091023163000</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023151728</string>
@@ -1772,6 +1799,8 @@
 			</dict>
 			<key>task</key>
 			<string>New account validation and processing</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1789,7 +1818,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029144328</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023153912</string>
@@ -1815,6 +1848,8 @@
 			</dict>
 			<key>task</key>
 			<string>Processing of changing password</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1832,7 +1867,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029152656</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023160056</string>
@@ -1858,6 +1897,8 @@
 			</dict>
 			<key>task</key>
 			<string>Setting whether to unsubscribe</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1875,7 +1916,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029161024</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023162240</string>
@@ -1901,6 +1946,8 @@
 			</dict>
 			<key>task</key>
 			<string>Billing system</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1918,7 +1965,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029165352</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091023164424</string>
@@ -1944,6 +1995,8 @@
 			</dict>
 			<key>task</key>
 			<string>Request a bil</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -1961,7 +2014,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029173720</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091030100608</string>
@@ -1987,6 +2044,8 @@
 			</dict>
 			<key>task</key>
 			<string>Accept/Reject last active bill</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -2004,7 +2063,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091029182048</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091030102752</string>
@@ -2030,6 +2093,8 @@
 			</dict>
 			<key>task</key>
 			<string>Settling a bill</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -2047,7 +2112,11 @@
 			</array>
 			<key>desiredStart</key>
 			<string>20091101093416</string>
+			<key>doneSeconds</key>
+			<real>2608</real>
 			<key>effort</key>
+			<real>2608</real>
+			<key>effortDone</key>
 			<real>2608</real>
 			<key>endPlanDate</key>
 			<string>20091030104936</string>
@@ -2073,6 +2142,8 @@
 			</dict>
 			<key>task</key>
 			<string>Ask for bill report</string>
+			<key>workDone</key>
+			<real>0.72444444894790649</real>
 			<key>workSeconds</key>
 			<real>2608</real>
 			<key>workTime</key>
@@ -2147,11 +2218,11 @@
 				</dict>
 			</array>
 			<key>doneSeconds</key>
-			<real>18090</real>
+			<real>27000</real>
 			<key>effort</key>
 			<real>27000</real>
 			<key>effortDone</key>
-			<real>18090</real>
+			<real>27000</real>
 			<key>endPlanDate</key>
 			<string>20091030135610</string>
 			<key>objectId</key>
@@ -2166,7 +2237,7 @@
 			<key>task</key>
 			<string>Implematation of interface with email</string>
 			<key>workDone</key>
-			<real>5.0250000953674316</real>
+			<real>7.5</real>
 			<key>workSeconds</key>
 			<real>27000</real>
 			<key>workTime</key>
@@ -2343,11 +2414,11 @@
 			<key>desiredStart</key>
 			<string>20091101110629</string>
 			<key>doneSeconds</key>
-			<real>675</real>
+			<real>2700</real>
 			<key>effort</key>
 			<real>5400</real>
 			<key>effortDone</key>
-			<real>1350</real>
+			<real>5400</real>
 			<key>endPlanDate</key>
 			<string>20091030130208</string>
 			<key>objectId</key>
@@ -2373,7 +2444,7 @@
 			<key>task</key>
 			<string>View Users' Bills</string>
 			<key>workDone</key>
-			<real>0.1875</real>
+			<real>0.75</real>
 			<key>workSeconds</key>
 			<real>2700</real>
 			<key>workTime</key>
@@ -2394,9 +2465,25 @@
 					<key>units</key>
 					<real>1</real>
 				</dict>
+				<dict>
+					<key>id</key>
+					<integer>6</integer>
+					<key>units</key>
+					<real>1</real>
+				</dict>
+				<dict>
+					<key>id</key>
+					<integer>5</integer>
+					<key>units</key>
+					<real>1</real>
+				</dict>
 			</array>
+			<key>doneSeconds</key>
+			<real>28800</real>
 			<key>effort</key>
-			<real>12600</real>
+			<real>115200</real>
+			<key>effortDone</key>
+			<real>115200</real>
 			<key>endPlanDate</key>
 			<string>20091030154110</string>
 			<key>objectId</key>
@@ -2419,10 +2506,12 @@
 			</dict>
 			<key>task</key>
 			<string>Deployment &amp; Integrate</string>
+			<key>workDone</key>
+			<real>8</real>
 			<key>workSeconds</key>
-			<real>6300</real>
+			<real>28800</real>
 			<key>workTime</key>
-			<real>1.75</real>
+			<real>8</real>
 		</dict>
 		<dict>
 			<key>children</key>
@@ -2457,11 +2546,11 @@
 				</dict>
 			</array>
 			<key>doneSeconds</key>
-			<real>4872</real>
+			<real>6960</real>
 			<key>effort</key>
 			<real>6960</real>
 			<key>effortDone</key>
-			<real>4872</real>
+			<real>6960</real>
 			<key>objectId</key>
 			<integer>137</integer>
 			<key>style</key>
@@ -2472,7 +2561,7 @@
 			<key>task</key>
 			<string>write inter-process interfaces</string>
 			<key>workDone</key>
-			<real>1.3533333539962769</real>
+			<real>1.9333332777023315</real>
 			<key>workSeconds</key>
 			<real>6960</real>
 			<key>workTime</key>
@@ -2488,7 +2577,7 @@
 		<integer>-1</integer>
 	</array>
 	<key>uuid</key>
-	<string>21D0643A-AA73-4CCC-8FC0-CB9171DFC058</string>
+	<string>1407A950-C3F9-420E-95E9-603D487CD456</string>
 	<key>version</key>
 	<integer>2</integer>
 </dict>

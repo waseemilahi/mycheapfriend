@@ -18,8 +18,6 @@ public interface UserObjFacadeRemote {
 
     void remove(UserObj userObj);
 
-  /*  UserObj find(UserObj userObj);
-*/
     UserObj find(long phone);
     Boolean contains(UserObj userObj);
 

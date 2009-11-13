@@ -74,8 +74,6 @@ public class UserObj implements Serializable {
 
     public UserObj(long phone,String domain) {
 
-//        this.password = password;
-//        this.salt = "";
         this.phone = phone;
         this.active = false;
         this.disabled = false;
@@ -92,6 +90,7 @@ public class UserObj implements Serializable {
         this.email_domain = domain;
     }
 
+    /* Given a Long or a String, find the long id of the friend/user in the table.*/
     public long getFriendId(Object obj){
         
          if(obj instanceof String ){
@@ -159,7 +158,7 @@ public class UserObj implements Serializable {
         loan.setBorrower(friend);
 
         (this.getAssets()).add(loan);
-//        (friend.getDebts()).add(loan);
+
     }
 
      public void borrowFrom(UserObj friend, long amount){

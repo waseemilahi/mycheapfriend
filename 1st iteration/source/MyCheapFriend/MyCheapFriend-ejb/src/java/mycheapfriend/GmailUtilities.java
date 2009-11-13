@@ -1,3 +1,4 @@
+/*  Gmail utilities class for connecting to gmail and authentication.*/
 package mycheapfriend;
 
 import com.sun.mail.pop3.POP3SSLStore;
@@ -23,6 +24,7 @@ import javax.mail.internet.ParseException;
 /**
  *
  * Reference: http://forums.sun.com/thread.jspa?threadID=5267916
+ * Add functions for our purpose
  * modified by David
  */
 
@@ -98,17 +100,11 @@ public class GmailUtilities {
         m.setFlag(Flags.Flag.DELETED, true);
     }
 
-    //only prints out new emails
+    //only set new emails
     public void setEmailInfo() throws Exception {
 
            // Attributes & Flags for all messages ..
         Message[] msgs = folder.getMessages();
-
-        // Use a suitable FetchProfile
-        /*FetchProfile fp = new FetchProfile();
-        fp.add(FetchProfile.Item.ENVELOPE);
-        folder.fetch(msgs, fp);*/
-
         for (int i = 0; i < msgs.length; i++) {
             if(!msgs[i].isSet(Flags.Flag.DELETED)){
                 setInfo(msgs[i]);
@@ -121,16 +117,10 @@ public class GmailUtilities {
         EmailInfo b = new EmailInfo();
         Address[] a;
         String content;
-        // FROM
-        //System.out.println("from"+ InternetAddress.toString(((Message)p).getFrom()));
-
         b.setFrom(InternetAddress.toString(((Message)p).getFrom()));
-        //System.out.println("from"+ b.getFrom());
         a=((Message)p).getRecipients(Message.RecipientType.TO);
-        
         b.setTo(InternetAddress.toString(a));
-        //System.out.println("to"+ b.getTo());
-        // Here might have Nullpointer exception.
+        // Here might have Nullpointer exception. We don't use subject field anyway.
         //b.setSubject(p.getSubject().toString());
         b.setDate(((Message)p).getSentDate().toString());
         if (p.isMimeType("text/plain")) {
@@ -143,7 +133,7 @@ public class GmailUtilities {
         info.add(b);
     }
 
-
+    //function that we don't use for now
     public void printAllMessages() throws Exception {
 
         // Attributes & Flags for all messages ..
@@ -167,7 +157,7 @@ public class GmailUtilities {
     }
 
 
-
+    //function that we don't use
     public static void dumpPart(Part p) throws Exception {
         if (p instanceof Message)
             dumpEnvelope((Message)p);
@@ -195,6 +185,7 @@ public class GmailUtilities {
         }
     }
 
+    //function that we don't use
     public static void dumpEnvelope(Message m) throws Exception {
         pr(" ");
         Address[] a;
@@ -227,6 +218,7 @@ public class GmailUtilities {
 
     /**
      * Print a, possibly indented, string.
+     * we don't use this function.
      */
     public static void pr(String s) {
 

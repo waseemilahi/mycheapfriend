@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 
 /**
- *
+ * Emailinfo class holding all the information parsed from the emails.
+ * Include functions for parsing the email and categorizing emails.
  * @author David
  */
 

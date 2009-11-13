@@ -1,4 +1,5 @@
 /*
+ * random password generator
  * code gotton from http://www.glenmccl.com/tip_010.htm
  * and modified for personal use
  */

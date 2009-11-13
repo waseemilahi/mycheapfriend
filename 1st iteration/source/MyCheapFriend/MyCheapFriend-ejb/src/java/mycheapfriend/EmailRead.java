@@ -1,3 +1,5 @@
+/* reading email from our robot account, username and password are hardcoded now.*/
+
 package mycheapfriend;
 
 import java.util.ArrayList;
@@ -5,7 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ *referece: http://forums.sun.com/thread.jspa?threadID=5267916
+ * modified for our purpose
  * @author David
  */
 

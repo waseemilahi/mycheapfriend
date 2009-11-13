@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The checking valid login session bean.
  */
 
 package mycheapfriend;

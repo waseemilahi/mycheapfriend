@@ -1,10 +1,13 @@
+/*Emailsend class for sending emails.*/
+
 package mycheapfriend;
 
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
 /**
- *
+ * referece: http://forums.sun.com/thread.jspa?threadID=5267916
+ * modified for our purpose
  * @author David
  */
 

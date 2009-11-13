@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Handles the login process.
  */
 
 package mycheapfriend;
@@ -29,7 +28,6 @@ public class LoginHandler extends HttpServlet {
     @EJB (mappedName="ejb.UserObjFacade")
     UserObjFacadeRemote userFacade;
 
-    //InitialContext context;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -44,15 +42,7 @@ public class LoginHandler extends HttpServlet {
         PrintWriter out = response.getWriter();
 
          System.setProperty("org.omg.CORBA.ORBInitialHost", "localhost");
-   /*     try {
-            context = new InitialContext();
-            loginSession = (AdminLoginRemote) context.lookup("ejb.AdminLoginBean");
-
-        } catch (NamingException ex) {
-            Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
-        }
-     */
-
+ 
          String phone = request.getParameter("Phone");
          String password = request.getParameter("Password");
                  

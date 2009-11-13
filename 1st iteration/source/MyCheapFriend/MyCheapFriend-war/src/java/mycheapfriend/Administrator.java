@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The Administrative Servlet, called after
+ * the authentication of the users.
  */
 
 package mycheapfriend;
@@ -38,7 +38,7 @@ public class Administrator extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            // TODO output your page here
+           
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Administrator</title>");  
@@ -53,10 +53,6 @@ public class Administrator extends HttpServlet {
                 out.println("<a href='StartService'>[start]</a>");
             }
             out.println("<br>");
-            //out.println("<a href='CreateUser'>Create a User.</a>");
-            //out.println("<br>");
-            //out.println("<a href='DeleteUserd'>Delete a User.</a>");
-            //out.println("<br>");
             out.println("<a href='ListUsers'>List all Users.</a>");
             out.println("<br>");
             out.println("</body>");

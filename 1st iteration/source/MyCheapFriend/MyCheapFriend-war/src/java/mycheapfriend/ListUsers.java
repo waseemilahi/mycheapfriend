@@ -1,6 +1,7 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The main Servlet, that lists all the users and
+ * provides the option for disabling/enabling a user and
+ * also starting/stoping the server.
  */
 
 package mycheapfriend;
@@ -44,7 +45,7 @@ public class ListUsers extends HttpServlet {
         try {
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
-            //poller.startTimer();
+            
         } catch (NamingException ex) {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -55,9 +56,6 @@ public class ListUsers extends HttpServlet {
             out.println("<title>List Users</title>");
             out.println("</head>");
             out.println("<body>");
-            /*out.println("<a href='CreateUser'>Create a User.</a>");
-            out.println("<br>");
-            out.println("<a href='DeleteUsers'>Delete all Users.</a>");*/
             out.println("<h1>List User Info.</h1>");
 
             List<UserObj> users = userFacade.findAll();
@@ -73,7 +71,6 @@ public class ListUsers extends HttpServlet {
                 else
                     out.println("false <a href=\"disable?id="+u.getPhone()+"\">[disable]</a></br>");
 
-                //out.println("<br>" + u.getSalt() + "</br>");
                 out.println("<br>Password: " + u.getPassword() + "</br>");
                 out.println("<br>Domain: " + u.getEmail_domain() + "</li><br>");
                 
@@ -126,9 +123,6 @@ public class ListUsers extends HttpServlet {
             }
             out.println("</ul>");
             out.println("<br>");
-
-
-
 
             out.println("<a href='ListUsers'>Refresh</a>");
             out.println("<br>");

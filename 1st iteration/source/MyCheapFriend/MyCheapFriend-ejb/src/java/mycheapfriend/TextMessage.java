@@ -1,11 +1,10 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * The Interface for the EmailInfo that the controller
+ * can use.
  */
 
 package mycheapfriend;
 
-import java.util.List;
 /**
  *
  * @author Shaoqing Niu

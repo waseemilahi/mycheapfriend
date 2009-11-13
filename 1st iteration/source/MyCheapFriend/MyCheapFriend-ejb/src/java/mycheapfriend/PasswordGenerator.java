@@ -31,6 +31,7 @@ public class PasswordGenerator {
                   return lo + i;
           }
 
+          /* This method gets called to generate the random password. */
           public static String generatePassword(){
                   return generatePassword(6, 6);
           }

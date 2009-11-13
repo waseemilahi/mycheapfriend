@@ -48,11 +48,7 @@ public class UserObjFacade implements UserObjFacadeRemote {
 
         em.remove(em.merge(userObj));
     }
-/*
-    public UserObj find(UserObj userObj) {
-        return em.find(UserObj.class, userObj.getPhone());
-    }
-*/
+
     public UserObj find(long phone) {
         UserObj u = em.find(UserObj.class, phone);
         if(u != null)

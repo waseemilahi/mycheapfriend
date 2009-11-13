@@ -31,14 +31,4 @@ public class EmailRead {
             return gmail.info;
     }
 
-    /* test program for reading emails. */
-    public static void main(String[] args) {
-        try {
-            EmailRead.read();
-        } catch (Exception ex) {
-            Logger.getLogger(EmailRead.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
 }

@@ -1,3 +1,6 @@
+/*
+ * Enable the disbles User.
+ */
 
 package mycheapfriend;
 

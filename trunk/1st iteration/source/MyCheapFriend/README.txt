@@ -44,3 +44,7 @@ StopService.java
 
 All the source files are inside the "mycheapfriend" 
 package, in both, the ejb and the war modules.
+
+Another Point to note is that, regardless of the Author name 
+for each file, at one point or the other almost every team
+member had to mutate the file.

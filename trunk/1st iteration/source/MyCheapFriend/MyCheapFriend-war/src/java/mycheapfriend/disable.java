@@ -1,3 +1,6 @@
+/*
+ * Disable the user, so he/she can't access MCF
+ */
 
 package mycheapfriend;
 

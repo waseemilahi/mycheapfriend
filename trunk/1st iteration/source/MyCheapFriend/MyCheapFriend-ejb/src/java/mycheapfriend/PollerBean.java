@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  A email poller using Timer service, reads emails every five seconds.
  */
 
 package mycheapfriend;
@@ -16,7 +15,7 @@ import javax.ejb.*;
 
 /**
  *
- * @author Waseem Ilahi
+ * @author David
  */
 @Stateless(mappedName="ejb.PollerBean")
 public class PollerBean implements PollerRemote {
@@ -58,7 +57,7 @@ public class PollerBean implements PollerRemote {
         }
     @Timeout
     public void handleTimeout(Timer timer) {
-       //call read(), process each email in the return arraylist.
+       //call read() everytime the timer expires, process each email in the return arraylist.
         Controller c = new Controller();
         if(!started)
             return;
@@ -69,7 +68,6 @@ public class PollerBean implements PollerRemote {
         } catch (Exception ex) {
             Logger.getLogger(PollerBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //System.out.println("HandleTimeout called.");
     }
 
 }

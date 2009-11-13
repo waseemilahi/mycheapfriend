@@ -42,5 +42,5 @@ serviceHandler.java
 StartService.java
 StopService.java
 
-
-
+All the source files are inside the "mycheapfriend" 
+package, in both, the ejb and the war modules.

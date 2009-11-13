@@ -2,6 +2,9 @@ MyCheapFriend was created using NetBeaNs.
 
 Team Members: Michael Glass, Huning Dai, Waseem Ilahi and Shaoqing Niu 
 
+Running the Project will open up the browser with the login servlet.
+Look into the code to get the proper credentials (LoginHandler servlet).
+
 directories:
 /MyCheapFriend-ejb 
 Contains the following:

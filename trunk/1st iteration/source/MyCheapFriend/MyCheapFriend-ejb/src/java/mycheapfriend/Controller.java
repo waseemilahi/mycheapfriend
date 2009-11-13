@@ -16,7 +16,23 @@ import javax.naming.NamingException;
 
 
 /**
- * Controller is used to handle incoming messages sent by a cell phone.
+ * This class implements the business logic of processing parsed text messages. Only one public function is provided in this class and it deals with all kinds of messages.
+ * <p>After receiving a parsed text message, form errors will be checked at first. If there is any form error, the function will send a notice back specifying the errors. There are generally four kinds of form errors.
+ * <ul>
+ * <li>Invalid sender: The message is not sent from a cell phone.
+ * <li>Lexical error: Some elements in the content are illegal.
+ * <li>Syntax error: The combination of elements is illegal.
+ * <li>Other error: illegal messages duing to undefined errors.
+ * </ul>
+ * <p>If there is no form error, the funcion will check whether the message sender has authorization for the functionality he wants to use. There are generally three kinds of users, including active users, inactive users, and strangers.
+ * <ul>
+ * <li>Active users: people who have registered by sending any text message to new_account@mycheapfriend.com. Active users have authorization to use any functionality implemented so far.
+ * <li>Inactive users: people who haven't registered but exist in our database. Inactive users can use public functionalities such creating an account, unsubscribing, accepting a bill and so on.
+ * <li>Strangers: people who are not in our database. Strangers can only create new accounts. But they may also become inactive users after sending any message free of form errors to mycheapfriend.com.
+ * </ul>
+ * <p>If there is no form error and the authorization meets requirement, the user may use the functionality. Functionalities implemented include "create a new account", "reset password", "unsubscribe", "resubscribe", "add a friend", "request a bill", "accept a bill" and "report".
+ * <p>When applying a functionality, semantic errors might be found. For example, the user may want to send a bill to some one named "Jack", but it turns out that the user doesn't have a friend with a nickname "Jack". In this case, a notice will be sent back to the user.
+ * <p>*Any of the three kinds of users might be blocked by an administrator and blocked users can not use any functionality.
  * @author Shaoqing Niu
  */
 public class Controller{
@@ -27,8 +43,8 @@ public class Controller{
     UserObjFacadeRemote userObjFacade;
 
     /**
-     * handle(TextMessage) is used to handle a parsed message.
-     * @param tm
+     * Handles a parsed message.
+     * @param tm: a parsed message
      */
     public void handle(TextMessage tm) {
         log("new message from " + tm.getFrom());
@@ -43,7 +59,7 @@ public class Controller{
             return;
         }
 
-        //handle error
+        //handle syntax errors
         if(tm.getType() == TextMessage.ERROR)
         {
             log("error: " + getErrorMessage(tm.getErrorType()));
@@ -51,12 +67,12 @@ public class Controller{
             return;
         }
 
-        //initializing common vars
+        //initialize common vars
         UserObj user = userObjFacade.find(tm.getPhone());
         boolean newUser = user == null;
         boolean userAuthenticated = !newUser && user.isActive() && tm.getPassword() != null && user.getPassword().equalsIgnoreCase(tm.getPassword());
         log("sender phone:" + tm.getPhone());
-        if(newUser)
+        if(newUser) //always create a new account if the sender is not a user
         {
             log("sender is a new user");
             user = new UserObj(tm.getPhone(), tm.getDomain()); //create inactive user
@@ -64,16 +80,16 @@ public class Controller{
         }
         else
         {
-            if(user.getEmail_domain() == null)
+            if(user.getEmail_domain() == null) //the sender is an inactive user
             {
                 user.setEmail_domain(tm.getDomain());
                 userObjFacade.edit(user);
             }
 
-            if(user.isDisabled())
+            if(user.isDisabled()) //the sender is disabled by administrator
                 return;
 
-            if(user.isUnsubscribe())
+            if(user.isUnsubscribe()) //the sender is unsubscribed and wants to resubscribe now
             {
                 log("Sender is unsubscribed");
                 if(tm.getType() == TextMessage.RESUBSCRIBE)
@@ -82,7 +98,7 @@ public class Controller{
             }
         }
 
-
+        //all people can use the following four functionalities
         switch(tm.getType()){
 
             case TextMessage.NEW_ACCOUNT:
@@ -97,25 +113,24 @@ public class Controller{
                 return;
         }
 
-        //make sure user is authorized for other types...
-        
+        //a non-user wants to use premium functionalities
         if(newUser) {
             replyUnregisteredUser(tm.getFrom());
             return;
         }
-
+        //a user wants to accept a bill
         if(tm.getType() == TextMessage.ACCEPT_BILL)
         {
             acceptBill(user);
             return;
         }
-
+        //inactive user, or acitve user who sends to a wrong address when using premium functionalities
         else if(!userAuthenticated) {
             replyWrongPasswordUser(user.getPassword(), tm.getFrom());
             return;
         }
 
-        
+        //active user wants to use premium functions
         switch(tm.getType()){
             case TextMessage.NEW_FRIEND:
                 newFriend(user, tm.getFriendPhone(), tm.getFriendNick());
@@ -130,6 +145,10 @@ public class Controller{
         }
     }
 
+    /**
+     * Creates a new account or resets the password for an user.
+     * @param newUser: determines what message to reply to the user
+     */
     private void newAccountOrReset(UserObj user, boolean newUser)
     {
         log("new account or reset");
@@ -145,6 +164,9 @@ public class Controller{
 
     }
 
+    /**
+     * Unsubscribes a user so that he/she won't receive messages from mycheapfriend.com.
+     */
     private void unsubscribe(UserObj user)
     {
         log("unsubscribe");
@@ -153,6 +175,9 @@ public class Controller{
         this.replyUnsubscribe(user.getEmail());
     }
 
+    /**
+     * Resubscribes a user so that he/she can receive messages from mycheapfriend.com.
+     */
     private void resubscribe(UserObj user)
     {
         log("resubscribe");
@@ -161,6 +186,11 @@ public class Controller{
         this.replyResubscribe(user.getEmail());
     }
 
+    /**
+     * Adds a friend for a user and sets the firend's nickname.
+     * @param friendPhone: the phone number of the user's friend
+     * @param friendNick: the nickname of the friend
+     */
     private void newFriend(UserObj user, long friendPhone, String friendNick)
     {
         log("new friend");
@@ -170,6 +200,10 @@ public class Controller{
         this.replyAddFriend(friendPhone, friendNick, email);
     }
 
+    /**
+     * Requests a bill to the user's friends.
+     * @param tm: the parsed message that contains the information of the request
+     */
     private void newBill(UserObj user, TextMessage tm)
     {
         log("new bill");
@@ -179,6 +213,7 @@ public class Controller{
         for(int i = 0; i < tm.getNumBills(); i++){
             UserObj friendUser = this.identifierToUserObj(user, tm.getBillFriend(i));
             //a nickname is used but the user doesn't have a friend with the nickname
+            //so the message has a semantic error
             if(friendUser == null) {
                 this.replyIdentifierWrong(tm.getBillFriend(i), user.getEmail());
                 return;
@@ -204,7 +239,7 @@ public class Controller{
                 String newAddress;
                 if((newAddress = friendUser.getEmail()) != null)
                     emailsToTry.add(newAddress);
-                else
+                else //we don't have the receiver's domain, so we try all domains
                     for(String domain:POSSIBLE_DOMAINS)
                         emailsToTry.add(friendUser.getPhone() + "@" + domain);
 
@@ -214,6 +249,9 @@ public class Controller{
         }
     }
 
+    /**
+     * Reports bills to the user.
+     */
     private void reportBills(UserObj user)
     {
         log("report bills");
@@ -306,6 +344,9 @@ public class Controller{
         replyReport(text, user.getEmail());
     }
 
+    /**
+     * Accepts a bill.
+     */
     private void acceptBill(UserObj user)
     {
         log("accept bill");
@@ -313,6 +354,7 @@ public class Controller{
         Bill most_recent_bill = null;
         Date most_recent = null;
         log("traversing " + debts.size() + " debts.");
+        //get the most recent debt
         for(Bill b : debts)
         {
             Date next_date = b.getTimeCreated();
@@ -332,15 +374,17 @@ public class Controller{
         }
         else
           log("bbbill date:" + most_recent + ", calendar date" + c.getTime());
-        
+
+        //the most recent bill is not approved yet and it is not out of date
         if(most_recent != null && !most_recent_bill.getApproved() && most_recent.after(c.getTime()))
         {
             log("1");
             most_recent_bill.setApproved(true);
             UserObj lender = most_recent_bill.getLender();
+            //the lender is unsubscribed
             if(lender.isUnsubscribe())
                 this.replyFriendUnsubscribed(readableFriend(user, lender), user.getEmail());
-
+            //else calculate all bills not setteled
             log("2");
 
             long originalBalance = most_recent_bill.getAmount();
@@ -394,6 +438,11 @@ public class Controller{
         log("8");
     }
 
+    /**
+     * Checks whether the amount of money is readable.
+     * @param val
+     * @return
+     */
     private String readableAmount(long val)
     {
         String money;
@@ -403,11 +452,24 @@ public class Controller{
             money = (new BigDecimal(BigInteger.valueOf(val), 2)).toPlainString();
         return money;
     }
+
+    /**
+     * Gets the identifier of a user, probably a friend of a user.
+     * @param user
+     * @param friend
+     * @return
+     */
     private String readableFriend(UserObj user, UserObj friend)
     {
         return readableFriend(user.getNickname(friend), friend.getPhone());
     }
 
+    /**
+     * Gets the identifier of a user, probably a friend of a user.
+     * @param user
+     * @param friend
+     * @return
+     */
     private String readableFriend(String nickname, long phone)
     {
         if(nickname == null)
@@ -416,11 +478,18 @@ public class Controller{
             return nickname;
     }
 
+    /**
+     * Set nickname for a friend of a user.
+     * @param phone: phone number of the friend
+     * @param nickname: nickname for friend
+     * @param user: the user who wants to add a friend
+     */
     private void setFriendNickName(long phone, String nickname, UserObj user){
 
             UserObj friendUser = userObjFacade.find(phone);
             Boolean found = Boolean.FALSE;
 
+            //no such user, then create one
             if(friendUser == null){
 
                 friendUser = new UserObj(phone);
@@ -434,7 +503,7 @@ public class Controller{
                 Friend newFriend = new Friend();
                 newFriend.setParent(user);
                 newFriend.setFriend(friendUser);
-
+                //check the friend list and update the nickname if exists
                 for(Friend f : user.getFriends()){
                     if(f.getFriend().getPhone() == phone){
                         f.setNickname(nickname);
@@ -442,6 +511,7 @@ public class Controller{
                         break;
                     }
                 }
+                //not in the friend list, so add to the list
                 if(found == Boolean.FALSE){
                     newFriend.setNickname(nickname);
                     user.getFriends().add(newFriend);
@@ -451,20 +521,31 @@ public class Controller{
 
             }
     }
-
+    /**
+     * Replys a message if an unregistered user wants to use premium function.
+     * @param address
+     */
     private void replyUnregisteredUser(String address){
         String text = "You are not registered yet. ";
         text += "Please text "+EmailInfo.NEW_ACCOUNT_ADDR+"@mycheapfriend.com to register.";
         replyReport(text, address);
     }
-
+    /**
+     * Replys a message if a user sends to a wrong address.
+     * @param password
+     * @param address
+     */
     private void replyWrongPasswordUser(String password, String address){
         String text = "Please text your own address. ";
         text += "Your unique address is <" + password+"@mycheapfriend.com>. ";
         text += "Please add it to your address book.";
         replyReport(text, address);
     }
-
+    /**
+     * Replys a message if people wants to create an account.
+     * @param password
+     * @param address
+     */
     private void replyNewUser(String password, String address){
         String text = "Welcome to MyCheapFriend! ";
         text += "Your unique address is <" + password+"@mycheapfriend.com>. ";
@@ -561,7 +642,7 @@ public class Controller{
         this.replyReport(borrowerText, borrower.getEmail());
     }
 
-    //TODO: INCOMPLETE!! NEED TO DEAL WITH bills that are more than a day old
+
     private void replyBillTooOld(UserObj u)
     {
         replyReport("You tried to accept a bill, but you don't have any pending bills from the last 24 hours to accept", u.getEmail());

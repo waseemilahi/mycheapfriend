@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <servlet>
-        <servlet-name>CreateUser</servlet-name>
-        <servlet-class>mycheapfriend.CreateUser</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ListUsers</servlet-name>
         <servlet-class>mycheapfriend.ListUsers</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>DeleteUsers</servlet-name>
-        <servlet-class>mycheapfriend.DeleteUsers</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginUser</servlet-name>
@@ -41,16 +33,8 @@
         <servlet-class>mycheapfriend.enable</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>CreateUser</servlet-name>
-        <url-pattern>/CreateUser</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ListUsers</servlet-name>
         <url-pattern>/ListUsers</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DeleteUsers</servlet-name>
-        <url-pattern>/DeleteUsers</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginUser</servlet-name>

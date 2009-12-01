@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -88,6 +89,10 @@ public class LoginHandler extends HttpServlet {
                     if((test_phone == David) || (test_phone == Waseem) || (test_phone == Michael)){
                         answer = loginSession.check_password(test_phone, password);
                         if(answer == Boolean.TRUE){
+                                HttpSession session = request.getSession(true);
+                                
+                                session.setAttribute("phone", test_phone);
+                                session.setAttribute("password", password);
                                 out.println("<html>");
                                 out.println("<head>");
                                 out.println("<title>LoginHandler</title>");

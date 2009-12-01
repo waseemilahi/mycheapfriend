@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,7 +30,8 @@ public class ListUsers extends HttpServlet {
     InitialContext context;
     @EJB(mappedName="ejb.PollerBean")
     private PollerRemote poller;
-   
+    @EJB (mappedName="ejb.AdminLoginBean")
+    AdminLoginRemote loginSession;
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -50,7 +52,15 @@ public class ListUsers extends HttpServlet {
             Logger.getLogger(ListUsers.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            
+            HttpSession session = request.getSession(false);
+            if(session == null){
+                out.println("<body onLoad=\"parent.location='LoginUser'\">");
+                return;
+            }
+            if(!loginSession.check_password((Long)session.getAttribute("phone"),(String)session.getAttribute("password"))){
+                out.println("<body onLoad=\"parent.location='LoginUser'\">");
+                return;
+            }
             out.println("<html>");
             out.println("<head>");
             out.println("<title>List Users</title>");

@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -36,7 +37,12 @@ public class LoginUser extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         try {
-            
+            HttpSession session = request.getSession(false);
+            if(session != null){
+                session.removeAttribute("phone");
+                session.removeAttribute("password");
+                session.invalidate();
+            }
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet LoginUser</title>");  

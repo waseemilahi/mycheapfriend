@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 /**
  *
  * @author Administrator
@@ -24,7 +25,9 @@ public class enable extends HttpServlet {
 
     UserObjFacadeRemote userFacade;
     InitialContext context;
-    /** 
+    @EJB (mappedName="ejb.AdminLoginBean")
+    AdminLoginRemote loginSession;
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -36,6 +39,15 @@ public class enable extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
+            HttpSession session = request.getSession(false);
+            if(session == null){
+                out.println("<body onLoad=\"parent.location='LoginUser'\">");
+                return;
+            }
+            if(!loginSession.check_password((Long)session.getAttribute("phone"),(String)session.getAttribute("password"))){
+                out.println("<body onLoad=\"parent.location='LoginUser'\">");
+                return;
+            }
             context = new InitialContext();
             userFacade = (UserObjFacadeRemote) context.lookup("ejb.UserObjFacade");
 

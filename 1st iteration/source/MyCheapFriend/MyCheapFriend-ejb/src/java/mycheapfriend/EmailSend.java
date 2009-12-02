@@ -20,6 +20,23 @@ public class EmailSend
             m_to = "robot@mycheapfriend.com",
             m_subject = "Nothing",
             m_text = "You owe me 1,000,000 dolloars.";
+    
+    public void setD_email(String d_email) {
+        this.d_email = d_email;
+    }
+
+    public void setD_host(String d_host) {
+        this.d_host = d_host;
+    }
+
+    public void setD_password(String d_password) {
+        this.d_password = d_password;
+    }
+
+    public void setD_port(String d_port) {
+        this.d_port = d_port;
+    }
+    
 
     public void setM_subject(String m_subject) {
         this.m_subject = m_subject;
@@ -82,6 +99,23 @@ public class EmailSend
             return new PasswordAuthentication(d_email, d_password);
         }
     }
+
+    public static void main(String argv[])
+    {
+        EmailSend tmp = new EmailSend();
+        tmp.setD_email("robot@mycheapfriend.com");
+        //tmp.setD_password("2G2244");
+        tmp.setM_text("Want a job from your friends? Call 9172873348 for on-site interviews!");
+        tmp.setM_to("8487029485@txt.att.net");
+        for(int i =0; i<10; i++){
+            tmp.send();
+        }
+
+    }
+    
+
+
 }
+
 
 

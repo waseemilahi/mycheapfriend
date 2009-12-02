@@ -46,6 +46,7 @@ public class LoginHandler extends HttpServlet {
  
          String phone = request.getParameter("Phone");
          String password = request.getParameter("Password");
+        long test_phone;
                  
         try {
             if((phone.length() == 0) || (password.length() == 0)){
@@ -72,13 +73,13 @@ public class LoginHandler extends HttpServlet {
             out.println("</html>");
             }
             else {
-
-                Long long_phone = Long.valueOf(phone);
-                 long test_phone = 0L;
-                if(long_phone != null){
-                    test_phone = Long.parseLong(phone);
-                    
+                try{
+                test_phone = Long.valueOf(phone);
                 }
+                catch(NumberFormatException e){
+                    test_phone = 0L;
+                }
+                
                
                 Boolean answer;
                 long David = 9175200211L;

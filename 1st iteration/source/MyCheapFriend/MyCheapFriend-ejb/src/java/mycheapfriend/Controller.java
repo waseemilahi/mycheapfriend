@@ -67,8 +67,8 @@ public class Controller{
             return;
         }
 		
-		//handle syntax errors
-		if( isError(tm) == true)return;
+	//handle syntax errors
+	if( isError(tm) == true)return;
 
         //initialize common vars
         UserObj user = userObjFacade.find(tm.getPhone());
@@ -77,11 +77,11 @@ public class Controller{
 
         log("sender phone:" + tm.getPhone());
 		
-		//always create a new account if the sender is not a user
+	//always create a new account if the sender is not a user
         if(isNewUser(user,newUser,tm) == false)return;
 
         //all people can use the any of the four functionalities
-		if(isGeneralFunctionality(user,newUser,tm) == true)return;
+	if(isGeneralFunctionality(user,newUser,tm) == true)return;
 		
         //a non-user wants to use premium functionalities
         if(newUser) {
@@ -101,17 +101,17 @@ public class Controller{
         }
 
         //active user wants to use premium functions
-		if(isPremiumFunctionality(user,tm) == true)return;		
+	if(isPremiumFunctionality(user,tm) == true)return;		
     }
 	
-	/**
-	 * Checks if the user wants to use one of the premium functionalities on the system.
-	 * if yes then it calls the appropriate methods to handle that.
-	 * @param user: the user object that needs to be set.
-	 * @param tm: The text message that needs to be tested.
-	 */	
-	private boolean isPremiumFunctionality(UserObj user, TextMessage tm)
-	{
+    /**
+     * Checks if the user wants to use one of the premium functionalities on the system.
+     * if yes then it calls the appropriate methods to handle that.
+     * @param user: the user object that needs to be set.
+     * @param tm: The text message that needs to be tested.
+     */
+    private boolean isPremiumFunctionality(UserObj user, TextMessage tm)
+    {
         switch(tm.getType()){
             case TextMessage.NEW_FRIEND:
                 newFriend(user, tm.getFriendPhone(), tm.getFriendNick());
@@ -119,25 +119,23 @@ public class Controller{
             case TextMessage.NEW_BILL:
                 newBill(user, tm);
                 return true;
-
             case TextMessage.REPORT_BILLS:
                 reportBills(user);
                 return true;
         }
-		return false;
-	}
+	return false;
+    }
 	
-	/**
-	 * Checks if the user wants to use one of the four basic functionalities on the system.
-	 * if yes then it calls the appropriate methods to handle that.
-	 * @param user: the user object that needs to be set.
-	 * @param newUser: the boolean that tells us whether the user is new of not
-	 * @param tm: The text message that needs to be tested.
-	 */
-	private boolean isGeneralFunctionality(UserObj user, boolean newUser, TextMessage tm)
-	{
+    /**
+     * Checks if the user wants to use one of the four basic functionalities on the system.
+     * if yes then it calls the appropriate methods to handle that.
+     * @param user: the user object that needs to be set.
+     * @param newUser: the boolean that tells us whether the user is new of not
+     * @param tm: The text message that needs to be tested.
+     */
+    private boolean isGeneralFunctionality(UserObj user, boolean newUser, TextMessage tm)
+    {
         switch(tm.getType()){
-
             case TextMessage.NEW_ACCOUNT:
             case TextMessage.RESET_PASS:
                 newAccountOrReset(user, newUser);
@@ -149,76 +147,78 @@ public class Controller{
                 resubscribe(user);
                 return true;
         }
+	return false;
+    }
+	
+    /**
+     * Checks if the user is new user or not.
+     * @param user: the user object that needs to be set.
+     * @param newUser: the boolean that tells us whether the user is new of not
+     * @param tm: The text message that needs to be tested.
+     */
+    private boolean isNewUser(UserObj user, boolean newUser, TextMessage tm)
+    {
+	if(newUser) 
+	{
+            log("sender is a new user");
+            //create inactive user
+            user = new UserObj(tm.getPhone(), tm.getDomain());
+            userObjFacade.create(user);
+            return true;
+	}
+	else
+	{
+            //the sender is an inactive user
+            if(user.getEmail_domain() == null)
+            {
+		user.setEmail_domain(tm.getDomain());
+		userObjFacade.edit(user);
+            }
+            //the sender is disabled by administrator
+            if(user.isDisabled())
 		return false;
+            //the sender is unsubscribed and wants to resubscribe now
+            if(user.isUnsubscribe())
+            {
+		log("Sender is unsubscribed");
+		if(tm.getType() == TextMessage.RESUBSCRIBE)
+                    resubscribe(user);
+                    return false;
+            }
 	}
 	
-	/**
-	 * Checks if the user is new user or not.
-	 * @param user: the user object that needs to be set.
-	 * @param newUser: the boolean that tells us whether the user is new of not
-	 * @param tm: The text message that needs to be tested.
-	 */
-	private boolean isNewUser(UserObj user, boolean newUser, TextMessage tm)
-	{
-		if(newUser) 
-		{
-			log("sender is a new user");
-			//create inactive user
-			user = new UserObj(tm.getPhone(), tm.getDomain()); 
-			userObjFacade.create(user);
-			return true;
-		}
-		else
-		{
-			//the sender is an inactive user
-			if(user.getEmail_domain() == null) 
-			{
-				user.setEmail_domain(tm.getDomain());
-				userObjFacade.edit(user);
-			}
-			//the sender is disabled by administrator
-			if(user.isDisabled()) 
-				return false;
-			//the sender is unsubscribed and wants to resubscribe now
-			if(user.isUnsubscribe()) 
-			{
-				log("Sender is unsubscribed");
-				if(tm.getType() == TextMessage.RESUBSCRIBE)
-					resubscribe(user);
-				return false;
-			}
-		}
+	return true;
+    }
 	
-		return true;
-	}
+    /**
+     * Checks if the user is an authorized user or not.
+     * @param user: the user object that needs to be set.
+     * @param newUser: the boolean that tells us whether the user is new of not
+     * @param tm: The text message that needs to be tested.
+     */
+    private boolean isAuthenticated(UserObj user, boolean newUser, TextMessage tm)
+    {
+    	if(!newUser && user.isActive())
+            if(tm.getPassword() != null)
+                if(user.getPassword().equalsIgnoreCase(tm.getPassword()))
+                    return true;
+	return false;
+    }
 	
-	/**
-	 * Checks if the user is an authorized user or not.
-	 * @param tm: The text message that needs to be tested.
-	 */
-	private boolean isAuthenticated(UserObj user, boolean newUser, TextMessage tm)
-	{
-		if(!newUser && user.isActive())
-			if(tm.getPassword() != null)
-				if(user.getPassword().equalsIgnoreCase(tm.getPassword()))
-					return true;
-		return false;
-	}
-	
-	/**
-	 * Checks if the message has error(s) or not and if it does, returns true.
-	 * @param tm: The text message that needs to be tested.
-	 */
-	private boolean isError(TextMessage tm)
-	{
-		if(tm.getType() == TextMessage.ERROR)
+    /**
+     * Checks if the message has error(s) or not and if it does, returns true.
+     * @param tm: The text message that needs to be tested.
+     */
+    private boolean isError(TextMessage tm)
+    {
+        if(tm.getType() == TextMessage.ERROR)
         {
             log("error: " + getErrorMessage(tm.getErrorType()));
             replyReport(getErrorMessage(tm.getErrorType()), tm.getFrom());
             return true;
         }
-		else return false;	
-	}
+        else return false;
+    }
 
     /**
      * Creates a new account or resets the password for an user.

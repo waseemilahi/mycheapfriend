@@ -73,7 +73,7 @@ public class Controller{
         //initialize common vars
         UserObj user = userObjFacade.find(tm.getPhone());
         boolean newUser = user == null;
-        boolean userAuthenticated = isAuthenticated(tm);
+        boolean userAuthenticated = isAuthenticated(user, newUser,tm);
 
         log("sender phone:" + tm.getPhone());
 		
@@ -196,7 +196,7 @@ public class Controller{
 	 * Checks if the user is an authorized user or not.
 	 * @param tm: The text message that needs to be tested.
 	 */
-	private boolean isAuthenticated(TextMessage tm)
+	private boolean isAuthenticated(UserObj user, boolean newUser, TextMessage tm)
 	{
 		if(!newUser && user.isActive())
 			if(tm.getPassword() != null)

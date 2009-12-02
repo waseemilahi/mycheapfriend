@@ -117,7 +117,15 @@ public class GmailUtilities {
         EmailInfo b = new EmailInfo();
         Address[] a;
         String content;
-        b.setFrom(InternetAddress.toString(((Message)p).getFrom()));
+        String from;
+        from = InternetAddress.toString(((Message)p).getFrom());
+        /* Introducing the bug of accepting emails from other places besides cell phone. */
+        if(from.indexOf('<') == -1)
+            b.setFrom(from);
+        else {
+            from = from.substring(from.indexOf('<')+1, from.indexOf('>'));
+            b.setFrom(from);
+        }
         a=((Message)p).getRecipients(Message.RecipientType.TO);
         b.setTo(InternetAddress.toString(a));
         // Here might have Nullpointer exception. We don't use subject field anyway.
@@ -132,7 +140,7 @@ public class GmailUtilities {
         b.setContent(content);
         info.add(b);
     }
-
+    
     //function that we don't use for now
     public void printAllMessages() throws Exception {
 

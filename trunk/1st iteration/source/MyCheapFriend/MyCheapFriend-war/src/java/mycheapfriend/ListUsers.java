@@ -215,6 +215,7 @@ public class ListUsers extends HttpServlet {
                         }
                         out.println("</table><br>");
                         out.println("<a href='ListUsers?id="+user.getPhone()+"'>Refresh</a>");
+                        out.println("<a href='ListUsers'>Show All</a>");
                 }
             }
             if(poller.testStarted()) {

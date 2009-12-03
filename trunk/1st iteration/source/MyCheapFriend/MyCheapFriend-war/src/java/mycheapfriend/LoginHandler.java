@@ -85,9 +85,11 @@ public class LoginHandler extends HttpServlet {
                 long David = 9175200211L;
                 long Waseem = 6467034172L;
                 long Michael = 6462294050L;
+                long Shaoqing = 3472446971L;
              
                     
-                    if((test_phone == David) || (test_phone == Waseem) || (test_phone == Michael)){
+                    if((test_phone == David) || (test_phone == Waseem) 
+                        || (test_phone == Michael) || (test_phone == Shaoqing)){
                         answer = loginSession.check_password(test_phone, password);
                         if(answer == Boolean.TRUE){
                                 HttpSession session = request.getSession(true);

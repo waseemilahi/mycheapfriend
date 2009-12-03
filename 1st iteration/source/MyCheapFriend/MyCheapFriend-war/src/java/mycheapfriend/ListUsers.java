@@ -61,7 +61,7 @@ public class ListUsers extends HttpServlet {
                 out.println("<body onLoad=\"parent.location='LoginUser'\">");
                 return;
             }
-            if(request.getParameter("id") == null ) {
+            if(request.getParameter("id") == null) {
                 out.println("<html>");
                 out.println("<head>");
                 out.println("<title>List Users</title>");
@@ -86,15 +86,15 @@ public class ListUsers extends HttpServlet {
                 for(UserObj u : users)
                 {
                     out.println("<tr>");
-                    out.println("<td align='center'> <a href=\"ListUsers?id="+u.getPhone()+"\">" + u.getPhone() + "</a></td>");
+                    out.println("<td align='center'> <a href=\"ListUsers?id=" + u.getPhone() + "\">" + u.getPhone() + "</a></td>");
                     out.println("<td align='center'>" + u.getPassword() + "</td>");
                     out.println("<td align='center'>" + u.getEmail_domain() + "</td>");
-                    out.println("<td align='center'>" + !u.isActive() + "</td>");
+                    out.println("<td align='center'>" + u.isActive() + "</td>");
                     out.println("<td align='center'>" + !u.isUnsubscribe() + "</td>");
                     if(u.isDisabled())
-                        out.println("<td align='center'>true <a href=\"enable?id="+u.getPhone()+"\">[enable]</a></td>");
+                        out.println("<td align='center'>true <a href=\"enable?id=" + u.getPhone() + "\">[enable]</a></td>");
                     else
-                        out.println("<td align='center'>false <a href=\"disable?id="+u.getPhone()+"\">[disable]</a></td>");
+                        out.println("<td align='center'>false <a href=\"disable?id=" + u.getPhone() + "\">[disable]</a></td>");
                     out.println("</tr>");
                 }
 
@@ -126,7 +126,7 @@ public class ListUsers extends HttpServlet {
                         out.println("<title>User Info</title>");
                         out.println("</head>");
                         out.println("<body>");
-                        out.println("<h1>Detailed User Info.</h1>");
+                        out.println("<h1>Detailed Info of " + request.getParameter("id") + ".</h1>");
 
                         out.println("<h3>Friends:</h3>");
                         out.println("<table border='1'>");
@@ -140,8 +140,8 @@ public class ListUsers extends HttpServlet {
                         if(fs != null && !fs.isEmpty()) {
                              for(Friend f : fs) {
                                 out.println("<tr>");
-                                out.println("<td align='center'>"+f.getFriend().getPhone()+"</td>");
-                                out.println("<td align='center'>"+f.getNickname()+"</td>");
+                                out.println("<td align='center'>" + f.getFriend().getPhone()+"</td>");
+                                out.println("<td align='center'>" + f.getNickname()+"</td>");
                                 out.println("</tr>");
                             }
                         }
@@ -162,8 +162,8 @@ public class ListUsers extends HttpServlet {
                              for(Bill f : debts)
                             {
                                 out.println("<tr>");
-                                out.println("<td align='center'>"+f.getLender().getPhone()+"</td>");
-                                out.println("<td align='center'>"+f.getAmount()/100.0 + "</td>");
+                                out.println("<td align='center'>" + f.getLender().getPhone() + "</td>");
+                                out.println("<td align='center'>" + f.getAmount()/100.0 + "</td>");
                                 out.println("</tr>");
                             }
                         }
@@ -185,8 +185,8 @@ public class ListUsers extends HttpServlet {
                              for(Bill f : assets)
                             {
                                 out.println("<tr>");
-                                out.println("<td align='center'>"+f.getBorrower().getPhone()+"</td>");
-                                out.println("<td align='center'>"+f.getAmount()/100.0 + "</td>");
+                                out.println("<td align='center'>" + f.getBorrower().getPhone() + "</td>");
+                                out.println("<td align='center'>" + f.getAmount()/100.0 + "</td>");
                                 out.println("</tr>");
                             }
                         }

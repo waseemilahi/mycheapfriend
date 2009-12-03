@@ -61,95 +61,140 @@ public class ListUsers extends HttpServlet {
                 out.println("<body onLoad=\"parent.location='LoginUser'\">");
                 return;
             }
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>List Users</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>List User Info.</h1>");
+            if(request.getParameter("id") == null ) {
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>List Users</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>List User Info.</h1>");
 
-            List<UserObj> users = userFacade.findAll();
+                List<UserObj> users = userFacade.findAll();
 
-            out.println("<h3>" + users.size() + " Users:</h3>");
-            out.println("<ul>");
-            for(UserObj u : users)
-            {
-                out.println("<li> Phone#" + u.getPhone() + "</br>");
-                out.print("Disabled: ");
-                if(u.isDisabled())
-                    out.println("true <a href=\"enable?id="+u.getPhone()+"\">[enable]</a></br>");
-                else
-                    out.println("false <a href=\"disable?id="+u.getPhone()+"\">[disable]</a></br>");
+                out.println("<h3>" + users.size() + " Users:</h3>");
 
-                out.println("<br>Password: " + u.getPassword() + "</br>");
-                out.println("<br>Domain: " + u.getEmail_domain() + "</li><br>");
-                
-                List<Friend> fs = u.getFriends();
+                out.println("<table border='1' cellpadding='5'>");
+                out.println("<tr>");
+                out.println("<th align='center'>Phone#</th>");
+                out.println("<th align='center'>Password</th>");
+                out.println("<th align='center'>Domain</th>");
+                out.println("<th align='center'>Active</th>");
+                out.println("<th align='center'>Subscribed</th>");
+                out.println("<th align='center'>Disabled</th>");
+                out.println("</tr>");
 
-                if(fs != null)
+                for(UserObj u : users)
                 {
-
-                    if(!fs.isEmpty())
-                        out.println("<br>Friends:<br>");
-
-                    out.println("<ul>");
-                     for(Friend f : fs)
-                    {
-                        out.println("<li>"+f.getNickname()+" => "+f.getFriend().getPhone()+"</li>");
-                    }
-                    out.println("</ul>");
+                    out.println("<tr>");
+                    out.println("<td align='center'> <a href=\"ListUsers?id="+u.getPhone()+"\">" + u.getPhone() + "</a></td>");
+                    out.println("<td align='center'>" + u.getPassword() + "</td>");
+                    out.println("<td align='center'>" + u.getEmail_domain() + "</td>");
+                    out.println("<td align='center'>" + !u.isActive() + "</td>");
+                    out.println("<td align='center'>" + !u.isUnsubscribe() + "</td>");
+                    if(u.isDisabled())
+                        out.println("<td align='center'>true <a href=\"enable?id="+u.getPhone()+"\">[enable]</a></td>");
+                    else
+                        out.println("<td align='center'>false <a href=\"disable?id="+u.getPhone()+"\">[disable]</a></td>");
+                    out.println("</tr>");
                 }
 
-                 List<Bill> debts = u.getDebts();
+                out.println("</table><br>");
 
-                if(debts != null)
-                {
-                    if(!debts.isEmpty())
-                        out.println("Debts:<br>");
-
-                    out.println("<ul>");
-                     for(Bill f : debts)
-                    {
-                        out.println("<li>"+f.getAmount()/100.0 +" => "+f.getLender().getPhone()+"</li>");
-                    }
-                    out.println("</ul>");
-                }    
-
-                 List<Bill> assets = u.getAssets();
-
-                if(assets != null)
-                {
-                    if(!assets.isEmpty())
-                        out.println("Assets:<br>");
-
-                    out.println("<ul>");
-                     for(Bill f : assets)
-                    {
-                        out.println("<li>"+f.getAmount()/100.0 +" => "+f.getBorrower().getPhone()+"</li>");
-                    }
-                    out.println("</ul><br>");
+                out.println("<a href='ListUsers'>Refresh</a>");
+                out.println("<br>");
+                if(poller.testStarted()) {
+                    out.print("The server is running.");
+                    out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
                 }
-
-            }
-            out.println("</ul>");
-            out.println("<br>");
-
-            out.println("<a href='ListUsers'>Refresh</a>");
-            out.println("<br>");
-            if(poller.testStarted()) {
-                out.print("The server is running.");
-                out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
+                else {
+                    out.print("The server is stopped.");
+                    out.println("<a href='StartService'>[start]</a>");
+                }
+                out.println("<br>");
+                out.println("<a href='LoginUser'>Logout</a>");
+                out.println("<br>");
+                out.println("</body>");
+                out.println("</html>");
             }
             else {
-                out.print("The server is stopped.");
-                out.println("<a href='StartService'>[start]</a>");
+                UserObj user = userFacade.find(Long.parseLong(request.getParameter("id")));
+                if(user == null)
+                    out.println("<body onLoad=\"parent.location='ListUsers'\">");
+                else {
+                        out.println("<html>");
+                        out.println("<head>");
+                        out.println("<title>User Info</title>");
+                        out.println("</head>");
+                        out.println("<body>");
+                        out.println("<h1>Detailed User Info.</h1>");
+
+                        out.println("<h3>Friends:</h3>");
+                        out.println("<table border='1'>");
+                        out.println("<tr>");
+                        out.println("<th align='center'>Phone#</th>");
+                        out.println("<th align='center'>Nickname</th>");
+                        out.println("</tr>");
+
+                        List<Friend> fs = user.getFriends();
+
+                        if(fs != null && !fs.isEmpty()) {
+                             for(Friend f : fs) {
+                                out.println("<tr>");
+                                out.println("<td align='center'>"+f.getFriend().getPhone()+"</td>");
+                                out.println("<td align='center'>"+f.getNickname()+"</td>");
+                                out.println("</tr>");
+                            }
+                        }
+
+                        out.println("</table><br>");
+
+                        out.println("<h3>Debts:</h3>");
+                        out.println("<table border='1'>");
+                        out.println("<tr>");
+                        out.println("<th align='center'>Lender</th>");
+                        out.println("<th align='center'>Amount</th>");
+                        out.println("</tr>");
+
+                        List<Bill> debts = user.getDebts();
+
+                        if(debts != null && !debts.isEmpty())
+                        {
+                             for(Bill f : debts)
+                            {
+                                out.println("<tr>");
+                                out.println("<td align='center'>"+f.getLender().getPhone()+"</td>");
+                                out.println("<td align='center'>"+f.getAmount()/100.0 + "</td>");
+                                out.println("</tr>");
+                            }
+                        }
+
+                        out.println("</table><br>");
+
+                        out.println("<h3>Assets:</h3>");
+                        out.println("<table border='1'>");
+                        out.println("<tr>");
+                        out.println("<th align='center'>Borrower</th>");
+                        out.println("<th align='center'>Amount</th>");
+                        out.println("</tr>");
+
+                        List<Bill> assets = user.getAssets();
+
+                        if(assets != null && !assets.isEmpty())
+                        {
+
+                             for(Bill f : assets)
+                            {
+                                out.println("<tr>");
+                                out.println("<td align='center'>"+f.getBorrower().getPhone()+"</td>");
+                                out.println("<td align='center'>"+f.getAmount()/100.0 + "</td>");
+                                out.println("</tr>");
+                            }
+                        }
+                        out.println("</table><br>");
+
+                    out.println("<br>");
+                }
             }
-            out.println("<br>");
-            out.println("<a href='LoginUser'>Logout</a>");
-            out.println("<br>");
-            out.println("</body>");
-            out.println("</html>");
-            
         } finally { 
             out.close();
         }

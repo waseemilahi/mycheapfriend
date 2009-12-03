@@ -101,20 +101,7 @@ public class ListUsers extends HttpServlet {
                 out.println("</table><br>");
 
                 out.println("<a href='ListUsers'>Refresh</a>");
-                out.println("<br>");
-                if(poller.testStarted()) {
-                    out.print("The server is running.");
-                    out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
-                }
-                else {
-                    out.print("The server is stopped.");
-                    out.println("<a href='StartService'>[start]</a>");
-                }
-                out.println("<br>");
-                out.println("<a href='LoginUser'>Logout</a>");
-                out.println("<br>");
-                out.println("</body>");
-                out.println("</html>");
+
             }
             else {
                 UserObj user = userFacade.find(Long.parseLong(request.getParameter("id")));
@@ -128,8 +115,32 @@ public class ListUsers extends HttpServlet {
                         out.println("<body>");
                         out.println("<h1>Detailed Info of " + request.getParameter("id") + ".</h1>");
 
+                        out.println("<h3>Basic Info:</h3>");
+                        out.println("<table border='1' cellpadding='5'>");
+                        out.println("<tr>");
+                        out.println("<th align='center'>Phone#</th>");
+                        out.println("<th align='center'>Password</th>");
+                        out.println("<th align='center'>Domain</th>");
+                        out.println("<th align='center'>Active</th>");
+                        out.println("<th align='center'>Subscribed</th>");
+                        out.println("<th align='center'>Disabled</th>");
+                        out.println("</tr>");
+
+                        out.println("<tr>");
+                        out.println("<td align='center'>" + user.getPhone() + "</td>");
+                        out.println("<td align='center'>" + user.getPassword() + "</td>");
+                        out.println("<td align='center'>" + user.getEmail_domain() + "</td>");
+                        out.println("<td align='center'>" + user.isActive() + "</td>");
+                        out.println("<td align='center'>" + !user.isUnsubscribe() + "</td>");
+                        if(user.isDisabled())
+                            out.println("<td align='center'>true <a href=\"enable?id=" + user.getPhone() + "\">[enable]</a></td>");
+                        else
+                            out.println("<td align='center'>false <a href=\"disable?id=" + user.getPhone() + "\">[disable]</a></td>");
+                        out.println("</tr>");
+                        out.println("</table>");
+
                         out.println("<h3>Friends:</h3>");
-                        out.println("<table border='1'>");
+                        out.println("<table border='1' cellpadding='5'>");
                         out.println("<tr>");
                         out.println("<th align='center'>Phone#</th>");
                         out.println("<th align='center'>Nickname</th>");
@@ -149,7 +160,7 @@ public class ListUsers extends HttpServlet {
                         out.println("</table><br>");
 
                         out.println("<h3>Debts:</h3>");
-                        out.println("<table border='1'>");
+                        out.println("<table border='1' cellpadding='5'>");
                         out.println("<tr>");
                         out.println("<th align='center'>Lender</th>");
                         out.println("<th align='center'>Amount</th>");
@@ -171,7 +182,7 @@ public class ListUsers extends HttpServlet {
                         out.println("</table><br>");
 
                         out.println("<h3>Assets:</h3>");
-                        out.println("<table border='1'>");
+                        out.println("<table border='1' cellpadding='5'>");
                         out.println("<tr>");
                         out.println("<th align='center'>Borrower</th>");
                         out.println("<th align='center'>Amount</th>");
@@ -191,10 +202,24 @@ public class ListUsers extends HttpServlet {
                             }
                         }
                         out.println("</table><br>");
-
-                    out.println("<br>");
+                        out.println("<a href='ListUsers?id="+user.getPhone()+"'>Refresh</a>");
                 }
             }
+            if(poller.testStarted()) {
+                out.print("<br>The server is running.");
+                out.println("<a href='StopService' onclick=\"System.out.println(\"click\");\">[stop]</a>");
+            }
+            else {
+                out.print("<br>The server is stopped.");
+                out.println("<a href='StartService'>[start]</a>");
+            }
+
+            out.println("<br>");
+            out.println("<a href='LoginUser'>Logout</a>");
+            out.println("<br>");
+            out.println("</body>");
+            out.println("</html>");
+
         } finally { 
             out.close();
         }

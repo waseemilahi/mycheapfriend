@@ -164,6 +164,9 @@ public class ListUsers extends HttpServlet {
                         out.println("<tr>");
                         out.println("<th align='center'>Lender</th>");
                         out.println("<th align='center'>Amount</th>");
+                        out.println("<th align='center'>Approved</th>");
+                        out.println("<th align='center'>Paid</th>");
+                        out.println("<th align='center'>Date</th>");
                         out.println("</tr>");
 
                         List<Bill> debts = user.getDebts();
@@ -175,6 +178,9 @@ public class ListUsers extends HttpServlet {
                                 out.println("<tr>");
                                 out.println("<td align='center'>" + f.getLender().getPhone() + "</td>");
                                 out.println("<td align='center'>" + f.getAmount()/100.0 + "</td>");
+                                out.println("<td align='center'>" + f.getApproved() + "</td>");
+                                out.println("<td align='center'>" + f.getPaid() + "</td>");
+                                out.println("<td align='center'>" + f.getTimeCreated() + "</td>");
                                 out.println("</tr>");
                             }
                         }
@@ -186,6 +192,9 @@ public class ListUsers extends HttpServlet {
                         out.println("<tr>");
                         out.println("<th align='center'>Borrower</th>");
                         out.println("<th align='center'>Amount</th>");
+                        out.println("<th align='center'>Approved</th>");
+                        out.println("<th align='center'>Paid</th>");
+                        out.println("<th align='center'>Date</th>");
                         out.println("</tr>");
 
                         List<Bill> assets = user.getAssets();
@@ -198,6 +207,9 @@ public class ListUsers extends HttpServlet {
                                 out.println("<tr>");
                                 out.println("<td align='center'>" + f.getBorrower().getPhone() + "</td>");
                                 out.println("<td align='center'>" + f.getAmount()/100.0 + "</td>");
+                                out.println("<td align='center'>" + f.getApproved() + "</td>");
+                                out.println("<td align='center'>" + f.getPaid() + "</td>");
+                                out.println("<td align='center'>" + f.getTimeCreated() + "</td>");
                                 out.println("</tr>");
                             }
                         }

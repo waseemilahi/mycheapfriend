@@ -20,7 +20,7 @@ public class EmailInfo implements TextMessage{
     private final static String ACCEPT_BILL_ADDR = "robot";
 
     private final static String ACCEPT_BILL_PATTERN = "^(y[a-z]*)?$";
-    private final static String PHONE_PATTERN = "\\d{10}|(?:\\D?\\d{3}\\D ?(?:\\d{7}|(?:\\d{3}\\D\\d{4})))";
+    private final static String PHONE_PATTERN = "\\d{10,10}";
     private final static String NICKNAME_PATTERN = "[a-zA-Z]{2,2}[a-zA-Z0-9_-]{1,8}";
     private final static String AMOUNT_PATTERN = "\\$?\\d{1,4}(\\.\\d{2})?";
     private final static String FROM_PHONE_PATTERN = "\\d{10,10}";
@@ -142,6 +142,7 @@ public class EmailInfo implements TextMessage{
         log("parsing...");
         if(this.to != null && this.from != null && this.content != null)
         {
+
             //parse from first.  reject anything not from a cellphone.
             int atLocation = from.indexOf('@');
             String parsed_phone = from.substring(0, atLocation).replace("\\D", "");
@@ -201,10 +202,14 @@ public class EmailInfo implements TextMessage{
                 case TextMessage.RESET_PASS:
                 case TextMessage.UNSUBSCRIBE:
                 case TextMessage.RESUBSCRIBE:
+                    this.errorType = TextMessage.NO_ERROR;
                     return;
                 case TextMessage.ACCEPT_BILL:
                     if(content.matches(ACCEPT_BILL_PATTERN))
-                    return; //let it set this up in the to:
+                    {
+                        this.errorType = TextMessage.NO_ERROR;
+                        return; //let it set this up in the to:
+                    }
             }
             if(content.equalsIgnoreCase(REPORT_MESSAGE))
             {
@@ -279,7 +284,7 @@ public class EmailInfo implements TextMessage{
             else if(billAmounts.size() == 0)
             {
                 fail = true;
-                if(billFriends.size() == 2)
+                if(billFriends.size() == 2 && !me_included)
                 {
                     Long num  = null;
                     String nick = null;
@@ -303,17 +308,9 @@ public class EmailInfo implements TextMessage{
                     this.errorType = TextMessage.SYNTAX_ERROR;
                 }
             }
-            else if(billAmounts.size() == billFriends.size() )
-            {
-                if(me_included)
-                {
-                    //"me" not allowed in billFriendssize
-                    this.type = TextMessage.ERROR;
-                    this.errorType = TextMessage.SYNTAX_ERROR;
-                }
-            }
             else if (billAmounts.size() == 1 && billFriends.size() >= 2)
             {
+                log("splitting a bill");
                 Integer bill = billAmounts.remove(0);
                 int billSize = billFriends.size() + (me_included ? 1 : 0);
                 int billValue = bill.intValue();
@@ -331,6 +328,15 @@ public class EmailInfo implements TextMessage{
                     billAmounts.add(new Integer(this_bill_amount));
                 }
             }
+            else if(billAmounts.size() == billFriends.size() )
+            {
+                if(me_included)
+                {
+                    //"me" not allowed in billFriendssize
+                    this.type = TextMessage.ERROR;
+                    this.errorType = TextMessage.SYNTAX_ERROR;
+                }
+            }
             else
             {
                 this.type = TextMessage.ERROR;
@@ -338,10 +344,13 @@ public class EmailInfo implements TextMessage{
             }
             //new bill was successful
             if(this.errorType == TextMessage.UNPARSED)
+            {
                 this.type = TextMessage.NEW_BILL;
-
-            if(this.type != TextMessage.ERROR)
                 this.errorType = TextMessage.NO_ERROR;
+            }
+
+//            if(this.type != TextMessage.ERROR)
+//                this.errorType = TextMessage.NO_ERROR;
         }
         else
             log("from and content and to aren't set");
@@ -351,5 +360,7 @@ public class EmailInfo implements TextMessage{
     {
         System.out.println(log_message);
     }
+
+
 }
 

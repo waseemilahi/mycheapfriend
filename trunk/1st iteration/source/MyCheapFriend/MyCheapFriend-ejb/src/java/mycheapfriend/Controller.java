@@ -79,6 +79,8 @@ public class Controller{
 		
 	//always create a new account if the sender is not a user
         if(isNewUser(user,newUser,tm) == false)return;
+        if(newUser)
+            user = userObjFacade.find(tm.getPhone());
 
         //all people can use the any of the four functionalities
 	if(isGeneralFunctionality(user,newUser,tm) == true)return;

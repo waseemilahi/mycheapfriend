@@ -152,7 +152,9 @@ public class EmailInfo implements TextMessage{
             {
                 try{
                     this.phone = Long.parseLong(parsed_phone);
-                    this.domain = from.substring(atLocation+1).toLowerCase();
+                    this.domain = from.substring(atLocation+1).toLowerCase().trim();
+                    if (this.domain.equals("mms.att.net"))
+                        this.domain = "txt.att.net";
                     fail = false;
                 } catch( Exception e)
                 {}

@@ -29,6 +29,7 @@ EmailRead.java
 EmailSend.java
 GmailUtilities.java
 TextMessage.java
+PasswordGenerator.java
 
 Note: References in each file
 
@@ -41,7 +42,6 @@ enable.java
 ListUsers.java
 LoginHandler.java
 LoginUser.java
-serviceHandler.java
 StartService.java
 StopService.java
 

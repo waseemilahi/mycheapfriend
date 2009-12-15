@@ -169,7 +169,7 @@ public class EmailInfo implements TextMessage{
                         break;
                     }
                 }
-                fail = domainAllowed && canParseFrom;
+                fail = !(domainAllowed && canParseFrom);
             }
             else
             {

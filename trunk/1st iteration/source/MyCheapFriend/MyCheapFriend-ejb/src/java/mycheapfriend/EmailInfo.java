@@ -150,14 +150,26 @@ public class EmailInfo implements TextMessage{
 
             if(parsed_phone.matches(FROM_PHONE_PATTERN))
             {
+                boolean canParseFrom = false;
                 try{
                     this.phone = Long.parseLong(parsed_phone);
                     this.domain = from.substring(atLocation+1).toLowerCase().trim();
                     if (this.domain.equals("mms.att.net"))
-                        this.domain = "txt.att.net";
-                    fail = false;
+                        this.domain = "txt.att.net"; //this is a hack because ATT's mms relay is super slow
+                    canParseFrom = true;
                 } catch( Exception e)
                 {}
+                //check for domain's existance in allowed list...
+                boolean domainAllowed = false;
+                for(String allowed : Controller.POSSIBLE_DOMAINS)
+                {
+                    if(allowed.equalsIgnoreCase(domain))
+                    {
+                        domainAllowed = true;
+                        break;
+                    }
+                }
+                fail = domainAllowed && canParseFrom;
             }
             else
             {

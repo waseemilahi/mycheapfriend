@@ -37,7 +37,7 @@ import javax.naming.NamingException;
  */
 public class Controller{
 
-    private final String[] POSSIBLE_DOMAINS = {"txt.att.net", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
+    public static final String[] POSSIBLE_DOMAINS = {"txt.att.net", "messaging.sprintpcs.com", "tmomail.net", "vtext.com"};
     //["airtelkk.com", "alertas.personal.com.ar", "bplmobile.com", "cingularme.com", "clarotorpedo.com.br", "comcel.com.co", "cwemail.com", 
 	//"email.uscc.net", "emtelworld.net", "fido.ca", "ideasclaro-ca.com", "ivctext.com", "iwspcs.net", "mas.aw", "message.alltel.com", 
 	//"messaging.nextel.com", "messaging.sprintpcs.com", "mmst5.tracfone.com", "mobile.celloneusa.com", "mobipcs.net", "movistar.com.co", 
